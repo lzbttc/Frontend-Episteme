@@ -1,0 +1,18 @@
+.academic-layout {
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+
+  background-color: var(--color-background);
+}
+
+.academic-layout-content {
+  width: 100%;
+  max-width: 968px;
+  margin: 0 auto;
+
+  flex: 1;
+
+  padding: 32px;
+}
