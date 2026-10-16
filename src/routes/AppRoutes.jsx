@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout/MainLayout'
 import Login from '../pages/Login/Login'
 import PaginaInicial from '../pages/PaginaInicial/PaginaInicial'
+import TurmaVirtual from '../pages/TurmaVirtual/TurmaVirtual'
 
 function AppRoutes() {
   return (
@@ -22,9 +23,18 @@ function AppRoutes() {
         }
       />
 
+      <Route
+        path="/turma-virtual"
+        element={
+          <MainLayout>
+            <TurmaVirtual />
+          </MainLayout>
+        }
+      />
+
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   )
 }
 
-export default AppRoutes
+export default AppRoutes
