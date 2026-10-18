@@ -35,11 +35,7 @@ function Header({ student }) {
             <span className="header__badge-dot"></span>
           </button>
 
-          <button
-            className="header__icon-btn"
-            title="Ajuda"
-            aria-label="Ajuda"
-          >
+          <button className="header__icon-btn" title="Ajuda" aria-label="Ajuda">
             <svg
               width="20"
               height="20"
