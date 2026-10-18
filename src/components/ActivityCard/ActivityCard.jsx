@@ -23,7 +23,8 @@ const timeFormatter = new Intl.DateTimeFormat('pt-BR', {
   minute: '2-digit',
 })
 
-// Recebe uma data ISO (com ou sem horário) e monta o texto "Prazo: 22/Set às 23:59"
+// Recebe uma data ISO (com ou sem horário) e monta o texto do prazo.
+// Prazo em aberto: "Prazo: 22/Set às 23:59". Prazo encerrado: "Prazo: 22/Set".
 function formatDeadline(dueAt) {
   const hasTime = dueAt.includes('T')
   const date = new Date(hasTime ? dueAt : `${dueAt}T00:00:00`)
@@ -36,7 +37,9 @@ function formatDeadline(dueAt) {
 
   const deadline = `Prazo: ${day}/${monthLabel}`
 
-  return hasTime ? `${deadline} às ${timeFormatter.format(date)}` : deadline
+  const isOpen = hasTime && date.getTime() > Date.now()
+
+  return isOpen ? `${deadline} às ${timeFormatter.format(date)}` : deadline
 }
 
 function ActivityCard({ activity, onAction }) {
