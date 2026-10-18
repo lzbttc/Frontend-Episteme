@@ -8,15 +8,49 @@ import NoticeCard from '../../components/NoticeCard/NoticeCard'
 import ResourceItem from '../../components/ResourceItem/ResourceItem'
 import SectionHeading from '../../components/SectionHeading/SectionHeading'
 
+import { studentMock } from '../../mocks/studentMock'
 import { turmaVirtualMock } from '../../mocks/turmaVirtualMock'
 
 import './TurmaVirtual.css'
 
 function TurmaVirtual() {
-  const { discipline, metrics, modules, activities, notices, resources } =
-    turmaVirtualMock
+  // Provisório até a Fase 2 (rota por id): abre sempre a primeira disciplina.
+  // Leitura dos dados concentrada aqui: na integração com o backend, este
+  // bloco vira uma chamada à API (com estados de carregando e erro).
+  const discipline = studentMock.disciplines[0]
+  const { metrics, modules, activities, notices, resources } =
+    turmaVirtualMock[discipline.id]
 
   const totalContentItems = modules.reduce((sum, m) => sum + m.items.length, 0)
+
+  const pendingActivities = activities.filter(
+    (activity) => activity.status !== 'completed'
+  ).length
+
+  const gauges = [
+    {
+      id: 'average',
+      value: metrics.average.toLocaleString('pt-BR', {
+        minimumFractionDigits: 1,
+      }),
+      label: 'MÉDIA GERAL',
+      percentage: Math.round(metrics.average * 10),
+    },
+    {
+      id: 'attendance',
+      value: `${metrics.attendance}%`,
+      label: 'FREQUÊNCIA',
+      percentage: metrics.attendance,
+    },
+    {
+      id: 'pending',
+      value: String(pendingActivities),
+      label: 'PENDÊNCIAS',
+      percentage: activities.length
+        ? Math.round((pendingActivities / activities.length) * 100)
+        : 0,
+    },
+  ]
 
   const tabs = [
     { id: 'overview', label: 'Visão geral' },
@@ -62,7 +96,7 @@ function TurmaVirtual() {
           <span aria-hidden="true">›</span>
           <a href="/inicio">Minhas disciplinas</a>
           <span aria-hidden="true">›</span>
-          <span>{discipline.name.split(':')[0].trim()}</span>
+          <span>{discipline.name}</span>
           <span aria-hidden="true">›</span>
           <span aria-current="page">Turma {discipline.semester}</span>
         </nav>
@@ -175,13 +209,12 @@ function TurmaVirtual() {
             </div>
 
             <div className="turma-virtual__gauges">
-              {metrics.map((metric) => (
+              {gauges.map((gauge) => (
                 <GaugeCard
-                  key={metric.id}
-                  value={metric.value}
-                  label={metric.label}
-                  percentage={metric.percentage}
-                  color={metric.color}
+                  key={gauge.id}
+                  value={gauge.value}
+                  label={gauge.label}
+                  percentage={gauge.percentage}
                 />
               ))}
             </div>
@@ -264,7 +297,7 @@ function TurmaVirtual() {
                       module={module}
                       defaultExpanded={
                         activeTab === 'overview'
-                          ? module.status !== 'Concluído'
+                          ? module.status !== 'completed'
                           : false
                       }
                       onMaterialAction={handleMaterialAction}
@@ -405,10 +438,12 @@ function TurmaVirtual() {
               <button
                 type="button"
                 onClick={() =>
-                  showPendingIntegration('O contato com a Secretaria do DCC')
+                  showPendingIntegration(
+                    `O contato com a Secretaria do ${discipline.department}`
+                  )
                 }
               >
-                Contatar Secretaria do DCC
+                Contatar Secretaria do {discipline.department}
               </button>
             </div>
           </section>

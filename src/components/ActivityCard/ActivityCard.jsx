@@ -1,14 +1,48 @@
 import Button from '../Button/Button'
 import './ActivityCard.css'
 
+const STATUS_LABEL = {
+  completed: 'Concluído',
+  in_progress: 'Em andamento',
+  pending: 'Pendente',
+}
+
+const STATUS_MODIFIER = {
+  completed: 'complete',
+  in_progress: 'progress',
+  pending: 'pending',
+}
+
+const dateFormatter = new Intl.DateTimeFormat('pt-BR', {
+  day: '2-digit',
+  month: 'short',
+})
+
+const timeFormatter = new Intl.DateTimeFormat('pt-BR', {
+  hour: '2-digit',
+  minute: '2-digit',
+})
+
+// Recebe uma data ISO (com ou sem horário) e monta o texto "Prazo: 22/Set às 23:59"
+function formatDeadline(dueAt) {
+  const hasTime = dueAt.includes('T')
+  const date = new Date(hasTime ? dueAt : `${dueAt}T00:00:00`)
+
+  const parts = dateFormatter.formatToParts(date)
+  const day = parts.find((part) => part.type === 'day').value
+  const month = parts.find((part) => part.type === 'month').value
+  const shortMonth = month.replace('.', '')
+  const monthLabel = `${shortMonth.charAt(0).toUpperCase()}${shortMonth.slice(1)}`
+
+  const deadline = `Prazo: ${day}/${monthLabel}`
+
+  return hasTime ? `${deadline} às ${timeFormatter.format(date)}` : deadline
+}
+
 function ActivityCard({ activity, onAction }) {
-  const isComplete = activity.status === 'Concluído'
+  const isComplete = activity.status === 'completed'
 
-  const statusClass = isComplete
-    ? 'activity-card__status--complete'
-    : 'activity-card__status--pending'
-
-  const statusLabel = isComplete ? 'Concluído' : 'Pendente'
+  const deadline = activity.dueAt ? formatDeadline(activity.dueAt) : null
 
   return (
     <article className="activity-card">
@@ -29,7 +63,7 @@ function ActivityCard({ activity, onAction }) {
 
         <h3 className="activity-card__title">{activity.title}</h3>
 
-        {(activity.deadline || activity.details) && (
+        {(deadline || activity.details) && (
           <p className="activity-card__description">
             <svg
               width="11"
@@ -44,16 +78,19 @@ function ActivityCard({ activity, onAction }) {
                 fill="#71717A"
               />
             </svg>
-            {activity.deadline}
-            {activity.details &&
-              `${activity.deadline ? ' • ' : ''}${activity.details}`}
+            {deadline}
+            {activity.details && `${deadline ? ' • ' : ''}${activity.details}`}
           </p>
         )}
       </div>
 
       <div className="activity-card__actions">
-        <span className={`activity-card__status ${statusClass}`}>
-          {activity.status === 'Concluído' && (
+        <span
+          className={`activity-card__status activity-card__status--${
+            STATUS_MODIFIER[activity.status]
+          }`}
+        >
+          {isComplete && (
             <svg
               width="10"
               height="8"
@@ -67,7 +104,7 @@ function ActivityCard({ activity, onAction }) {
               />
             </svg>
           )}
-          {statusLabel}
+          {STATUS_LABEL[activity.status]}
         </span>
 
         <Button

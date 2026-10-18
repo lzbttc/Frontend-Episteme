@@ -2,8 +2,19 @@ import { useState } from 'react'
 import Button from '../Button/Button'
 import './ModuleCard.css'
 
+const STATUS_LABEL = {
+  completed: 'Concluído',
+  in_progress: 'Em andamento',
+  pending: 'Pendente',
+}
+
 function ModuleCard({ module, onMaterialAction, defaultExpanded = false }) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded)
+
+  const filesCount = module.items.length
+  const description = `${STATUS_LABEL[module.status]} • ${filesCount} ${
+    filesCount === 1 ? 'arquivo disponível' : 'arquivos disponíveis'
+  }`
 
   return (
     <article
@@ -13,7 +24,7 @@ function ModuleCard({ module, onMaterialAction, defaultExpanded = false }) {
     >
       <header className="module-card__header">
         <div className="module-card__heading">
-          {module.status === 'Concluído' && (
+          {module.status === 'completed' && (
             <svg
               className="module-card__complete-icon"
               width="17"
@@ -35,9 +46,7 @@ function ModuleCard({ module, onMaterialAction, defaultExpanded = false }) {
           <div className="module-card__heading-content">
             <h3 className="module-card__title">{module.title}</h3>
 
-            {module.description && (
-              <p className="module-card__description">{module.description}</p>
-            )}
+            <p className="module-card__description">{description}</p>
           </div>
         </div>
 
