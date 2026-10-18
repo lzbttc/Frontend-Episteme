@@ -34,8 +34,6 @@ export const turmaVirtualMock = {
     },
   ],
 
-
-
   modules: [
     {
       id: 'module-1',
@@ -143,8 +141,7 @@ export const turmaVirtualMock = {
       author: 'Prof. Rafael Oliveira',
       date: 'Hoje, 11:20',
       title: 'Atualização do conteúdo',
-      message:
-        'Foram adicionados os scripts SQL de benchmark da aula teórica.',
+      message: 'Foram adicionados os scripts SQL de benchmark da aula teórica.',
     },
     {
       id: 'notice-2',

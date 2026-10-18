@@ -7,13 +7,8 @@ import { studentMock } from '../../mocks/studentMock'
 import './PaginaInicial.css'
 
 function PaginaInicial() {
-  const {
-    student,
-    metrics,
-    upcomingEvents,
-    quickActions,
-    latestNews,
-  } = studentMock
+  const { student, metrics, upcomingEvents, quickActions, latestNews } =
+    studentMock
 
   return (
     <div className="pagina-inicial">

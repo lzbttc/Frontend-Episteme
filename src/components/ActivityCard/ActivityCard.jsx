@@ -2,8 +2,7 @@ import Button from '../Button/Button'
 import './ActivityCard.css'
 
 function ActivityCard({ activity, onAction }) {
-  const isComplete =
-    activity.status === 'Concluído'
+  const isComplete = activity.status === 'Concluído'
 
   const statusClass = isComplete
     ? 'activity-card__status--complete'
@@ -15,13 +14,15 @@ function ActivityCard({ activity, onAction }) {
     <article className="activity-card">
       <div className="activity-card__main">
         <div className="activity-card__meta">
-          <span className="activity-card__category">
-            {activity.category}
-          </span>
+          <span className="activity-card__category">{activity.category}</span>
 
           {activity.points != null && (
             <span className="activity-card__points">
-              Valor: {activity.points.toLocaleString('pt-BR', { minimumFractionDigits: 1 })} pts
+              Valor:{' '}
+              {activity.points.toLocaleString('pt-BR', {
+                minimumFractionDigits: 1,
+              })}{' '}
+              pts
             </span>
           )}
         </div>
@@ -44,7 +45,8 @@ function ActivityCard({ activity, onAction }) {
               />
             </svg>
             {activity.deadline}
-            {activity.details && `${activity.deadline ? ' • ' : ''}${activity.details}`}
+            {activity.details &&
+              `${activity.deadline ? ' • ' : ''}${activity.details}`}
           </p>
         )}
       </div>

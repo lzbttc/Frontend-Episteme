@@ -69,9 +69,7 @@ function TurmaVirtual() {
 
         <div className="turma-virtual__course-main">
           <div className="turma-virtual__course-info">
-            <h1 className="turma-virtual__course-title">
-              {discipline.name}
-            </h1>
+            <h1 className="turma-virtual__course-title">{discipline.name}</h1>
 
             <p className="turma-virtual__detail">
               <svg
@@ -86,7 +84,6 @@ function TurmaVirtual() {
                   fill="#71717A"
                 />
               </svg>
-
               {discipline.professor} ({discipline.department} /{' '}
               {discipline.campus})
             </p>
@@ -151,7 +148,6 @@ function TurmaVirtual() {
                     fill="#090D16"
                   />
                 </svg>
-
                 Plano de Ensino (PDF)
               </Button>
 
@@ -174,7 +170,6 @@ function TurmaVirtual() {
                     fill="#090D16"
                   />
                 </svg>
-
                 Falar com Professor
               </Button>
             </div>
@@ -262,21 +257,20 @@ function TurmaVirtual() {
               />
 
               <div className="turma-virtual__module-list">
-              {(activeTab === 'overview'
-                  ? modules.slice(0, 2)
-                  : modules
-                ).map((module) => (
-                  <ModuleCard
-                    key={module.id}
-                    module={module}
-                    defaultExpanded={
-                      activeTab === 'overview'
-                        ? module.status !== 'Concluído'
-                        : false
-                    }
-                    onMaterialAction={handleMaterialAction}
-                  />
-                ))}
+                {(activeTab === 'overview' ? modules.slice(0, 2) : modules).map(
+                  (module) => (
+                    <ModuleCard
+                      key={module.id}
+                      module={module}
+                      defaultExpanded={
+                        activeTab === 'overview'
+                          ? module.status !== 'Concluído'
+                          : false
+                      }
+                      onMaterialAction={handleMaterialAction}
+                    />
+                  )
+                )}
               </div>
             </section>
           )}
@@ -286,9 +280,7 @@ function TurmaVirtual() {
               <SectionHeading
                 title="Atividades da Disciplina"
                 subtitle="Quadro unificado de tarefas avaliativas e estudos autônomos"
-                actionLabel={
-                  activeTab === 'overview' ? 'Ver todas' : undefined
-                }
+                actionLabel={activeTab === 'overview' ? 'Ver todas' : undefined}
                 onAction={() => handleTabChange('activities')}
               />
 
@@ -356,9 +348,7 @@ function TurmaVirtual() {
               variant="secondary"
               size="sm"
               className="turma-virtual__forum-button"
-              onClick={() =>
-                showPendingIntegration('O fórum da disciplina')
-              }
+              onClick={() => showPendingIntegration('O fórum da disciplina')}
             >
               Acessar Fórum da Disciplina
             </Button>

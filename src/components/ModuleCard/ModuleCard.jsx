@@ -1,4 +1,3 @@
-
 import { useState } from 'react'
 import Button from '../Button/Button'
 import './ModuleCard.css'
@@ -37,9 +36,7 @@ function ModuleCard({ module, onMaterialAction, defaultExpanded = false }) {
             <h3 className="module-card__title">{module.title}</h3>
 
             {module.description && (
-              <p className="module-card__description">
-                {module.description}
-              </p>
+              <p className="module-card__description">{module.description}</p>
             )}
           </div>
         </div>
@@ -50,9 +47,7 @@ function ModuleCard({ module, onMaterialAction, defaultExpanded = false }) {
           onClick={() => setIsExpanded((current) => !current)}
           aria-expanded={isExpanded}
           aria-label={
-            isExpanded
-              ? `Recolher ${module.title}`
-              : `Expandir ${module.title}`
+            isExpanded ? `Recolher ${module.title}` : `Expandir ${module.title}`
           }
         >
           <svg
@@ -76,9 +71,7 @@ function ModuleCard({ module, onMaterialAction, defaultExpanded = false }) {
           {module.items.map((item) => (
             <div className="module-card__item" key={item.id}>
               <div className="module-card__item-content">
-                <h4 className="module-card__item-title">
-                  {item.title}
-                </h4>
+                <h4 className="module-card__item-title">{item.title}</h4>
 
                 <p className="module-card__item-description">
                   {item.description}

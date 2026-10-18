@@ -38,7 +38,9 @@
   font-size: 0.72rem;
   font-weight: 600;
   white-space: nowrap;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
 }
 
 .section-heading__action:hover {
