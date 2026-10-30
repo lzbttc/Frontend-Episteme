@@ -1,14 +1,26 @@
+import { useEffect } from 'react'
 import GaugeCard from '../../components/GaugeCard/GaugeCard'
 import EventCard from '../../components/EventCard/EventCard'
 import QuickActionCard from '../../components/QuickActionCard/QuickActionCard'
 import NewsCard from '../../components/NewsCard/NewsCard'
 import Button from '../../components/Button/Button'
+import DisciplineCard from '../../components/DisciplineCard/DisciplineCard'
 import { studentMock } from '../../mocks/studentMock'
 import './PaginaInicial.css'
 
-function PaginaInicial() {
-  const { student, metrics, upcomingEvents, quickActions, latestNews } =
-    studentMock
+function PaginaInicial({ onNavigate }) {
+  const {
+    student,
+    metrics,
+    disciplines,
+    upcomingEvents,
+    quickActions,
+    latestNews,
+  } = studentMock
+
+  useEffect(() => {
+    document.title = 'Portal Acadêmico | Episteme'
+  }, [])
 
   return (
     <div className="pagina-inicial">
@@ -49,7 +61,11 @@ function PaginaInicial() {
               Acompanhamento e acesso ao conteúdo das turmas virtuais
             </p>
           </div>
-          <a href="#" className="pagina-inicial__ver-todas-link">
+          <button
+            type="button"
+            className="pagina-inicial__ver-todas-link"
+            onClick={() => onNavigate && onNavigate('minhas-disciplinas')}
+          >
             <span>Ver todas</span>
             <svg
               width="11"
@@ -63,8 +79,18 @@ function PaginaInicial() {
                 fill="currentColor"
               />
             </svg>
-          </a>
+          </button>
         </header>
+
+        <div className="pagina-inicial__disciplines-grid">
+          {disciplines.map((discipline) => (
+            <DisciplineCard
+              key={discipline.id}
+              discipline={discipline}
+              onAccess={() => onNavigate && onNavigate('turma-virtual')}
+            />
+          ))}
+        </div>
       </section>
 
       {/* 3. Compromissos & Acesso Rápido (2-Column Grid) */}

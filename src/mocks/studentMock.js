@@ -36,6 +36,7 @@ export const studentMock = {
       id: 'd1',
       code: 'DCOMP0045',
       name: 'Banco de Dados II',
+      turma: 'Turma 2026.2',
       professor: 'Prof. Dr. Ricardo Santos',
       schedule: 'Ter/Qui 14:00 - 16:00',
       room: 'Sala 204, Bloco B',

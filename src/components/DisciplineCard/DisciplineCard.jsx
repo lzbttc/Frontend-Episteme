@@ -1,7 +1,7 @@
 import Button from '../Button/Button'
 import './DisciplineCard.css'
 
-function DisciplineCard({ discipline }) {
+function DisciplineCard({ discipline, onAccess }) {
   const { code, name, professor, schedule, room, progress } = discipline
 
   return (
@@ -70,7 +70,11 @@ function DisciplineCard({ discipline }) {
       </div>
 
       <div className="discipline-card__footer">
-        <Button variant="outline" size="sm">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onAccess && onAccess(discipline)}
+        >
           Acessar Turma
         </Button>
       </div>

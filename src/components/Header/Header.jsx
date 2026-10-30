@@ -1,11 +1,23 @@
 import logo from '../../assets/logo.svg'
 import './Header.css'
 
-function Header({ student }) {
+function Header({ student, onNavigate }) {
   return (
     <header className="header">
       <div className="header__container">
-        <div className="header__brand">
+        <div
+          className="header__brand"
+          onClick={() => onNavigate && onNavigate('inicio')}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              onNavigate && onNavigate('inicio')
+            }
+          }}
+          style={{ cursor: 'pointer' }}
+          title="Ir para a Página Inicial"
+        >
           <img
             src={logo}
             alt="Episteme - Sistema Acadêmico"

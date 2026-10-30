@@ -56,6 +56,18 @@
   border-color: #cbd5e1;
 }
 
+.header__icon-btn:active {
+  transform: scale(0.93);
+}
+
+.header__brand {
+  transition: transform 0.15s ease;
+}
+
+.header__brand:active {
+  transform: scale(0.98);
+}
+
 .header__badge-dot {
   position: absolute;
   top: 6px;
