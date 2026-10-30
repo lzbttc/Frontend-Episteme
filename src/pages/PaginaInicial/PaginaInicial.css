@@ -6,8 +6,8 @@
 
 /* Banner section */
 .pagina-inicial__banner {
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: 16px;
   padding: 24px 32px;
   display: flex;
@@ -15,8 +15,8 @@
   justify-content: space-between;
   gap: 24px;
   box-shadow:
-    inset 0 0 0 1px #e2e8f0,
-    0px 1px 6px 0px rgba(0, 0, 0, 0.05);
+    inset 0 0 0 1px var(--color-border),
+    var(--shadow-card);
 }
 
 .pagina-inicial__greeting {
@@ -28,7 +28,7 @@
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   font-size: 0.75rem;
   font-weight: 600;
-  color: #090d16;
+  color: var(--color-text);
   background: none;
   border: none;
   padding: 0;
@@ -39,7 +39,7 @@
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   font-size: 1.75rem;
   font-weight: 700;
-  color: #090d16;
+  color: var(--color-text);
   margin: 0 0 8px 0;
   letter-spacing: -0.02em;
   line-height: 1.2;
@@ -48,7 +48,7 @@
 .pagina-inicial__subtitle {
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   font-size: 0.875rem;
-  color: #71717a;
+  color: var(--color-text-secondary);
   margin: 0;
   line-height: 1.5;
 }
@@ -76,26 +76,26 @@
 .pagina-inicial__section-title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--color-text);
   margin: 0 0 4px 0;
   letter-spacing: -0.01em;
 }
 
 .pagina-inicial__section-subtitle {
   font-size: 0.875rem;
-  color: #64748b;
+  color: var(--color-text-secondary);
   margin: 0;
 }
 
 /* Minhas Disciplinas Header Card */
 .pagina-inicial__disciplines-header {
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: 16px;
   padding: 24px 24px;
   box-shadow:
-    inset 0 0 0 1px #e2e8f0,
-    0px 1px 6px 0px rgba(0, 0, 0, 0.05);
+    inset 0 0 0 1px var(--color-border),
+    var(--shadow-card);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -106,7 +106,7 @@
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   font-size: 1.5rem;
   font-weight: 700;
-  color: #090d16;
+  color: var(--color-text);
   margin: 0 0 4px 0;
   letter-spacing: -0.02em;
   line-height: 1.33;
@@ -116,7 +116,7 @@
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   font-size: 0.75rem;
   font-weight: 400;
-  color: #71717a;
+  color: var(--color-text-secondary);
   margin: 0;
   line-height: 1.5;
 }
@@ -131,7 +131,7 @@
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   font-size: 0.75rem;
   font-weight: 600;
-  color: #090d16;
+  color: var(--color-text);
   text-decoration: none;
   letter-spacing: 0.01em;
   transition:
@@ -168,7 +168,7 @@
 }
 
 .pagina-inicial__compromissos-card {
-  background-color: #1d4ed8;
+  background-color: var(--color-primary-dark);
   border-radius: 16px;
   padding: 24px;
   box-shadow: 0 4px 12px rgba(29, 78, 216, 0.2);
@@ -192,18 +192,18 @@
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
 }
 
 .pagina-inicial__compromissos-title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--color-surface);
   margin: 0 0 2px 0;
 }
 
@@ -214,7 +214,7 @@
 }
 
 .btn--white-ghost {
-  color: #ffffff !important;
+  color: var(--color-surface) !important;
   border: 1px solid rgba(255, 255, 255, 0.3) !important;
   background-color: transparent !important;
 }
@@ -231,13 +231,13 @@
 }
 
 .pagina-inicial__acesso-rapido-card {
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: 16px;
   padding: 24px;
   box-shadow:
-    inset 0 0 0 1px #e2e8f0,
-    0px 1px 6px 0px rgba(0, 0, 0, 0.05);
+    inset 0 0 0 1px var(--color-border),
+    var(--shadow-card);
 }
 
 .pagina-inicial__acesso-rapido-header {
@@ -258,7 +258,7 @@
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background-color: #f5f2ea;
+  background-color: var(--color-surface-soft);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -268,13 +268,13 @@
 .pagina-inicial__acesso-rapido-title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #090d16;
+  color: var(--color-text);
   margin: 0 0 2px 0;
 }
 
 .pagina-inicial__acesso-rapido-subtitle {
   font-size: 0.875rem;
-  color: #71717a;
+  color: var(--color-text-secondary);
   margin: 0;
 }
 
@@ -292,13 +292,13 @@
 
 /* Últimas Notícias Container Card */
 .pagina-inicial__noticias-card {
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: 16px;
   padding: 24px 28px;
   box-shadow:
-    inset 0 0 0 1px #e2e8f0,
-    0px 1px 6px 0px rgba(0, 0, 0, 0.05);
+    inset 0 0 0 1px var(--color-border),
+    var(--shadow-card);
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -315,7 +315,7 @@
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   font-size: 1.5rem;
   font-weight: 700;
-  color: #090d16;
+  color: var(--color-text);
   margin: 0 0 4px 0;
   letter-spacing: -0.02em;
   line-height: 1.33;
@@ -325,7 +325,7 @@
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   font-size: 0.75rem;
   font-weight: 400;
-  color: #71717a;
+  color: var(--color-text-secondary);
   margin: 0;
   line-height: 1.5;
 }
@@ -337,7 +337,7 @@
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   font-size: 0.75rem;
   font-weight: 600;
-  color: #090d16;
+  color: var(--color-text);
   text-decoration: none;
   letter-spacing: 0.01em;
   transition:

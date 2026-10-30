@@ -22,7 +22,7 @@
   border-radius: var(--radius-lg);
   box-shadow:
     inset 0 0 0 1px var(--color-border),
-    0px 1px 6px 0px rgba(0, 0, 0, 0.05);
+    var(--shadow-card);
 }
 
 .turma-virtual__breadcrumb {
@@ -115,7 +115,7 @@
 }
 
 .turma-virtual__course-actions .btn:hover {
-  background-color: #ebe7dd;
+  background-color: var(--color-surface-soft);
 }
 
 .turma-virtual__gauges {
@@ -190,18 +190,18 @@
 }
 
 .turma-virtual__tab:hover {
-  background-color: #f0eee8;
+  background-color: var(--color-surface-soft);
   color: var(--color-text);
 }
 
 .turma-virtual__tab--active {
-  color: #ffffff;
+  color: var(--color-surface);
   background-color: var(--color-primary-dark);
 }
 
 .turma-virtual__tab--active:hover {
-  color: #ffffff;
-  background-color: #1639b8;
+  color: var(--color-surface);
+  background-color: var(--color-primary-dark);
 }
 
 /* ========================================
@@ -235,7 +235,7 @@
   border-radius: var(--radius-lg);
   box-shadow:
     inset 0 0 0 1px var(--color-border),
-    0px 1px 6px 0px rgba(0, 0, 0, 0.05);
+    var(--shadow-card);
 }
 
 .turma-virtual__content-panel {
@@ -262,7 +262,7 @@
   flex-direction: column;
   gap: 12px;
   padding: 24px;
-  color: #ffffff;
+  color: var(--color-surface);
   background-color: var(--color-primary-dark);
   border-radius: var(--radius-lg);
   box-shadow: 0 4px 12px rgba(29, 78, 216, 0.2);
@@ -282,13 +282,13 @@
   width: 30px;
   height: 30px;
   flex-shrink: 0;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border-radius: 8px;
 }
 
 .turma-virtual__notice-heading h2 {
   margin: 0;
-  color: #ffffff;
+  color: var(--color-surface);
   font-size: 1.03rem;
   font-weight: 700;
 }
@@ -301,7 +301,7 @@
 
 .turma-virtual__notice-board .notice-card {
   padding: 12px;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border: 0;
   border-radius: 13px;
 }
@@ -338,7 +338,7 @@
   min-height: 34px;
   margin-top: 2px;
   color: var(--color-text);
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border: 0;
   border-radius: var(--radius-full);
   font-size: 0.7rem;
@@ -346,7 +346,7 @@
 
 .turma-virtual__forum-button:hover {
   color: var(--color-primary-dark);
-  background-color: #eff6ff;
+  background-color: var(--color-surface-soft);
 }
 
 /* ========================================
@@ -389,7 +389,7 @@
   gap: 12px;
   min-height: 67px;
   padding: 14px 16px;
-  color: #ffffff;
+  color: var(--color-surface);
   background-color: var(--color-primary-dark);
   border-radius: var(--radius-lg);
   box-shadow: 0 4px 12px rgba(29, 78, 216, 0.2);
@@ -401,7 +401,7 @@
 
 .turma-virtual__help-panel h2 {
   margin: 0 0 4px;
-  color: #ffffff;
+  color: var(--color-surface);
   font-size: 0.73rem;
   font-weight: 600;
   line-height: 1.4;
@@ -409,7 +409,7 @@
 
 .turma-virtual__help-panel button {
   padding: 0;
-  color: #ffffff;
+  color: var(--color-surface);
   background: transparent;
   border: 0;
   font-size: 0.72rem;
