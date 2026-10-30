@@ -24,3 +24,8 @@ dist-ssr
 *.sw?
 
 contexto/
+
+# Environments
+.env
+.env.*
+!.env.example
