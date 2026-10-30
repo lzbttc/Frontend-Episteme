@@ -1,1007 +1,454 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
+
+import Button from '../../components/Button/Button'
 import GaugeCard from '../../components/GaugeCard/GaugeCard'
+import ActivityCard from '../../components/ActivityCard/ActivityCard'
+import ModuleCard from '../../components/ModuleCard/ModuleCard'
+import NoticeCard from '../../components/NoticeCard/NoticeCard'
+import ResourceItem from '../../components/ResourceItem/ResourceItem'
+import SectionHeading from '../../components/SectionHeading/SectionHeading'
+
+import { studentMock } from '../../mocks/studentMock'
 import { turmaVirtualMock } from '../../mocks/turmaVirtualMock'
+
 import './TurmaVirtual.css'
 
-function TurmaVirtual({ onNavigate }) {
-  const {
-    title,
-    code,
-    semester,
-    professor,
-    schedule,
-    room,
-    breadcrumbs,
-    metrics,
-    tabs,
-    modules,
-    activities,
-    notices,
-    resources,
-    support,
-  } = turmaVirtualMock
+function TurmaVirtual() {
+  // Provisório até a Fase 2 (rota por id): abre sempre a primeira disciplina.
+  // Leitura dos dados concentrada aqui: na integração com o backend, este
+  // bloco vira uma chamada à API (com estados de carregando e erro).
+  const discipline = studentMock.disciplines[0]
+  const { metrics, modules, activities, notices, resources } =
+    turmaVirtualMock[discipline.id]
 
-  const [activeTab, setActiveTab] = useState('visao-geral')
-  const [isModule1Expanded, setIsModule1Expanded] = useState(false)
-  const [toastMessage, setToastMessage] = useState('')
-  const [contactModalOpen, setContactModalOpen] = useState(false)
-  const [messageText, setMessageText] = useState('')
-  const [activeActivityModal, setActiveActivityModal] = useState(null)
+  const totalContentItems = modules.reduce((sum, m) => sum + m.items.length, 0)
 
-  useEffect(() => {
-    document.title = 'Turma 2026.2 — Turma Virtual | Episteme'
-  }, [])
+  const pendingActivities = activities.filter(
+    (activity) => activity.status !== 'completed'
+  ).length
 
-  const showToast = (msg) => {
-    setToastMessage(msg)
-    setTimeout(() => setToastMessage(''), 3500)
+  const gauges = [
+    {
+      id: 'average',
+      value: metrics.average.toLocaleString('pt-BR', {
+        minimumFractionDigits: 1,
+      }),
+      label: 'MÉDIA GERAL',
+      percentage: Math.round(metrics.average * 10),
+    },
+    {
+      id: 'attendance',
+      value: `${metrics.attendance}%`,
+      label: 'FREQUÊNCIA',
+      percentage: metrics.attendance,
+    },
+    {
+      id: 'pending',
+      value: String(pendingActivities),
+      label: 'PENDÊNCIAS',
+      percentage: activities.length
+        ? Math.round((pendingActivities / activities.length) * 100)
+        : 0,
+    },
+  ]
+
+  const tabs = [
+    { id: 'overview', label: 'Visão geral' },
+    { id: 'content', label: `Conteúdos & Aulas (${totalContentItems})` },
+    { id: 'activities', label: `Atividades & Tarefas (${activities.length})` },
+    { id: 'notices', label: `Avisos & Fórum (${notices.length})` },
+  ]
+
+  const [activeTab, setActiveTab] = useState('overview')
+  const [feedbackMessage, setFeedbackMessage] = useState('')
+
+  function showPendingIntegration(message) {
+    setFeedbackMessage(
+      `${message} ainda não está integrado nesta versão do frontend.`
+    )
   }
 
-  const handleSendMessage = (e) => {
-    e.preventDefault()
-    if (!messageText.trim()) return
-    setContactModalOpen(false)
-    setMessageText('')
-    showToast('Mensagem enviada com sucesso para o Prof. Dr. Rafael Oliveira!')
+  function handleMaterialAction(item) {
+    showPendingIntegration(`O acesso ao material "${item.title}"`)
   }
 
-  const handleBreadcrumbClick = (item) => {
-    if (item.route && onNavigate) {
-      onNavigate(item.route)
-    }
+  function handleActivityAction(activity) {
+    showPendingIntegration(
+      `A ação "${activity.action}" da atividade "${activity.title}"`
+    )
+  }
+
+  function handleResourceAction(resource) {
+    showPendingIntegration(`O acesso ao recurso "${resource.title}"`)
+  }
+
+  function handleTabChange(tabId) {
+    setActiveTab(tabId)
+    setFeedbackMessage('')
   }
 
   return (
     <div className="turma-virtual">
-      {/* Toast Notification */}
-      {toastMessage && (
-        <div className="turma-virtual__toast" role="status">
-          <svg
-            viewBox="0 0 16.667 16.667"
-            className="turma-virtual__toast-icon"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M7.167 12.167 L13.042 6.292 L11.875 5.125 L7.167 9.833 L4.792 7.458 L3.625 8.625 L7.167 12.167 Z M8.333 16.667 C3.731 16.667 0 12.936 0 8.333 C0 3.731 3.731 0 8.333 0 C12.936 0 16.667 3.731 16.667 8.333 C16.667 12.936 12.936 16.667 8.333 16.667 Z"
-              fill="#10b981"
-            />
-          </svg>
-          <span>{toastMessage}</span>
-        </div>
-      )}
-
-      {/* 1. Header Card da Turma Virtual */}
-      <header className="turma-virtual__header-card">
-        {/* Breadcrumb Navigation */}
-        <nav className="turma-virtual__nav" aria-label="Navegação estrutural">
-          {breadcrumbs.map((crumb, idx) => {
-            const isCurrent =
-              crumb.current ||
-              crumb.route === 'turma-virtual' ||
-              idx === breadcrumbs.length - 1
-            return (
-              <span
-                key={crumb.label}
-                className="turma-virtual__breadcrumb-wrapper"
-              >
-                {crumb.route && !isCurrent ? (
-                  <button
-                    type="button"
-                    className="turma-virtual__breadcrumb-link"
-                    onClick={() => handleBreadcrumbClick(crumb)}
-                  >
-                    {crumb.label}
-                  </button>
-                ) : (
-                  <span
-                    className={`turma-virtual__breadcrumb-tag ${isCurrent ? 'turma-virtual__breadcrumb-tag--active' : ''}`}
-                    aria-current={isCurrent ? 'page' : undefined}
-                  >
-                    {crumb.label}
-                  </span>
-                )}
-                {idx < breadcrumbs.length - 1 && (
-                  <svg
-                    viewBox="0 0 4.317 7"
-                    className="turma-virtual__breadcrumb-icon"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M2.683 3.5 L0 0.817 L0.817 0 L4.317 3.5 L0.817 7 L0 6.183 L2.683 3.5 Z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                )}
-              </span>
-            )
-          })}
+      {/* 1. Course header card */}
+      <section className="turma-virtual__course-card">
+        <nav className="turma-virtual__breadcrumb" aria-label="Navegação">
+          <a href="/inicio">Portal Acadêmico</a>
+          <span aria-hidden="true">›</span>
+          <a href="/inicio">Minhas disciplinas</a>
+          <span aria-hidden="true">›</span>
+          <span>{discipline.name}</span>
+          <span aria-hidden="true">›</span>
+          <span aria-current="page">Turma {discipline.semester}</span>
         </nav>
 
-        {/* Informações Principais da Disciplina */}
-        <div className="turma-virtual__header-main">
-          {/* Lado Esquerdo: Título, Metadados e Código */}
-          <div className="turma-virtual__header-info">
-            <h1 className="turma-virtual__title">{title}</h1>
+        <div className="turma-virtual__course-main">
+          <div className="turma-virtual__course-info">
+            <h1 className="turma-virtual__course-title">{discipline.name}</h1>
 
-            <div className="turma-virtual__metadata-row">
-              {/* Professor */}
-              <div className="turma-virtual__metadata-item">
-                <svg
-                  viewBox="0 0 10.667 10.667"
-                  className="turma-virtual__meta-icon"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M5.333 5.333 C4.6 5.333 3.972 5.072 3.45 4.55 C2.928 4.028 2.667 3.4 2.667 2.667 C2.667 1.933 2.928 1.306 3.45 0.783 C3.972 0.261 4.6 0 5.333 0 C6.067 0 6.694 0.261 7.217 0.783 C7.739 1.306 8 1.933 8 2.667 C8 3.4 7.739 4.028 7.217 4.55 C6.694 5.072 6.067 5.333 5.333 5.333 M0 10.667 L0 8.8 C0 8.422 0.097 8.075 0.292 7.758 C0.486 7.442 0.744 7.2 1.067 7.033 C1.756 6.689 2.456 6.431 3.167 6.258 C3.878 6.086 4.6 6 5.333 6 C6.067 6 6.789 6.086 7.5 6.258 C8.211 6.431 8.911 6.689 9.6 7.033 C9.922 7.2 10.181 7.442 10.375 7.758 C10.569 8.075 10.667 8.422 10.667 8.8 L10.667 10.667 Z"
-                    fill="currentColor"
-                  />
-                </svg>
-                <span className="turma-virtual__meta-highlight">
-                  {professor.name}
-                </span>
-                <span className="turma-virtual__meta-sub">
-                  ({professor.department})
-                </span>
-              </div>
+            <p className="turma-virtual__detail">
+              <svg
+                width="11"
+                height="11"
+                viewBox="0 0 11 11"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M5.33333 5.33333C4.6 5.33333 3.97222 5.07222 3.45 4.55C2.92778 4.02778 2.66667 3.4 2.66667 2.66667C2.66667 1.93333 2.92778 1.30556 3.45 0.783333C3.97222 0.261111 4.6 0 5.33333 0C6.06667 0 6.69444 0.261111 7.21667 0.783333C7.73889 1.30556 8 1.93333 8 2.66667C8 3.4 7.73889 4.02778 7.21667 4.55C6.69444 5.07222 6.06667 5.33333 5.33333 5.33333V5.33333M0 10.6667V8.8C0 8.42222 0.0972222 8.075 0.291667 7.75833C0.486111 7.44167 0.744444 7.2 1.06667 7.03333C1.75556 6.68889 2.45556 6.43056 3.16667 6.25833C3.87778 6.08611 4.6 6 5.33333 6C6.06667 6 6.78889 6.08611 7.5 6.25833C8.21111 6.43056 8.91111 6.68889 9.6 7.03333C9.92222 7.2 10.1806 7.44167 10.375 7.75833C10.5694 8.075 10.6667 8.42222 10.6667 8.8V10.6667H0V10.6667M1.33333 9.33333H9.33333V8.8C9.33333 8.67778 9.30278 8.56667 9.24167 8.46667C9.18056 8.36667 9.1 8.28889 9 8.23333C8.4 7.93333 7.79444 7.70833 7.18333 7.55833C6.57222 7.40833 5.95556 7.33333 5.33333 7.33333C4.71111 7.33333 4.09444 7.40833 3.48333 7.55833C2.87222 7.70833 2.26667 7.93333 1.66667 8.23333C1.56667 8.28889 1.48611 8.36667 1.425 8.46667C1.36389 8.56667 1.33333 8.67778 1.33333 8.8V9.33333V9.33333M5.33333 4C5.7 4 6.01389 3.86944 6.275 3.60833C6.53611 3.34722 6.66667 3.03333 6.66667 2.66667C6.66667 2.3 6.53611 1.98611 6.275 1.725C6.01389 1.46389 5.7 1.33333 5.33333 1.33333C4.96667 1.33333 4.65278 1.46389 4.39167 1.725C4.13056 1.98611 4 2.3 4 2.66667C4 3.03333 4.13056 3.34722 4.39167 3.60833C4.65278 3.86944 4.96667 4 5.33333 4V4"
+                  fill="#71717A"
+                />
+              </svg>
+              {discipline.professor} ({discipline.department} /{' '}
+              {discipline.campus})
+            </p>
 
-              {/* Horário */}
-              <div className="turma-virtual__metadata-item">
-                <svg
-                  viewBox="0 0 13.333 13.333"
-                  className="turma-virtual__meta-icon"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M8.867 9.8 L9.8 8.867 L7.333 6.4 L7.333 3.333 L6 3.333 L6 6.933 L8.867 9.8 Z M6.667 13.333 C2.989 13.333 0 10.344 0 6.667 C0 2.989 2.989 0 6.667 0 C10.344 0 13.333 2.989 13.333 6.667 C13.333 10.344 10.344 13.333 6.667 13.333 Z"
-                    fill="currentColor"
-                  />
-                </svg>
-                <span className="turma-virtual__meta-sub">{schedule}</span>
-              </div>
+            <p className="turma-virtual__detail">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M8.86667 9.8L9.8 8.86667L7.33333 6.4V3.33333H6V6.93333L8.86667 9.8V9.8M6.66667 13.3333C5.74444 13.3333 4.87778 13.1583 4.06667 12.8083C3.25556 12.4583 2.55 11.9833 1.95 11.3833C1.35 10.7833 0.875 10.0778 0.525 9.26667C0.175 8.45555 0 7.58889 0 6.66667C0 5.74444 0.175 4.87778 0.525 4.06667C0.875 3.25556 1.35 2.55 1.95 1.95C2.55 1.35 3.25556 0.875 4.06667 0.525C4.87778 0.175 5.74444 0 6.66667 0C7.58889 0 8.45555 0.175 9.26667 0.525C10.0778 0.875 10.7833 1.35 11.3833 1.95C11.9833 2.55 12.4583 3.25556 12.8083 4.06667C13.1583 4.87778 13.3333 5.74444 13.3333 6.66667C13.3333 7.58889 13.1583 8.45555 12.8083 9.26667C12.4583 10.0778 11.9833 10.7833 11.3833 11.3833C10.7833 11.9833 10.0778 12.4583 9.26667 12.8083C8.45555 13.1583 7.58889 13.3333 6.66667 13.3333V13.3333M6.66667 12C8.14444 12 9.40278 11.4806 10.4417 10.4417C11.4806 9.40278 12 8.14444 12 6.66667C12 5.18889 11.4806 3.93056 10.4417 2.89167C9.40278 1.85278 8.14444 1.33333 6.66667 1.33333C5.18889 1.33333 3.93056 1.85278 2.89167 2.89167C1.85278 3.93056 1.33333 5.18889 1.33333 6.66667C1.33333 8.14444 1.85278 9.40278 2.89167 10.4417C3.93056 10.7833 5.18889 12 6.66667 12V12"
+                  fill="#71717A"
+                />
+              </svg>
 
-              {/* Local / Sala */}
-              <div className="turma-virtual__metadata-item">
-                <svg
-                  viewBox="0 0 12 12"
-                  className="turma-virtual__meta-icon"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M0 12 L0 10.667 L1.333 10.667 L1.333 0 L8 0 L8 0.667 L10.667 0.667 L10.667 10.667 L12 10.667 L12 12 L9.333 12 L9.333 2 L8 2 L8 12 Z M5.333 6.667 C5.7 6.667 6 6.367 6 6 C6 5.633 5.7 5.333 5.333 5.333 C4.967 5.333 4.667 5.633 4.667 6 C4.667 6.367 4.967 6.667 5.333 6.667 Z"
-                    fill="currentColor"
-                  />
-                </svg>
-                <span className="turma-virtual__meta-sub">{room}</span>
-              </div>
-            </div>
+              {discipline.schedule}
+            </p>
 
-            <div className="turma-virtual__code-badge">
-              <span>Código: {code}</span>
-              <span className="turma-virtual__code-dot">•</span>
-              <span>{semester}</span>
-            </div>
+            <p className="turma-virtual__detail">
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 12 12"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M0 12V10.6667H1.33333V0H8V0.666667H10.6667V10.6667H12V12H9.33333V2H8V12H0V12M2.66667 1.33333V1.33333V10.6667V10.6667V1.33333V1.33333M5.33333 6.66667C5.52222 6.66667 5.68056 6.60278 5.80833 6.475C5.93611 6.34722 6 6.18889 6 6C6 5.81111 5.93611 5.65278 5.80833 5.525C5.68056 5.39722 5.52222 5.33333 5.33333 5.33333C5.14444 5.33333 4.98611 5.39722 4.85833 5.525C4.73056 5.65278 4.66667 5.81111 4.66667 6C4.66667 6.18889 4.73056 6.34722 4.85833 6.475C4.98611 6.60278 5.14444 6.66667 5.33333 6.66667V6.66667M2.66667 10.6667H6.66667V1.33333H2.66667V10.6667V10.6667"
+                  fill="#71717A"
+                />
+              </svg>
+
+              {discipline.room}
+            </p>
+
+            <p className="turma-virtual__course-code">
+              Código: {discipline.code}
+            </p>
           </div>
 
-          {/* Lado Direito: Ações Rápidas e Indicadores Circulares */}
-          <div className="turma-virtual__header-actions">
-            <div className="turma-virtual__quick-buttons">
-              <button
-                type="button"
-                className="turma-virtual__action-btn"
+          <div className="turma-virtual__course-side">
+            <div className="turma-virtual__course-actions">
+              <Button
+                variant="secondary"
+                size="sm"
                 onClick={() =>
-                  showToast('Download do Plano de Ensino (PDF) iniciado.')
+                  showPendingIntegration('O download do plano de ensino')
                 }
               >
                 <svg
+                  width="12"
+                  height="15"
                   viewBox="0 0 12 15"
-                  className="turma-virtual__action-icon"
                   fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
                   aria-hidden="true"
                 >
                   <path
-                    d="M3 12 L9 12 L9 10.5 L3 10.5 L3 12 Z M3 9 L9 9 L9 7.5 L3 7.5 L3 9 Z M1.5 15 C0.675 15 0 14.325 0 13.5 L0 1.5 C0 0.675 0.675 0 1.5 0 L7.5 0 L12 4.5 L12 13.5 C12 14.325 11.325 15 10.5 15 Z M6.75 5.25 L6.75 1.5 L1.5 1.5 L1.5 13.5 L10.5 13.5 L10.5 5.25 Z"
-                    fill="currentColor"
+                    d="M3 12H9V10.5H3V12V12M3 9H9V7.5H3V9V9M1.5 15C1.0875 15 0.734375 14.8531 0.440625 14.5594C0.146875 14.2656 0 13.9125 0 13.5V1.5C0 1.0875 0.146875 0.734375 0.440625 0.440625C0.734375 0.146875 1.0875 0 1.5 0H7.5L12 4.5V13.5C12 13.9125 11.8531 14.2656 11.5594 14.5594C11.2656 14.8531 10.9125 15 10.5 15H1.5V15M6.75 5.25V1.5H1.5V13.5H10.5V5.25H6.75V5.25"
+                    fill="#090D16"
                   />
                 </svg>
-                <span>Plano de Ensino (PDF)</span>
-              </button>
+                Plano de Ensino (PDF)
+              </Button>
 
-              <button
-                type="button"
-                className="turma-virtual__action-btn"
-                onClick={() => setContactModalOpen(true)}
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() =>
+                  showPendingIntegration('O contato com o professor')
+                }
               >
                 <svg
+                  width="15"
+                  height="15"
                   viewBox="0 0 15 15"
-                  className="turma-virtual__action-icon"
                   fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
                   aria-hidden="true"
                 >
                   <path
-                    d="M3 9 L9 9 L9 7.5 L3 7.5 L3 9 Z M3 6.75 L12 6.75 L12 5.25 L3 5.25 L3 6.75 Z M3 4.5 L12 4.5 L12 3 L3 3 L3 4.5 Z M0 15 L0 1.5 C0 0.675 0.675 0 1.5 0 L13.5 0 C14.325 0 15 0.675 15 1.5 L15 10.5 C15 11.325 14.325 12 13.5 12 L3 12 Z"
-                    fill="currentColor"
+                    d="M3 9H9V7.5H3V9V9M3 6.75H12V5.25H3V6.75V6.75M3 4.5H12V3H3V4.5V4.5M0 15V1.5C0 1.0875 0.146875 0.734375 0.440625 0.440625C0.734375 0.146875 1.0875 0 1.5 0H13.5C13.9125 0 14.2656 0.146875 14.5594 0.440625C14.8531 0.734375 15 1.0875 15 1.5V10.5C15 10.9125 14.8531 11.2656 14.5594 11.5594C14.2656 11.8531 13.9125 12 13.5 12H3L0 15V15M2.3625 10.5H13.5V10.5V10.5V1.5H1.5V11.3438L2.3625 10.5V10.5"
+                    fill="#090D16"
                   />
                 </svg>
-                <span>Falar com Professor</span>
-              </button>
+                Falar com Professor
+              </Button>
             </div>
 
-            {/* Três Indicadores Circulares */}
-            <div className="turma-virtual__gauges-group">
-              {metrics.map((metric) => (
+            <div className="turma-virtual__gauges">
+              {gauges.map((gauge) => (
                 <GaugeCard
-                  key={metric.id}
-                  value={metric.value}
-                  label={metric.label}
-                  percentage={metric.percentage}
-                  color={metric.color}
+                  key={gauge.id}
+                  value={gauge.value}
+                  label={gauge.label}
+                  percentage={gauge.percentage}
                 />
               ))}
             </div>
           </div>
         </div>
-      </header>
+      </section>
 
-      {/* 2. Barra de Abas (Pill Style) */}
-      <nav className="turma-virtual__tabs-nav" aria-label="Abas da disciplina">
-        <div className="turma-virtual__tabs-list">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              className={`turma-virtual__tab-pill ${activeTab === tab.id ? 'turma-virtual__tab-pill--active' : ''}`}
-              onClick={() => setActiveTab(tab.id)}
-            >
-              <span>{tab.label}</span>
-            </button>
-          ))}
+      {/* 2. Feedback message */}
+      {feedbackMessage && (
+        <div
+          className="turma-virtual__feedback"
+          role="status"
+          aria-live="polite"
+        >
+          <p>{feedbackMessage}</p>
+
+          <button
+            type="button"
+            onClick={() => setFeedbackMessage('')}
+            aria-label="Fechar mensagem"
+          >
+            ×
+          </button>
         </div>
-      </nav>
+      )}
 
-      {/* 3. Grid Assimétrico de 2 Colunas */}
-      <div className="turma-virtual__grid">
-        {/* Coluna Principal (Esquerda - 8 colunas) */}
-        <div className="turma-virtual__col-main">
-          {/* Seção 1: Conteúdos Recentes */}
-          {(activeTab === 'visao-geral' || activeTab === 'conteudos') && (
-            <section className="turma-virtual__section-card">
-              <div className="turma-virtual__card-header">
-                <div>
-                  <h2 className="turma-virtual__card-title">
-                    Conteúdos Recentes
-                  </h2>
-                  <p className="turma-virtual__card-subtitle">
-                    Cronograma e materiais disponibilizados pelo docente
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  className="turma-virtual__see-all-link"
-                  onClick={() => setActiveTab('conteudos')}
-                >
-                  <span>Ver todas as aulas</span>
-                  <svg
-                    viewBox="0 0 10.667 10.667"
-                    className="turma-virtual__arrow-icon"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M8.117 6 L0 6 L0 4.667 L8.117 4.667 L4.383 0.933 L5.333 0 L10.667 5.333 L5.333 10.667 L4.383 9.733 L8.117 6 Z"
-                      fill="currentColor"
+      {/* 3. Navigation tabs */}
+      <div
+        className="turma-virtual__tabs"
+        role="tablist"
+        aria-label="Seções da turma"
+      >
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            id={`turma-tab-${tab.id}`}
+            type="button"
+            role="tab"
+            aria-selected={activeTab === tab.id}
+            aria-controls={`turma-panel-${tab.id}`}
+            className={`turma-virtual__tab ${
+              activeTab === tab.id ? 'turma-virtual__tab--active' : ''
+            }`}
+            onClick={() => handleTabChange(tab.id)}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* 4. Content grid */}
+      <div
+        id={`turma-panel-${activeTab}`}
+        role="tabpanel"
+        aria-labelledby={`turma-tab-${activeTab}`}
+        className="turma-virtual__content-grid"
+      >
+        {/* Main column */}
+        <div className="turma-virtual__main-column">
+          {(activeTab === 'overview' || activeTab === 'content') && (
+            <section className="turma-virtual__content-panel">
+              <SectionHeading
+                title={
+                  activeTab === 'overview'
+                    ? 'Conteúdos Recentes'
+                    : 'Conteúdos & Aulas'
+                }
+                subtitle="Cronograma e materiais disponibilizados pelo docente"
+                actionLabel={
+                  activeTab === 'overview' ? 'Ver todas as aulas' : undefined
+                }
+                onAction={() => handleTabChange('content')}
+              />
+
+              <div className="turma-virtual__module-list">
+                {(activeTab === 'overview' ? modules.slice(0, 2) : modules).map(
+                  (module) => (
+                    <ModuleCard
+                      key={module.id}
+                      module={module}
+                      defaultExpanded={
+                        activeTab === 'overview'
+                          ? module.status !== 'completed'
+                          : false
+                      }
+                      onMaterialAction={handleMaterialAction}
                     />
-                  </svg>
-                </button>
-              </div>
-
-              {/* Módulo 01: Concluído e Expansível */}
-              <div
-                className={`turma-virtual__module-completed ${isModule1Expanded ? 'turma-virtual__module-completed--open' : ''}`}
-              >
-                <button
-                  type="button"
-                  className="turma-virtual__module-trigger"
-                  onClick={() => setIsModule1Expanded(!isModule1Expanded)}
-                  aria-expanded={isModule1Expanded}
-                >
-                  <div className="turma-virtual__module-trigger-info">
-                    <div
-                      className="turma-virtual__check-circle"
-                      aria-hidden="true"
-                    >
-                      <svg
-                        viewBox="0 0 16.667 16.667"
-                        className="turma-virtual__check-svg"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M7.167 12.167 L13.042 6.292 L11.875 5.125 L7.167 9.833 L4.792 7.458 L3.625 8.625 L7.167 12.167 Z M8.333 16.667 C7.181 16.667 6.097 16.448 5.083 16.01 C4.069 15.573 3.188 14.979 2.438 14.229 C1.688 13.479 1.094 12.597 0.656 11.583 C0.219 10.569 0 9.486 0 8.333 C0 7.181 0.219 6.097 0.656 5.083 C1.094 4.069 1.688 3.188 2.438 2.438 C3.188 1.688 4.069 1.094 5.083 0.656 C6.097 0.219 7.181 0 8.333 0 C9.486 0 10.569 0.219 11.583 0.656 C12.597 1.094 13.479 1.688 14.229 2.438 C14.979 3.188 15.573 4.069 16.01 5.083 C16.448 6.097 16.667 7.181 16.667 8.333 C16.667 9.486 16.448 10.569 16.01 11.583 C15.573 12.597 14.979 13.479 14.229 14.229 C13.479 14.979 12.597 15.573 11.583 16.01 C10.569 16.448 9.486 16.667 8.333 16.667 Z"
-                          fill="#3b82f6"
-                        />
-                      </svg>
-                    </div>
-                    <div className="turma-virtual__module-text-group">
-                      <h3 className="turma-virtual__module-title">
-                        {modules[0].title}
-                      </h3>
-                      <p className="turma-virtual__module-desc">
-                        {modules[0].statusText}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="turma-virtual__module-trigger-icon">
-                    <svg
-                      viewBox="0 0 10 6.167"
-                      className={`turma-virtual__chevron-down ${isModule1Expanded ? 'turma-virtual__chevron-down--rotate' : ''}`}
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M5 6.167 L0 1.167 L1.167 0 L5 3.833 L8.833 0 L10 1.167 L5 6.167 Z"
-                        fill="currentColor"
-                      />
-                    </svg>
-                  </div>
-                </button>
-
-                {/* Conteúdo Expansível do Módulo 01 */}
-                {isModule1Expanded && (
-                  <div className="turma-virtual__module-files-list">
-                    {modules[0].files.map((file) => (
-                      <div
-                        key={file.id}
-                        className="turma-virtual__module-file-item"
-                      >
-                        <div className="turma-virtual__file-info">
-                          <span
-                            className={`turma-virtual__file-badge turma-virtual__file-badge--${file.type.toLowerCase()}`}
-                          >
-                            {file.type}
-                          </span>
-                          <span className="turma-virtual__file-name">
-                            {file.name}
-                          </span>
-                          <span className="turma-virtual__file-size">
-                            ({file.size})
-                          </span>
-                        </div>
-                        <button
-                          type="button"
-                          className="turma-virtual__icon-action-btn"
-                          title={`Baixar ${file.name}`}
-                          onClick={() => showToast(`Baixando ${file.name}...`)}
-                        >
-                          <svg
-                            viewBox="0 0 13.333 13.333"
-                            width="14"
-                            height="14"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M6.667 10 L2.5 5.833 L3.667 4.625 L5.833 6.792 L5.833 0 L7.5 0 L7.5 6.792 L9.667 4.625 L10.833 5.833 L6.667 10 Z M1.667 13.333 C0.742 13.333 0 12.591 0 11.667 L0 9.167 L1.667 9.167 L1.667 11.667 L11.667 11.667 L11.667 9.167 L13.333 9.167 L13.333 11.667 C13.333 12.591 12.591 13.333 11.667 13.333 Z"
-                              fill="currentColor"
-                            />
-                          </svg>
-                        </button>
-                      </div>
-                    ))}
-                  </div>
+                  )
                 )}
               </div>
+            </section>
+          )}
 
-              {/* Módulo 02: Em Andamento */}
-              <div className="turma-virtual__module-active">
-                <h3 className="turma-virtual__module-active-title">
-                  {modules[1].title}
-                </h3>
+          {(activeTab === 'overview' || activeTab === 'activities') && (
+            <section className="turma-virtual__content-panel">
+              <SectionHeading
+                title="Atividades da Disciplina"
+                subtitle="Quadro unificado de tarefas avaliativas e estudos autônomos"
+                actionLabel={activeTab === 'overview' ? 'Ver todas' : undefined}
+                onAction={() => handleTabChange('activities')}
+              />
 
-                <div className="turma-virtual__module-items-list">
-                  {/* Item 1: Script SQL */}
-                  <div className="turma-virtual__sub-item">
-                    <div className="turma-virtual__sub-item-info">
-                      <h4 className="turma-virtual__sub-item-title">
-                        {modules[1].items[0].title}
-                      </h4>
-                      <p className="turma-virtual__sub-item-meta">
-                        {modules[1].items[0].subtitle}
-                      </p>
-                    </div>
-                    <button
-                      type="button"
-                      className="turma-virtual__item-action-btn"
-                      title="Baixar arquivo SQL"
-                      onClick={() =>
-                        showToast(
-                          'Download do arquivo benchmark_indices.sql iniciado.'
-                        )
-                      }
-                    >
-                      <svg
-                        viewBox="0 0 13.333 13.333"
-                        className="turma-virtual__sub-item-svg"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        aria-hidden="true"
-                      >
-                        <path
-                          d="M6.667 10 L2.5 5.833 L3.667 4.625 L5.833 6.792 L5.833 0 L7.5 0 L7.5 6.792 L9.667 4.625 L10.833 5.833 L6.667 10 Z M1.667 13.333 C1.208 13.333 0.816 13.17 0.49 12.844 C0.163 12.517 0 12.125 0 11.667 L0 9.167 L1.667 9.167 L1.667 11.667 L11.667 11.667 L11.667 9.167 L13.333 9.167 L13.333 11.667 C13.333 12.125 13.17 12.517 12.844 12.844 C12.517 13.17 12.125 13.333 11.667 13.333 Z"
-                          fill="currentColor"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-
-                  {/* Item 2: Video Aula */}
-                  <div className="turma-virtual__sub-item">
-                    <div className="turma-virtual__sub-item-info">
-                      <h4 className="turma-virtual__sub-item-title">
-                        {modules[1].items[1].title}
-                      </h4>
-                      <p className="turma-virtual__sub-item-meta">
-                        {modules[1].items[1].subtitle}
-                      </p>
-                    </div>
-                    <button
-                      type="button"
-                      className="turma-virtual__item-action-btn"
-                      title="Assistir gravação"
-                      onClick={() =>
-                        showToast(
-                          'Carregando gravação síncrona da aula (52 min)...'
-                        )
-                      }
-                    >
-                      <svg
-                        viewBox="0 0 15 15"
-                        className="turma-virtual__sub-item-svg"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        aria-hidden="true"
-                      >
-                        <path
-                          d="M1.667 15 C1.208 15 0.816 14.837 0.49 14.51 C0.163 14.184 0 13.792 0 13.333 L0 1.667 C0 1.208 0.163 0.816 0.49 0.49 C0.816 0.163 1.208 0 1.667 0 L7.5 0 L7.5 1.667 L1.667 1.667 L1.667 13.333 L13.333 13.333 L13.333 7.5 L15 7.5 L15 13.333 C15 13.792 14.837 14.184 14.51 14.51 C14.184 14.837 13.792 15 13.333 15 Z M5.583 10.583 L4.417 9.417 L12.167 1.667 L9.167 1.667 L9.167 0 L15 0 L15 5.833 L13.333 5.833 L13.333 2.833 L5.583 10.583 Z"
-                          fill="currentColor"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
+              <div className="turma-virtual__activity-list">
+                {(activeTab === 'overview'
+                  ? activities.slice(0, 2)
+                  : activities
+                ).map((activity) => (
+                  <ActivityCard
+                    key={activity.id}
+                    activity={activity}
+                    onAction={handleActivityAction}
+                  />
+                ))}
               </div>
             </section>
           )}
 
-          {/* Seção 2: Atividades da Disciplina */}
-          {(activeTab === 'visao-geral' || activeTab === 'atividades') && (
-            <section className="turma-virtual__section-card">
-              <div className="turma-virtual__card-header">
-                <div>
-                  <h2 className="turma-virtual__card-title">
-                    Atividades da Disciplina
-                  </h2>
-                  <p className="turma-virtual__card-subtitle">
-                    Quadro unificado de tarefas avaliativas e estudos autônomos
-                  </p>
-                </div>
-              </div>
+          {activeTab === 'notices' && (
+            <section className="turma-virtual__content-panel">
+              <SectionHeading
+                title="Avisos & Fórum"
+                subtitle="Comunicados da disciplina"
+              />
 
-              <div className="turma-virtual__activities-list">
-                {/* Atividade 1: Leitura Complementar */}
-                <div className="turma-virtual__activity-card">
-                  <div className="turma-virtual__activity-info">
-                    <span className="turma-virtual__activity-badge-top">
-                      {activities[0].badge}
-                    </span>
-                    <h3 className="turma-virtual__activity-title">
-                      {activities[0].title}
-                    </h3>
-                    <div className="turma-virtual__activity-meta">
-                      <div className="turma-virtual__meta-inline">
-                        <svg
-                          viewBox="0 0 10.5 11.667"
-                          className="turma-virtual__calendar-icon"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                          aria-hidden="true"
-                        >
-                          <path
-                            d="M6.708 9.333 C6.3 9.333 5.955 9.192 5.673 8.91 C5.391 8.628 5.25 8.283 5.25 7.875 C5.25 7.467 5.391 7.122 5.673 6.84 C5.955 6.558 6.3 6.417 6.708 6.417 C7.117 6.417 7.462 6.558 7.744 6.84 C8.026 7.122 8.167 7.467 8.167 7.875 C8.167 8.283 8.026 8.628 7.744 8.91 C7.462 9.192 7.117 9.333 6.708 9.333 Z M1.167 11.667 C0.846 11.667 0.571 11.552 0.343 11.324 C0.114 11.095 0 10.821 0 10.5 L0 2.333 C0 2.012 0.114 1.738 0.343 1.509 C0.571 1.281 0.846 1.167 1.167 1.167 L1.75 1.167 L1.75 0 L2.917 0 L2.917 1.167 L7.583 1.167 L7.583 0 L8.75 0 L8.75 1.167 L9.333 1.167 C9.654 1.167 9.929 1.281 10.157 1.509 C10.386 1.738 10.5 2.012 10.5 2.333 L10.5 10.5 C10.5 10.821 10.386 11.095 10.157 11.324 C9.929 11.552 9.654 11.667 9.333 11.667 Z"
-                            fill="currentColor"
-                          />
-                        </svg>
-                        <span>{activities[0].deadline}</span>
-                      </div>
-                      <span className="turma-virtual__meta-bullet">•</span>
-                      <span>{activities[0].meta}</span>
-                    </div>
-                  </div>
-
-                  <div className="turma-virtual__activity-status-group">
-                    <span className="turma-virtual__status-pill turma-virtual__status-pill--completed">
-                      <svg
-                        viewBox="0 0 9.508 7.015"
-                        width="10"
-                        height="8"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        aria-hidden="true"
-                      >
-                        <path
-                          d="M3.325 7.015 L0 3.69 L0.831 2.858 L3.325 5.352 L8.677 0 L9.508 0.831 L3.325 7.015 Z"
-                          fill="#ffffff"
-                        />
-                      </svg>
-                      <span>{activities[0].statusLabel}</span>
-                    </span>
-
-                    <button
-                      type="button"
-                      className="turma-virtual__activity-btn"
-                      onClick={() => setActiveActivityModal(activities[0])}
-                    >
-                      {activities[0].actionLabel}
-                    </button>
-                  </div>
-                </div>
-
-                {/* Atividade 2: Avaliativa */}
-                <div className="turma-virtual__activity-card">
-                  <div className="turma-virtual__activity-info">
-                    <span className="turma-virtual__activity-badge-top">
-                      {activities[1].badge}
-                    </span>
-                    <h3 className="turma-virtual__activity-title">
-                      {activities[1].title}
-                    </h3>
-                    <div className="turma-virtual__activity-meta">
-                      <div className="turma-virtual__meta-inline">
-                        <svg
-                          viewBox="0 0 10.5 11.667"
-                          className="turma-virtual__calendar-icon"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                          aria-hidden="true"
-                        >
-                          <path
-                            d="M6.708 9.333 C6.3 9.333 5.955 9.192 5.673 8.91 C5.391 8.628 5.25 8.283 5.25 7.875 C5.25 7.467 5.391 7.122 5.673 6.84 C5.955 6.558 6.3 6.417 6.708 6.417 C7.117 6.417 7.462 6.558 7.744 6.84 C8.026 7.122 8.167 7.467 8.167 7.875 C8.167 8.283 8.026 8.628 7.744 8.91 C7.462 9.192 7.117 9.333 6.708 9.333 Z M1.167 11.667 C0.846 11.667 0.571 11.552 0.343 11.324 C0.114 11.095 0 10.821 0 10.5 L0 2.333 C0 2.012 0.114 1.738 0.343 1.509 C0.571 1.281 0.846 1.167 1.167 1.167 L1.75 1.167 L1.75 0 L2.917 0 L2.917 1.167 L7.583 1.167 L7.583 0 L8.75 0 L8.75 1.167 L9.333 1.167 C9.654 1.167 9.929 1.281 10.157 1.509 C10.386 1.738 10.5 2.012 10.5 2.333 L10.5 10.5 C10.5 10.821 10.386 11.095 10.157 11.324 C9.929 11.552 9.654 11.667 9.333 11.667 Z"
-                            fill="currentColor"
-                          />
-                        </svg>
-                        <span>{activities[1].deadline}</span>
-                      </div>
-                      <span className="turma-virtual__meta-bullet">•</span>
-                      <span>{activities[1].meta}</span>
-                    </div>
-                  </div>
-
-                  <div className="turma-virtual__activity-status-group">
-                    <span className="turma-virtual__status-pill turma-virtual__status-pill--pending">
-                      <span>{activities[1].statusLabel}</span>
-                    </span>
-
-                    <button
-                      type="button"
-                      className="turma-virtual__activity-btn"
-                      onClick={() => setActiveActivityModal(activities[1])}
-                    >
-                      {activities[1].actionLabel}
-                    </button>
-                  </div>
-                </div>
+              <div className="turma-virtual__notice-list">
+                {notices.map((notice) => (
+                  <NoticeCard key={notice.id} notice={notice} />
+                ))}
               </div>
             </section>
           )}
         </div>
 
-        {/* Coluna Lateral (Direita - 4 colunas) */}
-        <aside className="turma-virtual__col-sidebar">
-          {/* Card 1: Mural de Avisos da Turma */}
-          {(activeTab === 'visao-geral' || activeTab === 'avisos') && (
-            <section className="turma-virtual__notices-card">
-              <header className="turma-virtual__notices-header">
-                <div
-                  className="turma-virtual__notices-icon-box"
+        {/* Side column */}
+        <aside className="turma-virtual__side-column">
+          {/* Notice board */}
+          <section className="turma-virtual__notice-board">
+            <header className="turma-virtual__notice-heading">
+              <span className="turma-virtual__notice-heading-icon">
+                <svg
+                  width="17"
+                  height="14"
+                  viewBox="0 0 17 14"
+                  fill="none"
                   aria-hidden="true"
                 >
-                  <svg
-                    viewBox="0 0 16.667 13.333"
-                    className="turma-virtual__megaphone-icon"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M13.333 7.5 L13.333 5.833 L16.667 5.833 L16.667 7.5 Z M14.333 13.333 L11.667 11.333 L12.667 10 L15.333 12 Z M12.667 3.333 L11.667 2 L14.333 0 L15.333 1.333 Z M2.5 12.5 L2.5 9.167 L1.667 9.167 C0.75 9.167 0 8.417 0 7.5 L0 5.833 C0 4.917 0.75 4.167 1.667 4.167 L5 4.167 L9.167 1.667 L9.167 11.667 L5 9.167 L4.167 9.167 L4.167 12.5 Z M7.5 8.708 L7.5 4.625 L5.458 5.833 L1.667 5.833 L1.667 7.5 L5.458 7.5 Z"
-                      fill="#1d4ed8"
-                    />
-                  </svg>
-                </div>
-                <h2 className="turma-virtual__notices-title">
-                  Mural de Avisos
-                </h2>
-              </header>
+                  <path
+                    d="M13.3333 7.5V5.83333H16.6667V7.5H13.3333V7.5M14.3333 13.3333L11.6667 11.3333L12.6667 10L15.3333 12L14.3333 13.3333V13.3333M12.6667 3.33333L11.6667 2L14.3333 0L15.3333 1.33333L12.6667 3.33333V3.33333M2.5 12.5V9.16667H1.66667C1.20833 9.16667 0.815972 9.00347 0.489583 8.67708C0.163194 8.35069 0 7.95833 0 7.5V5.83333C0 5.375 0.163194 4.98264 0.489583 4.65625C0.815972 4.32986 1.20833 4.16667 1.66667 4.16667H5L9.16667 1.66667V11.6667L5 9.16667H4.16667V12.5H2.5V12.5M7.5 8.70833V4.625L5.45833 5.83333H1.66667V7.5H5.45833L7.5 8.70833V8.70833M10 9.45833V3.875C10.375 4.20833 10.6771 4.61458 10.9062 5.09375C11.1354 5.57292 11.25 6.09722 11.25 6.66667C11.25 7.23611 11.1354 7.76042 10.9062 8.23958C10.6771 8.71875 10.375 9.125 10 9.45833V9.45833"
+                    fill="#1D4ED8"
+                  />
+                </svg>
+              </span>
 
-              <div className="turma-virtual__notices-list">
-                {notices.map((notice) => (
-                  <article
-                    key={notice.id}
-                    className="turma-virtual__notice-item"
-                  >
-                    <div className="turma-virtual__notice-meta-row">
-                      <span className="turma-virtual__notice-author">
-                        {notice.author}
-                      </span>
-                      <span className="turma-virtual__notice-date">
-                        {notice.date}
-                      </span>
-                    </div>
-                    <p className="turma-virtual__notice-message">
-                      {notice.message}
-                    </p>
-                  </article>
-                ))}
-              </div>
+              <h2>Mural de Avisos</h2>
+            </header>
 
-              <button
-                type="button"
-                className="turma-virtual__forum-btn"
-                onClick={() =>
-                  showToast('Acessando o Fórum de Discussões da disciplina...')
-                }
-              >
-                Acessar Fórum da Disciplina
-              </button>
-            </section>
-          )}
+            <div className="turma-virtual__side-notices">
+              {notices.slice(0, 2).map((notice) => (
+                <NoticeCard key={notice.id} notice={notice} />
+              ))}
+            </div>
 
-          {/* Card 2: Recursos & Links Úteis */}
-          <section className="turma-virtual__section-card">
-            <header className="turma-virtual__resources-header">
+            <Button
+              variant="secondary"
+              size="sm"
+              className="turma-virtual__forum-button"
+              onClick={() => showPendingIntegration('O fórum da disciplina')}
+            >
+              Acessar Fórum da Disciplina
+            </Button>
+          </section>
+
+          {/* Resources & links */}
+          <section className="turma-virtual__resource-panel">
+            <header className="turma-virtual__resource-heading">
               <svg
-                viewBox="0 0 16.667 8.333"
-                className="turma-virtual__resources-head-icon"
+                width="17"
+                height="9"
+                viewBox="0 0 17 9"
                 fill="none"
-                xmlns="http://www.w3.org/2000/svg"
                 aria-hidden="true"
               >
                 <path
-                  d="M7.5 8.333 L4.167 8.333 C1.867 8.333 0 6.467 0 4.167 C0 1.867 1.867 0 4.167 0 L7.5 0 L7.5 1.667 L4.167 1.667 C2.792 1.667 1.667 2.792 1.667 4.167 C1.667 5.542 2.792 6.667 4.167 6.667 L7.5 6.667 Z M5 5 L5 3.333 L11.667 3.333 L11.667 5 Z M9.167 8.333 L9.167 6.667 L12.5 6.667 C13.875 6.667 15 5.542 15 4.167 C15 2.792 13.875 1.667 12.5 1.667 L9.167 1.667 L9.167 0 L12.5 0 C14.8 0 16.667 1.867 16.667 4.167 C16.667 6.467 14.8 8.333 12.5 8.333 Z"
-                  fill="currentColor"
+                  d="M7.5 8.33333H4.16667C3.01389 8.33333 2.03125 7.92708 1.21875 7.11458C0.40625 6.30208 0 5.31944 0 4.16667C0 3.01389 0.40625 2.03125 1.21875 1.21875C2.03125 0.40625 3.01389 0 4.16667 0H7.5V1.66667H4.16667C3.47222 1.66667 2.88194 1.90972 2.39583 2.39583C1.90972 2.88194 1.66667 3.47222 1.66667 4.16667C1.66667 4.86111 1.90972 5.45139 2.39583 5.9375C2.88194 6.42361 3.47222 6.66667 4.16667 6.66667H7.5V8.33333V8.33333M5 5V3.33333H11.6667V5H5V5M9.16667 8.33333V6.66667H12.5C13.1944 6.66667 13.7847 6.42361 14.2708 5.9375C14.7569 5.45139 15 4.86111 15 4.16667C15 3.47222 14.7569 2.88194 14.2708 2.39583C13.7847 1.90972 13.1944 1.66667 12.5 1.66667H9.16667V0H12.5C13.6528 0 14.6354 0.40625 15.4479 1.21875C16.2604 2.03125 16.6667 3.01389 16.6667 4.16667C16.6667 5.31944 16.2604 6.30208 15.4479 7.11458C14.6354 7.92708 13.6528 8.33333 12.5 8.33333H9.16667V8.33333"
+                  fill="#090D16"
                 />
               </svg>
-              <h2 className="turma-virtual__resources-title">
-                Recursos & Links Úteis
-              </h2>
+
+              <h2>Recursos & Links Úteis</h2>
             </header>
 
-            <div className="turma-virtual__resources-list">
-              {/* Ementa */}
-              <button
-                type="button"
-                className="turma-virtual__resource-item"
-                onClick={() =>
-                  showToast('Abrindo Ementa e Bibliografia da disciplina.')
-                }
-              >
-                <div className="turma-virtual__resource-info-group">
-                  <svg
-                    viewBox="0 0 16.5 12"
-                    className="turma-virtual__resource-svg"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M9.75 4.425 L9.75 3.15 C10.584 2.844 11.447 2.669 12.375 2.625 C13.019 2.65 13.95 2.813 14.25 2.888 L14.25 4.088 C13.647 3.891 12.712 3.75 12.375 3.75 C11.444 3.75 10.569 4.047 9.75 4.425 Z M4.125 9 C5.284 9 6.95 9.525 7.5 9.788 L7.5 2.4 C6.444 1.875 5.294 1.575 4.125 1.5 C3.228 1.544 1.913 1.85 1.5 2.025 L1.5 9.45 C2.372 9.188 3.234 9.038 4.125 9 Z M9 9.788 C10.103 9.328 11.788 9 12.375 9 C13.266 9.038 14.563 9.3 15 9.45 L15 2.025 C14.159 1.719 12.825 1.5 12.375 1.5 C11.206 1.575 9.512 2.1 9 2.4 Z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                  <div className="turma-virtual__resource-texts">
-                    <span className="turma-virtual__resource-name">
-                      {resources[0].title}
-                    </span>
-                    <span className="turma-virtual__resource-desc">
-                      {resources[0].description}
-                    </span>
-                  </div>
-                </div>
-                <svg
-                  viewBox="0 0 4.933 8"
-                  className="turma-virtual__chevron-right"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M3.067 4 L0 0.933 L0.933 0 L4.933 4 L0.933 8 L0 7.067 L3.067 4 Z"
-                    fill="currentColor"
-                  />
-                </svg>
-              </button>
-
-              {/* Repositório Git */}
-              <a
-                href={resources[1].url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="turma-virtual__resource-item"
-              >
-                <div className="turma-virtual__resource-info-group">
-                  <svg
-                    viewBox="0 0 15 12"
-                    className="turma-virtual__resource-svg"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M1.5 12 C0.675 12 0 11.325 0 10.5 L0 1.5 C0 0.675 0.675 0 1.5 0 L13.5 0 C14.325 0 15 0.675 15 1.5 L15 10.5 C15 11.325 14.325 12 13.5 12 Z M4.125 9.75 L3.075 8.7 L5.006 6.75 L3.056 4.8 L4.125 3.75 L7.125 6.75 Z M7.5 9.75 L7.5 8.25 L12 8.25 L12 9.75 Z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                  <div className="turma-virtual__resource-texts">
-                    <span className="turma-virtual__resource-name">
-                      {resources[1].title}
-                    </span>
-                    <span className="turma-virtual__resource-desc turma-virtual__resource-desc--break">
-                      {resources[1].description}
-                    </span>
-                  </div>
-                </div>
-                <svg
-                  viewBox="0 0 12 12"
-                  className="turma-virtual__external-icon"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M1.333 12 C0.6 12 0 11.4 0 10.667 L0 1.333 C0 0.6 0.6 0 1.333 0 L6 0 L6 1.333 L1.333 1.333 L1.333 10.667 L10.667 10.667 L10.667 6 L12 6 L12 10.667 C12 11.4 11.4 12 10.667 12 Z M4.467 8.467 L3.533 7.533 L9.733 1.333 L7.333 1.333 L7.333 0 L12 0 L12 4.667 L10.667 4.667 L10.667 2.267 Z"
-                    fill="currentColor"
-                  />
-                </svg>
-              </a>
-
-              {/* Calendário */}
-              <button
-                type="button"
-                className="turma-virtual__resource-item"
-                onClick={() =>
-                  showToast('Sincronizando provas com Google Agenda...')
-                }
-              >
-                <div className="turma-virtual__resource-info-group">
-                  <svg
-                    viewBox="0 0 13.5 15"
-                    className="turma-virtual__resource-svg"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M1.5 15 C0.675 15 0 14.325 0 13.5 L0 3 C0 2.175 0.675 1.5 1.5 1.5 L2.25 1.5 L2.25 0 L3.75 0 L3.75 1.5 L9.75 1.5 L9.75 0 L11.25 0 L11.25 1.5 L12 1.5 C12.825 1.5 13.5 2.175 13.5 3 L13.5 13.5 C13.5 14.325 12.825 15 12 15 Z M1.5 13.5 L12 13.5 L12 6 L1.5 6 Z M6.75 9 C6.336 9 6 8.664 6 8.25 C6 7.836 6.336 7.5 6.75 7.5 C7.164 7.5 7.5 7.836 7.5 8.25 C7.5 8.664 7.164 9 6.75 9 Z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                  <div className="turma-virtual__resource-texts">
-                    <span className="turma-virtual__resource-name">
-                      {resources[2].title}
-                    </span>
-                    <span className="turma-virtual__resource-desc">
-                      {resources[2].description}
-                    </span>
-                  </div>
-                </div>
-                <svg
-                  viewBox="0 0 4.933 8"
-                  className="turma-virtual__chevron-right"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M3.067 4 L0 0.933 L0.933 0 L4.933 4 L0.933 8 L0 7.067 L3.067 4 Z"
-                    fill="currentColor"
-                  />
-                </svg>
-              </button>
+            <div className="turma-virtual__resource-list">
+              {resources.map((resource) => (
+                <ResourceItem
+                  key={resource.id}
+                  resource={resource}
+                  onAction={handleResourceAction}
+                />
+              ))}
             </div>
           </section>
 
-          {/* Card 3: Suporte Acadêmico Integrado */}
-          <div className="turma-virtual__support-card">
-            <div className="turma-virtual__support-icon" aria-hidden="true">
-              <svg
-                viewBox="0 0 17 20"
-                width="20"
-                height="20"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
+          {/* Help panel */}
+          <section className="turma-virtual__help-panel">
+            <svg
+              width="17"
+              height="20"
+              viewBox="0 0 17 20"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M9 20L8.75 17H8.5C6.13333 17 4.125 16.175 2.475 14.525C0.825 12.875 0 10.8667 0 8.5C0 6.13333 0.825 4.125 2.475 2.475C4.125 0.825 6.13333 0 8.5 0C9.68333 0 10.7875 0.220833 11.8125 0.6625C12.8375 1.10417 13.7375 1.7125 14.5125 2.4875C15.2875 3.2625 15.8958 4.1625 16.3375 5.1875C16.7792 6.2125 17 7.31667 17 8.5C17 9.75 16.7958 10.95 16.3875 12.1C15.9792 13.25 15.4208 14.3167 14.7125 15.3C14.0042 16.2833 13.1625 17.175 12.1875 17.975C11.2125 18.775 10.15 19.45 9 20V20M11 16.35C12.1833 15.35 13.1458 14.1792 13.8875 12.8375C14.6292 11.4958 15 10.05 15 8.5C15 6.68333 14.3708 5.14583 13.1125 3.8875C11.8542 2.62917 10.3167 2 8.5 2C6.68333 2 5.14583 2.62917 3.8875 3.8875C2.62917 5.14583 2 6.68333 2 8.5C2 10.3167 2.62917 11.8542 3.8875 13.1125C5.14583 14.3708 6.68333 15 8.5 15H11V16.35V16.35M8.475 13.975C8.75833 13.975 9 13.875 9.2 13.675C9.4 13.475 9.5 13.2333 9.5 12.95C9.5 12.6667 9.4 12.425 9.2 12.225C9 12.025 8.75833 11.925 8.475 11.925C8.19167 11.925 7.95 12.025 7.75 12.225C7.55 12.425 7.45 12.6667 7.45 12.95C7.45 13.2333 7.55 13.475 7.75 13.675C7.95 13.875 8.19167 13.975 8.475 13.975V13.975M7.75 10.8H9.25C9.25 10.3 9.3 9.95 9.4 9.75C9.5 9.55 9.81667 9.18333 10.35 8.65C10.65 8.35 10.9 8.025 11.1 7.675C11.3 7.325 11.4 6.95 11.4 6.55C11.4 5.7 11.1125 5.0625 10.5375 4.6375C9.9625 4.2125 9.28333 4 8.5 4C7.76667 4 7.15 4.20417 6.65 4.6125C6.15 5.02083 5.8 5.51667 5.6 6.1L7 6.65C7.08333 6.36667 7.24167 6.0875 7.475 5.8125C7.70833 5.5375 8.05 5.4 8.5 5.4C8.95 5.4 9.2875 5.525 9.5125 5.775C9.7375 6.025 9.85 6.3 9.85 6.6C9.85 6.88333 9.76667 7.1375 9.6 7.3625C9.43333 7.5875 9.23333 7.81667 9 8.05C8.41667 8.55 8.0625 8.94583 7.9375 9.2375C7.8125 9.52917 7.75 10.05 7.75 10.8V10.8"
+                fill="white"
+              />
+            </svg>
+
+            <div>
+              <h2>Dúvidas acadêmicas ou de matrícula?</h2>
+
+              <button
+                type="button"
+                onClick={() =>
+                  showPendingIntegration(
+                    `O contato com a Secretaria do ${discipline.department}`
+                  )
+                }
               >
-                <path
-                  d="M9 20 L8.75 17 L8.5 17 C3.8 17 0 13.2 0 8.5 C0 3.8 3.8 0 8.5 0 C13.2 0 17 3.8 17 8.5 C17 12.8 13.5 16.3 9 20 Z M8.5 15 C12.1 15 15 12.1 15 8.5 C15 4.9 12.1 2 8.5 2 C4.9 2 2 4.9 2 8.5 C2 12.1 4.9 15 8.5 15 Z M8.5 13.975 C8.192 13.975 7.95 13.733 7.95 13.45 C7.95 13.167 8.192 12.925 8.5 12.925 C8.808 12.925 9.05 13.167 9.05 13.45 C9.05 13.733 8.808 13.975 8.5 13.975 Z M7.75 10.8 L9.25 10.8 C9.25 9.8 10.35 9.2 10.35 8.65 C10.9 8.1 11.4 7.4 11.4 6.55 C11.4 4.9 10.1 4 8.5 4 C6.9 4 5.6 5.2 5.6 6.1 L7 6.65 C7.2 5.9 7.7 5.4 8.5 5.4 C9.3 5.4 9.85 5.9 9.85 6.6 C9.85 7.3 9.2 7.7 8.5 8.3 C7.9 8.9 7.75 9.6 7.75 10.8 Z"
-                  fill="#ffffff"
-                />
-              </svg>
+                Contatar Secretaria do {discipline.department}
+              </button>
             </div>
-            <div className="turma-virtual__support-body">
-              <p className="turma-virtual__support-title">{support.question}</p>
-              <a
-                href={`mailto:${support.contactEmail}`}
-                className="turma-virtual__support-link"
-                onClick={(e) => {
-                  e.preventDefault()
-                  showToast(`Contato DCC: ${support.contactEmail}`)
-                }}
-              >
-                {support.actionText}
-              </a>
-            </div>
-          </div>
+          </section>
         </aside>
       </div>
-
-      {/* Modal: Contato com Professor */}
-      {contactModalOpen && (
-        <div
-          className="turma-virtual__modal-backdrop"
-          onClick={() => setContactModalOpen(false)}
-        >
-          <div
-            className="turma-virtual__modal-card"
-            onClick={(e) => e.stopPropagation()}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="modal-contact-title"
-          >
-            <div className="turma-virtual__modal-header">
-              <h3
-                id="modal-contact-title"
-                className="turma-virtual__modal-title"
-              >
-                Falar com Professor
-              </h3>
-              <button
-                type="button"
-                className="turma-virtual__modal-close-btn"
-                onClick={() => setContactModalOpen(false)}
-                aria-label="Fechar"
-              >
-                ✕
-              </button>
-            </div>
-
-            <p className="turma-virtual__modal-info">
-              Destinatário: <strong>{professor.name}</strong> (
-              {professor.department})
-            </p>
-
-            <form onSubmit={handleSendMessage}>
-              <div className="turma-virtual__form-group">
-                <label
-                  htmlFor="contact-message"
-                  className="turma-virtual__form-label"
-                >
-                  Mensagem:
-                </label>
-                <textarea
-                  id="contact-message"
-                  className="turma-virtual__textarea"
-                  rows="4"
-                  required
-                  placeholder="Escreva sua dúvida sobre conteúdos, exercícios ou avaliações..."
-                  value={messageText}
-                  onChange={(e) => setMessageText(e.target.value)}
-                />
-              </div>
-
-              <div className="turma-virtual__modal-actions">
-                <button
-                  type="button"
-                  className="turma-virtual__btn-secondary"
-                  onClick={() => setContactModalOpen(false)}
-                >
-                  Cancelar
-                </button>
-                <button type="submit" className="turma-virtual__btn-primary">
-                  Enviar Mensagem
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Modal: Detalhes da Atividade */}
-      {activeActivityModal && (
-        <div
-          className="turma-virtual__modal-backdrop"
-          onClick={() => setActiveActivityModal(null)}
-        >
-          <div
-            className="turma-virtual__modal-card"
-            onClick={(e) => e.stopPropagation()}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="modal-act-title"
-          >
-            <div className="turma-virtual__modal-header">
-              <span className="turma-virtual__activity-badge-top">
-                {activeActivityModal.badge}
-              </span>
-              <button
-                type="button"
-                className="turma-virtual__modal-close-btn"
-                onClick={() => setActiveActivityModal(null)}
-                aria-label="Fechar"
-              >
-                ✕
-              </button>
-            </div>
-
-            <h3 id="modal-act-title" className="turma-virtual__modal-title">
-              {activeActivityModal.title}
-            </h3>
-
-            <div className="turma-virtual__modal-meta-box">
-              <p>
-                <strong>Prazo de entrega:</strong>{' '}
-                {activeActivityModal.deadline}
-              </p>
-              <p>
-                <strong>Formato / Detalhes:</strong> {activeActivityModal.meta}
-              </p>
-              <p>
-                <strong>Situação atual:</strong>{' '}
-                <span
-                  className={`turma-virtual__status-inline ${activeActivityModal.status === 'concluido' ? 'turma-virtual__status-inline--success' : 'turma-virtual__status-inline--warning'}`}
-                >
-                  {activeActivityModal.statusLabel}
-                </span>
-              </p>
-            </div>
-
-            <div className="turma-virtual__modal-actions">
-              <button
-                type="button"
-                className="turma-virtual__btn-secondary"
-                onClick={() => setActiveActivityModal(null)}
-              >
-                Fechar
-              </button>
-              <button
-                type="button"
-                className="turma-virtual__btn-primary"
-                onClick={() => {
-                  const act = activeActivityModal
-                  setActiveActivityModal(null)
-                  showToast(
-                    act.status === 'concluido'
-                      ? 'Abrindo visualizador do artigo VLDB...'
-                      : 'Iniciando tentativa da Lista de Exercícios 02...'
-                  )
-                }}
-              >
-                {activeActivityModal.actionLabel}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
