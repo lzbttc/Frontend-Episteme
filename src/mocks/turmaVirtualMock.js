@@ -13,8 +13,8 @@ export const turmaVirtualMock = {
   room: 'Sala 204, Bloco B',
   breadcrumbs: [
     { label: 'Portal Acadêmico', route: 'inicio' },
-    { label: 'Minhas disciplinas', route: 'inicio' },
-    { label: 'Banco de Dados II', route: 'inicio' },
+    { label: 'Minhas disciplinas', route: 'minhas-disciplinas' },
+    { label: 'Banco de Dados II', route: 'minhas-disciplinas' },
     { label: 'Turma 2026.2', route: 'turma-virtual', current: true },
   ],
   metrics: [

@@ -64,7 +64,7 @@ function PaginaInicial({ onNavigate }) {
           <button
             type="button"
             className="pagina-inicial__ver-todas-link"
-            onClick={() => onNavigate && onNavigate('turma-virtual')}
+            onClick={() => onNavigate && onNavigate('minhas-disciplinas')}
           >
             <span>Ver todas</span>
             <svg
