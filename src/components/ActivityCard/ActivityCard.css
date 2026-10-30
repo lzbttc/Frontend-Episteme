@@ -11,7 +11,7 @@
 }
 
 .activity-card:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-sm);
 }
 
 .activity-card__main {
@@ -36,7 +36,7 @@
 .activity-card__points {
   padding: 2px 7px;
   color: var(--color-primary-dark);
-  background-color: #eff6ff;
+  background-color: var(--color-surface-soft);
   border-radius: var(--radius-full);
   font-size: 0.64rem;
   font-weight: 600;
@@ -78,8 +78,8 @@
   display: inline-flex;
   align-items: center;
   padding: 5px 9px;
-  color: #ffffff;
-  background-color: #090d16;
+  color: var(--color-surface);
+  background-color: var(--color-text);
   border-radius: var(--radius-full);
   font-size: 0.66rem;
   font-weight: 600;
@@ -91,12 +91,12 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  color: #ffffff;
-  background-color: #3b82f6;
+  color: var(--color-surface);
+  background-color: var(--color-primary);
 }
 
 .activity-card__status--pending {
-  background-color: #090d16;
+  background-color: var(--color-text);
 }
 
 .activity-card__status--progress {
@@ -107,7 +107,7 @@
   min-height: 34px;
   padding: 7px 12px;
   color: var(--color-text);
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border: 0;
   border-radius: 9px;
   font-size: 0.7rem;
@@ -115,7 +115,7 @@
 }
 
 .activity-card__actions .btn:hover {
-  background-color: #eff6ff;
+  background-color: var(--color-surface-soft);
 }
 
 @media (max-width: 640px) {

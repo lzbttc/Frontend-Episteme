@@ -1,10 +1,10 @@
 .header {
-  background-color: #ffffff;
-  border-bottom: 1px solid #e2e8f0;
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
   position: sticky;
   top: 0;
-  z-index: 100;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  z-index: var(--z-header);
+  box-shadow: var(--shadow-sm);
 }
 
 .header__container {
@@ -40,9 +40,9 @@
   width: 38px;
   height: 38px;
   border-radius: 8px;
-  border: 1px solid #e2e8f0;
-  background-color: #ffffff;
-  color: #475569;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  color: var(--color-text-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -51,9 +51,9 @@
 }
 
 .header__icon-btn:hover {
-  background-color: #f8fafc;
-  color: #1d4ed8;
-  border-color: #cbd5e1;
+  background-color: var(--color-surface-soft);
+  color: var(--color-primary-dark);
+  border-color: var(--color-border);
 }
 
 .header__icon-btn:active {
@@ -75,8 +75,8 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background-color: #1d4ed8;
-  border: 1.5px solid #ffffff;
+  background-color: var(--color-primary-dark);
+  border: 1.5px solid var(--color-surface);
 }
 
 .header__user-profile {
@@ -84,7 +84,7 @@
   align-items: center;
   gap: 12px;
   padding-left: 12px;
-  border-left: 1px solid #e2e8f0;
+  border-left: 1px solid var(--color-border);
   cursor: pointer;
   user-select: none;
 }
@@ -93,13 +93,13 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #090d16;
-  color: #ffffff;
+  background-color: var(--color-text);
+  color: var(--color-surface);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
 }
 
 .header__user-info {
@@ -112,7 +112,7 @@
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #090d16;
+  color: var(--color-text);
   line-height: 1.2;
 }
 
@@ -120,7 +120,7 @@
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   font-size: 0.75rem;
   font-weight: 400;
-  color: #71717a;
+  color: var(--color-text-secondary);
   line-height: 1.2;
 }
 
@@ -137,7 +137,7 @@
 }
 
 .header__user-profile:hover .header__profile-shortcut svg path {
-  stroke: #090d16;
+  stroke: var(--color-text);
 }
 
 .header__user-profile:hover .header__profile-shortcut {
