@@ -1,7 +1,7 @@
 .footer {
   margin-top: auto;
-  border-top: 1px solid #e2e8f0;
-  background-color: #ffffff;
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-surface);
   padding: 24px 0;
 }
 
@@ -23,14 +23,14 @@
 }
 
 .footer__link {
-  color: #64748b;
+  color: var(--color-text-secondary);
   text-decoration: none;
   font-size: 0.8125rem;
   transition: color 0.2s ease;
 }
 
 .footer__link:hover {
-  color: #1d4ed8;
+  color: var(--color-primary-dark);
   text-decoration: underline;
 }
 
@@ -38,17 +38,17 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #94a3b8;
+  color: var(--color-text-secondary);
   font-size: 0.8125rem;
 }
 
 .footer__dot {
-  color: #cbd5e1;
+  color: var(--color-border);
 }
 
 .footer__brand {
   font-weight: 600;
-  color: #475569;
+  color: var(--color-text-secondary);
 }
 
 @media (max-width: 640px) {

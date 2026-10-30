@@ -8,7 +8,7 @@
 }
 
 .module-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-card-hover);
 }
 
 .module-card__header {
@@ -71,7 +71,7 @@
 
 .module-card__toggle:hover {
   color: var(--color-text);
-  background-color: rgb(0 0 0 / 4%);
+  background-color: var(--color-surface-soft);
 }
 
 .module-card__items {

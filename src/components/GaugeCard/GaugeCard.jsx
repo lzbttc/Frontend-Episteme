@@ -1,6 +1,6 @@
 import './GaugeCard.css'
 
-function GaugeCard({ value, label, percentage = 85, color = '#3b82f6' }) {
+function GaugeCard({ value, label, percentage = 85 }) {
   const radius = 50
   const stroke = 10
   const normalizedRadius = radius - stroke * 0.5
@@ -12,7 +12,7 @@ function GaugeCard({ value, label, percentage = 85, color = '#3b82f6' }) {
       <div className="gauge-card__visual">
         <svg height={radius * 2} width={radius * 2} className="gauge-card__svg">
           <circle
-            stroke="#F5F2EA"
+            className="gauge-card__background"
             fill="transparent"
             strokeWidth={stroke}
             r={normalizedRadius}
@@ -20,7 +20,7 @@ function GaugeCard({ value, label, percentage = 85, color = '#3b82f6' }) {
             cy={radius}
           />
           <circle
-            stroke={color}
+            className="gauge-card__progress"
             fill="transparent"
             strokeWidth={stroke}
             strokeDasharray={`${circumference} ${circumference}`}
@@ -29,7 +29,6 @@ function GaugeCard({ value, label, percentage = 85, color = '#3b82f6' }) {
             r={normalizedRadius}
             cx={radius}
             cy={radius}
-            className="gauge-card__progress"
           />
         </svg>
         <div className="gauge-card__value-wrapper">

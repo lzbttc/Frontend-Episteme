@@ -7,8 +7,8 @@
 }
 
 .notice-card:hover {
-  border-color: #cbd5e1;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-color: var(--color-border);
+  box-shadow: var(--shadow-sm);
 }
 
 .notice-card__header {

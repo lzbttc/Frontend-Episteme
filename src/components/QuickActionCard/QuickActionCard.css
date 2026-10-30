@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background-color: #f5f2ea;
+  background-color: var(--color-surface-soft);
   border-radius: 12px;
   padding: 16px;
   text-decoration: none;
@@ -13,20 +13,20 @@
 
 .quick-action-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-card-hover);
 }
 
 .quick-action-card__icon {
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background-color: #ffffff;
-  color: #090d16;
+  background-color: var(--color-surface);
+  color: var(--color-text);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-sm);
 }
 
 .quick-action-card__info {
@@ -38,12 +38,12 @@
 .quick-action-card__title {
   font-size: 0.875rem;
   font-weight: 700;
-  color: #090d16;
+  color: var(--color-text);
   line-height: 1.25;
 }
 
 .quick-action-card__description {
   font-size: 0.75rem;
-  color: #71717a;
+  color: var(--color-text-secondary);
   line-height: 1.3;
 }

@@ -14,21 +14,18 @@ export const studentMock = {
       value: '8,4',
       percentage: 84,
       label: 'MÉDIA GERAL',
-      color: '#3b82f6',
     },
     {
       id: 'frequencia',
       value: '94%',
       percentage: 94,
       label: 'FREQUÊNCIA',
-      color: '#3b82f6',
     },
     {
       id: 'atividades',
       value: '100h',
       percentage: 83,
       label: 'ATIVIDADES C.',
-      color: '#3b82f6',
     },
   ],
   disciplines: [

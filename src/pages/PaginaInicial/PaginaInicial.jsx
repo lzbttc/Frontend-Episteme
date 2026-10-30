@@ -44,7 +44,6 @@ function PaginaInicial({ onNavigate }) {
               value={metric.value}
               label={metric.label}
               percentage={metric.percentage}
-              color={metric.color}
             />
           ))}
         </div>
