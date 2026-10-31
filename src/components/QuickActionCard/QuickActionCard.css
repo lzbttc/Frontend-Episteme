@@ -1,16 +1,21 @@
+/* ========================================
+   QUICK ACTION CARD
+   ======================================== */
+
 .quick-action-card {
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   background-color: var(--color-surface-soft);
   border-radius: 12px;
-  padding: 16px;
   text-decoration: none;
-  min-height: 126px;
+  border: 0;
+  box-sizing: border-box;
+  cursor: pointer;
+  color: inherit;
+  font-family: inherit;
   transition:
     transform var(--duration-base) var(--ease-standard),
-    box-shadow var(--duration-base) var(--ease-standard);
-  box-sizing: border-box;
+    box-shadow var(--duration-base) var(--ease-standard),
+    border-color var(--duration-base) var(--ease-standard);
 }
 
 .quick-action-card:hover {
@@ -18,7 +23,19 @@
   box-shadow: var(--shadow-card-hover);
 }
 
-.quick-action-card__icon {
+.quick-action-card:active {
+  transform: scale(var(--press-scale));
+}
+
+/* Vertical variant (Início) */
+.quick-action-card--vertical {
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px;
+  min-height: 126px;
+}
+
+.quick-action-card--vertical .quick-action-card__icon {
   width: 40px;
   height: 40px;
   border-radius: 12px;
@@ -31,21 +48,78 @@
   box-shadow: var(--shadow-sm);
 }
 
-.quick-action-card__info {
+.quick-action-card--vertical .quick-action-card__info {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 
-.quick-action-card__title {
+.quick-action-card--vertical .quick-action-card__title {
   font-size: 0.875rem;
   font-weight: 700;
   color: var(--color-text);
   line-height: 1.25;
 }
 
-.quick-action-card__description {
+.quick-action-card--vertical .quick-action-card__description {
   font-size: 0.75rem;
   color: var(--color-text-secondary);
   line-height: 1.3;
+}
+
+/* Horizontal variant (Minhas Disciplinas) */
+.quick-action-card--horizontal {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  text-align: left;
+}
+
+.quick-action-card--horizontal:hover {
+  border-color: var(--color-border);
+}
+
+.quick-action-card--horizontal .quick-action-card__icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background-color: var(--color-surface-soft);
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.quick-action-card--horizontal .quick-action-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.quick-action-card--horizontal .quick-action-card__title {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1.3;
+}
+
+.quick-action-card--horizontal .quick-action-card__description {
+  font-size: 0.7rem;
+  color: var(--color-text-secondary);
+  line-height: 1.3;
+}
+
+.quick-action-card--horizontal .quick-action-card__badge {
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 2px 7px;
+  flex-shrink: 0;
 }
