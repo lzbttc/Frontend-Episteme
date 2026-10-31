@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { PATHS, turmaPath } from '../../routes/paths'
 import {
@@ -16,18 +16,44 @@ import {
   SwapArrowsIcon,
   MegaphoneIcon,
 } from '../../components/icons'
-import { minhasDisciplinasMock } from '../../mocks/minhasDisciplinasMock'
+import { useAsyncData } from '../../hooks/useAsyncData'
+import {
+  listarDisciplinas,
+  listarAvisosRecentes,
+  listarAcoesRapidas,
+} from '../../services/disciplinaService'
 import { usePageTitle } from '../../hooks/usePageTitle'
 import './MinhasDisciplinas.css'
 
+const EMPTY_LIST = []
+
 function MinhasDisciplinas() {
   const navigate = useNavigate()
-  const {
-    activeDisciplines,
-    completedDisciplines,
-    quickActions,
-    recentNotices,
-  } = minhasDisciplinasMock
+  const carregarDisciplinas = useCallback(async () => {
+    const [allDisciplines, notices, actions] = await Promise.all([
+      listarDisciplinas(),
+      listarAvisosRecentes(),
+      listarAcoesRapidas(),
+    ])
+
+    return {
+      activeDisciplines: allDisciplines.filter(
+        (d) => d.status === 'em-andamento'
+      ),
+      completedDisciplines: allDisciplines.filter(
+        (d) => d.status === 'concluida'
+      ),
+      recentNotices: notices,
+      quickActions: actions,
+    }
+  }, [])
+
+  const { data, loading, error } = useAsyncData(carregarDisciplinas)
+
+  const activeDisciplines = data?.activeDisciplines || EMPTY_LIST
+  const completedDisciplines = data?.completedDisciplines || EMPTY_LIST
+  const quickActions = data?.quickActions || EMPTY_LIST
+  const recentNotices = data?.recentNotices || EMPTY_LIST
 
   const [activeTab, setActiveTab] = useState('andamento') // 'andamento' | 'concluidas' | 'todas'
   const [searchTerm, setSearchTerm] = useState('')
@@ -70,6 +96,22 @@ function MinhasDisciplinas() {
 
   const handleQuickAction = (action) => {
     setActiveQuickActionModal(action)
+  }
+
+  if (loading) {
+    return (
+      <div className="minhas-disciplinas-page">
+        <p>Carregando disciplinas...</p>
+      </div>
+    )
+  }
+
+  if (error || !data) {
+    return (
+      <div className="minhas-disciplinas-page">
+        <p>Não foi possível carregar as disciplinas.</p>
+      </div>
+    )
   }
 
   return (

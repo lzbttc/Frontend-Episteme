@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useState, useCallback } from 'react'
+import { Link, useParams } from 'react-router-dom'
 import { usePageTitle } from '../../hooks/usePageTitle'
 import { PATHS } from '../../routes/paths'
 
@@ -21,20 +21,52 @@ import {
   HelpChatIcon,
 } from '../../components/icons'
 
-import { studentMock } from '../../mocks/studentMock'
-import { turmaVirtualMock } from '../../mocks/turmaVirtualMock'
+import { useAsyncData } from '../../hooks/useAsyncData'
+import { obterTurma } from '../../services/turmaService'
 
 import './TurmaVirtual.css'
 
 function TurmaVirtual() {
   usePageTitle('Turma Virtual')
-  // Provisório até a Fase 2 (rota por id): abre sempre a primeira disciplina.
-  // Leitura dos dados concentrada aqui: na integração com o backend, este
-  // bloco vira uma chamada à API (com estados de carregando e erro).
-  const discipline = studentMock.disciplines[0]
-  const { metrics, modules, activities, notices, resources } =
-    turmaVirtualMock[discipline.id]
+  const { disciplinaId } = useParams()
+  const targetId = disciplinaId || 'bd002'
 
+  const carregarTurma = useCallback(() => obterTurma(targetId), [targetId])
+  const {
+    data: turma,
+    loading,
+    error,
+  } = useAsyncData(carregarTurma, [targetId])
+
+  const [activeTab, setActiveTab] = useState('overview')
+  const [feedbackMessage, setFeedbackMessage] = useState('')
+
+  if (loading) {
+    return (
+      <div className="turma-virtual turma-virtual--loading">
+        <p>Carregando turma virtual...</p>
+      </div>
+    )
+  }
+
+  if (error || !turma) {
+    return (
+      <div className="turma-virtual turma-virtual--not-found">
+        <div className="turma-virtual__not-found-card">
+          <h1>Turma não encontrada</h1>
+          <p>
+            A disciplina solicitada não existe ou não está disponível para este
+            semestre.
+          </p>
+          <Button to={PATHS.minhasDisciplinas} variant="primary" size="md">
+            Ver minhas disciplinas
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
+  const { discipline, metrics, modules, activities, notices, resources } = turma
   const totalContentItems = modules.reduce((sum, m) => sum + m.items.length, 0)
 
   const pendingActivities = activities.filter(
@@ -72,9 +104,6 @@ function TurmaVirtual() {
     { id: 'activities', label: `Atividades & Tarefas (${activities.length})` },
     { id: 'notices', label: `Avisos & Fórum (${notices.length})` },
   ]
-
-  const [activeTab, setActiveTab] = useState('overview')
-  const [feedbackMessage, setFeedbackMessage] = useState('')
 
   function showPendingIntegration(message) {
     setFeedbackMessage(
