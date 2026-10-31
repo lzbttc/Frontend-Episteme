@@ -1,3 +1,4 @@
+import { ArrowRightIcon } from '../icons'
 import './SectionHeading.css'
 
 function SectionHeading({ title, subtitle, actionLabel, onAction }) {
@@ -17,18 +18,7 @@ function SectionHeading({ title, subtitle, actionLabel, onAction }) {
         >
           {actionLabel}
 
-          <svg
-            width="11"
-            height="11"
-            viewBox="0 0 11 11"
-            fill="none"
-            aria-hidden="true"
-          >
-            <path
-              d="M8.11667 6H0V4.66667H8.11667L4.38333 0.933333L5.33333 0L10.6667 5.33333L5.33333 10.6667L4.38333 9.73333L8.11667 6V6"
-              fill="#090D16"
-            />
-          </svg>
+          <ArrowRightIcon size={11} />
         </button>
       )}
     </header>

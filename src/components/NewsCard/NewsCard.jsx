@@ -1,3 +1,4 @@
+import { ChevronRightIcon } from '../icons'
 import './NewsCard.css'
 
 function NewsCard({ news }) {
@@ -19,16 +20,7 @@ function NewsCard({ news }) {
         className="news-card__arrow-btn"
         aria-label="Ler notícia completa"
       >
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-        >
-          <polyline points="9 18 15 12 9 6" />
-        </svg>
+        <ChevronRightIcon size={16} />
       </button>
     </article>
   )

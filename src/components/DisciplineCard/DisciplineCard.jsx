@@ -1,4 +1,5 @@
 import Button from '../Button/Button'
+import { ClockIcon, MapPinIcon, UserIcon } from '../icons'
 import './DisciplineCard.css'
 
 function DisciplineCard({ discipline, onAccess }) {
@@ -17,47 +18,17 @@ function DisciplineCard({ discipline, onAccess }) {
 
       <div className="discipline-card__details">
         <div className="discipline-card__detail-item">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-            <circle cx="12" cy="7" r="4" />
-          </svg>
+          <UserIcon size={16} />
           <span>{professor}</span>
         </div>
 
         <div className="discipline-card__detail-item">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <circle cx="12" cy="12" r="10" />
-            <polyline points="12 6 12 12 16 14" />
-          </svg>
+          <ClockIcon size={16} />
           <span>{schedule}</span>
         </div>
 
         <div className="discipline-card__detail-item">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-            <circle cx="12" cy="10" r="3" />
-          </svg>
+          <MapPinIcon size={16} />
           <span>{room}</span>
         </div>
       </div>
