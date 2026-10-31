@@ -9,6 +9,7 @@ import DisciplineCard from '../../components/DisciplineCard/DisciplineCard'
 import SectionHeading from '../../components/SectionHeading/SectionHeading'
 import { ArrowRightIcon, CalendarIcon, ZapIcon } from '../../components/icons'
 import { PATHS } from '../../routes/paths'
+import { getGreeting } from '../../utils/greeting'
 import { usePageTitle } from '../../hooks/usePageTitle'
 import { useAsyncData } from '../../hooks/useAsyncData'
 import {
@@ -69,7 +70,7 @@ function PaginaInicial() {
         <div className="pagina-inicial__greeting">
           <span className="pagina-inicial__badge">Portal Acadêmico</span>
           <h1 className="pagina-inicial__title">
-            Boa tarde, {student.name.split(' ')[0]}!
+            {getGreeting()}, {student.name.split(' ')[0]}!
           </h1>
           <p className="pagina-inicial__subtitle">
             Acompanhe suas disciplinas, notas, prazos e mantenha sua jornada
