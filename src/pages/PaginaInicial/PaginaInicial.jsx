@@ -1,4 +1,4 @@
-import { usePageTitle } from '../../hooks/usePageTitle'
+import { useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import GaugeCard from '../../components/GaugeCard/GaugeCard'
 import EventCard from '../../components/EventCard/EventCard'
@@ -9,21 +9,59 @@ import DisciplineCard from '../../components/DisciplineCard/DisciplineCard'
 import SectionHeading from '../../components/SectionHeading/SectionHeading'
 import { ArrowRightIcon, CalendarIcon, ZapIcon } from '../../components/icons'
 import { PATHS } from '../../routes/paths'
-import { studentMock } from '../../mocks/studentMock'
+import { usePageTitle } from '../../hooks/usePageTitle'
+import { useAsyncData } from '../../hooks/useAsyncData'
+import {
+  obterAluno,
+  obterProximoCompromisso,
+  listarAcessoRapidoDestaque,
+  listarNoticiasRecentes,
+} from '../../services/alunoService'
+import { listarDisciplinas } from '../../services/disciplinaService'
 import './PaginaInicial.css'
 
 function PaginaInicial() {
-  const navigate = useNavigate()
-  const {
-    student,
-    metrics,
-    disciplines,
-    upcomingEvents,
-    quickActions,
-    latestNews,
-  } = studentMock
-
   usePageTitle('Portal Acadêmico')
+  const navigate = useNavigate()
+
+  const carregarHome = useCallback(async () => {
+    const [alunoData, disciplines, event, actions, news] = await Promise.all([
+      obterAluno(),
+      listarDisciplinas('em-andamento'),
+      obterProximoCompromisso(),
+      listarAcessoRapidoDestaque(),
+      listarNoticiasRecentes(),
+    ])
+
+    return {
+      student: alunoData.student,
+      metrics: alunoData.metrics,
+      disciplines,
+      event,
+      actions,
+      news,
+    }
+  }, [])
+
+  const { data, loading, error } = useAsyncData(carregarHome)
+
+  if (loading) {
+    return (
+      <div className="pagina-inicial">
+        <p>Carregando dados acadêmicos...</p>
+      </div>
+    )
+  }
+
+  if (error || !data) {
+    return (
+      <div className="pagina-inicial">
+        <p>Não foi possível carregar os dados acadêmicos.</p>
+      </div>
+    )
+  }
+
+  const { student, metrics, disciplines, event, actions, news } = data
 
   return (
     <div className="pagina-inicial">
@@ -64,10 +102,7 @@ function PaginaInicial() {
 
         <div className="pagina-inicial__disciplines-grid">
           {disciplines.map((discipline) => (
-            <DisciplineCard
-              key={discipline.id}
-              discipline={discipline}
-            />
+            <DisciplineCard key={discipline.id} discipline={discipline} />
           ))}
         </div>
       </section>
@@ -93,9 +128,7 @@ function PaginaInicial() {
           />
 
           <div className="pagina-inicial__events-list">
-            {upcomingEvents.slice(0, 1).map((event) => (
-              <EventCard key={event.id} event={event} />
-            ))}
+            {event && <EventCard event={event} />}
           </div>
         </section>
 
@@ -113,15 +146,9 @@ function PaginaInicial() {
           />
 
           <div className="pagina-inicial__actions-grid">
-            {quickActions
-              .filter(
-                (action) =>
-                  action.title === 'Solicitar matrícula' ||
-                  action.title === 'Coordenação'
-              )
-              .map((action) => (
-                <QuickActionCard key={action.id} action={action} />
-              ))}
+            {actions.map((action) => (
+              <QuickActionCard key={action.id} action={action} />
+            ))}
           </div>
         </section>
       </div>
@@ -141,8 +168,8 @@ function PaginaInicial() {
         />
 
         <div className="pagina-inicial__news-list">
-          {latestNews.map((news) => (
-            <NewsCard key={news.id} news={news} />
+          {news.map((item) => (
+            <NewsCard key={item.id} news={item} />
           ))}
         </div>
       </section>
