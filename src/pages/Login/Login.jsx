@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Navigate, useLocation } from 'react-router-dom'
+import { useAuth } from '../../hooks/useAuth'
 import { usePageTitle } from '../../hooks/usePageTitle'
 import { PATHS } from '../../routes/paths'
 
@@ -17,12 +18,20 @@ import './Login.css'
 
 function Login() {
   usePageTitle('Login')
+  const { aluno } = useAuth()
+  const location = useLocation()
   const [showPassword, setShowPassword] = useState(false)
 
   const [errors, setErrors] = useState({
     matricula: '',
     senha: '',
   })
+
+  const destino = location.state?.from?.pathname || PATHS.inicio
+
+  if (aluno) {
+    return <Navigate to={destino} replace />
+  }
 
   function handleSubmit(event) {
     event.preventDefault()
