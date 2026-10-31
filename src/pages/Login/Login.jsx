@@ -297,7 +297,7 @@ function Login() {
                 <Link to={PATHS.emBreve}>Esqueceu a senha?</Link>
               </div>
 
-              <Button type="submit" disabled={loading}>
+              <Button type="submit" variant="dark" disabled={loading}>
                 {loading ? 'Entrando...' : 'Acessar o Portal'}
               </Button>
             </form>
