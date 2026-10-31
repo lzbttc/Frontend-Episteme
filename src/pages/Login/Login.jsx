@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
+import { useAuth } from '../../hooks/useAuth'
 import { usePageTitle } from '../../hooks/usePageTitle'
 import { PATHS } from '../../routes/paths'
 
@@ -15,43 +16,108 @@ import {
 
 import './Login.css'
 
+const REMEMBER_USER_KEY = 'episteme_lembrar_usuario'
+
 function Login() {
   usePageTitle('Login')
+  const { aluno, login } = useAuth()
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  const [matricula, setMatricula] = useState(() => {
+    try {
+      return localStorage.getItem(REMEMBER_USER_KEY) || ''
+    } catch {
+      return ''
+    }
+  })
+  const [senha, setSenha] = useState('')
+  const [lembrarUsuario, setLembrarUsuario] = useState(() => {
+    try {
+      return Boolean(localStorage.getItem(REMEMBER_USER_KEY))
+    } catch {
+      return false
+    }
+  })
   const [showPassword, setShowPassword] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [generalError, setGeneralError] = useState('')
 
   const [errors, setErrors] = useState({
     matricula: '',
     senha: '',
   })
 
-  function handleSubmit(event) {
-    event.preventDefault()
+  const destino = location.state?.from?.pathname || PATHS.inicio
 
-    const formData = new FormData(event.currentTarget)
-    const matricula = formData.get('matricula')?.trim()
-    const senha = formData.get('senha')
-
-    setErrors({
-      matricula: !matricula ? 'Preencha este campo.' : '',
-      senha: !senha ? 'Preencha este campo.' : '',
-    })
+  if (aluno) {
+    return <Navigate to={destino} replace />
   }
 
-  function handleMatriculaChange() {
-    if (errors.matricula) {
-      setErrors((current) => ({
-        ...current,
-        matricula: '',
+  function handleChange(event) {
+    const { name, value, type, checked } = event.target
+
+    if (type === 'checkbox') {
+      setLembrarUsuario(checked)
+      return
+    }
+
+    if (name === 'matricula') {
+      setMatricula(value)
+    } else if (name === 'senha') {
+      setSenha(value)
+    }
+
+    if (errors[name]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: '',
       }))
+    }
+
+    if (generalError) {
+      setGeneralError('')
     }
   }
 
-  function handleSenhaChange() {
-    if (errors.senha) {
-      setErrors((current) => ({
-        ...current,
-        senha: '',
-      }))
+  async function handleSubmit(event) {
+    event.preventDefault()
+
+    const trimmedMatricula = matricula.trim()
+    const trimmedSenha = senha.trim()
+
+    const newErrors = {
+      matricula: !trimmedMatricula ? 'Preencha este campo.' : '',
+      senha: !trimmedSenha ? 'Preencha este campo.' : '',
+    }
+
+    setErrors(newErrors)
+    setGeneralError('')
+
+    if (newErrors.matricula || newErrors.senha) {
+      return
+    }
+
+    setLoading(true)
+
+    try {
+      await login({ matricula: trimmedMatricula, senha: trimmedSenha })
+
+      try {
+        if (lembrarUsuario) {
+          localStorage.setItem(REMEMBER_USER_KEY, trimmedMatricula)
+        } else {
+          localStorage.removeItem(REMEMBER_USER_KEY)
+        }
+      } catch {
+        // Ignora erros de localStorage caso desabilitado pelo navegador
+      }
+
+      navigate(destino, { replace: true })
+    } catch (err) {
+      setGeneralError(err.message || 'Falha ao autenticar. Tente novamente.')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -99,13 +165,13 @@ function Login() {
             </div>
           </div>
 
-          <button
+          <Link
+            to={PATHS.emBreve}
             className="login-help-button"
-            type="button"
             aria-label="Ajuda"
           >
             <HelpCircleFilledIcon size={19} />
-          </button>
+          </Link>
         </header>
 
         <div className="login-header-divider" />
@@ -122,6 +188,12 @@ function Login() {
             </div>
 
             <form className="login-form" onSubmit={handleSubmit}>
+              {generalError && (
+                <div className="login-general-error" role="alert">
+                  {generalError}
+                </div>
+              )}
+
               <div className="login-form-field">
                 <label htmlFor="matricula">USUÁRIO</label>
 
@@ -138,7 +210,8 @@ function Login() {
                     type="text"
                     placeholder="Matrícula"
                     autoComplete="username"
-                    onChange={handleMatriculaChange}
+                    value={matricula}
+                    onChange={handleChange}
                     error={errors.matricula}
                   />
                 </div>
@@ -173,7 +246,8 @@ function Login() {
                     type={showPassword ? 'text' : 'password'}
                     placeholder="••••••••••••"
                     autoComplete="current-password"
-                    onChange={handleSenhaChange}
+                    value={senha}
+                    onChange={handleChange}
                     error={errors.senha}
                   />
 
@@ -186,9 +260,9 @@ function Login() {
                     }
                   >
                     {showPassword ? (
-                      <EyeIcon size={20} />
-                    ) : (
                       <EyeOffIcon size={18} />
+                    ) : (
+                      <EyeIcon size={20} />
                     )}
                   </button>
                 </div>
@@ -206,7 +280,12 @@ function Login() {
 
               <div className="login-form-options">
                 <label className="login-remember">
-                  <input type="checkbox" name="lembrarUsuario" />
+                  <input
+                    type="checkbox"
+                    name="lembrarUsuario"
+                    checked={lembrarUsuario}
+                    onChange={handleChange}
+                  />
 
                   <span className="login-checkbox" aria-hidden="true">
                     <span className="login-checkbox-mark">✓</span>
@@ -218,7 +297,9 @@ function Login() {
                 <Link to={PATHS.emBreve}>Esqueceu a senha?</Link>
               </div>
 
-              <Button type="submit">Acessar o Portal</Button>
+              <Button type="submit" variant="dark" disabled={loading}>
+                {loading ? 'Entrando...' : 'Acessar o Portal'}
+              </Button>
             </form>
           </section>
         </div>
