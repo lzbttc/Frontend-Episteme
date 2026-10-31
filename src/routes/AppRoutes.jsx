@@ -1,80 +1,28 @@
-import { useCallback, useEffect } from 'react'
-import { Navigate, Route, Routes, useNavigate } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout/MainLayout'
 import Login from '../pages/Login/Login'
 import PaginaInicial from '../pages/PaginaInicial/PaginaInicial'
 import TurmaVirtual from '../pages/TurmaVirtual/TurmaVirtual'
 import MinhasDisciplinas from '../pages/MinhasDisciplinas/MinhasDisciplinas'
-import { scrollToTop } from '../utils/scroll'
+import { PATHS } from './paths'
 
 function AppRoutes() {
-  const navigate = useNavigate()
-
-  const navigateToRoute = useCallback(
-    (route = 'inicio') => {
-      const r = String(route).toLowerCase()
-      if (r.includes('turma') || r.includes('2026') || r.includes('bd002')) {
-        navigate('/turma-virtual')
-      } else if (r.includes('disciplina')) {
-        navigate('/minhas-disciplinas')
-      } else if (r.includes('login')) {
-        navigate('/login')
-      } else {
-        navigate('/inicio')
-      }
-      scrollToTop()
-    },
-    [navigate]
-  )
-
-  useEffect(() => {
-    const handleCustomNavigate = (e) => {
-      const target = e.detail?.route || 'inicio'
-      navigateToRoute(target)
-    }
-
-    window.addEventListener('navigate', handleCustomNavigate)
-    return () => {
-      window.removeEventListener('navigate', handleCustomNavigate)
-    }
-  }, [navigateToRoute])
-
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/login" replace />} />
+      <Route path="/" element={<Navigate to={PATHS.login} replace />} />
 
       {/* Páginas sem layout: o Login possui header e footer próprios */}
-      <Route path="/login" element={<Login />} />
+      <Route path={PATHS.login} element={<Login />} />
 
-      {/* Páginas internas: usam o MainLayout (Header + Footer) */}
-      <Route
-        path="/inicio"
-        element={
-          <MainLayout onNavigate={navigateToRoute}>
-            <PaginaInicial onNavigate={navigateToRoute} />
-          </MainLayout>
-        }
-      />
+      {/* Páginas internas: usam o MainLayout via Outlet */}
+      <Route element={<MainLayout />}>
+        <Route path={PATHS.inicio} element={<PaginaInicial />} />
+        <Route path={PATHS.minhasDisciplinas} element={<MinhasDisciplinas />} />
+        <Route path="/turma-virtual" element={<TurmaVirtual />} />
+        <Route path="/turma-virtual/:disciplinaId" element={<TurmaVirtual />} />
+      </Route>
 
-      <Route
-        path="/minhas-disciplinas"
-        element={
-          <MainLayout onNavigate={navigateToRoute}>
-            <MinhasDisciplinas onNavigate={navigateToRoute} />
-          </MainLayout>
-        }
-      />
-
-      <Route
-        path="/turma-virtual"
-        element={
-          <MainLayout onNavigate={navigateToRoute}>
-            <TurmaVirtual onNavigate={navigateToRoute} />
-          </MainLayout>
-        }
-      />
-
-      <Route path="*" element={<Navigate to="/login" replace />} />
+      <Route path="*" element={<Navigate to={PATHS.login} replace />} />
     </Routes>
   )
 }
