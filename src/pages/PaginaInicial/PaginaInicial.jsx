@@ -5,6 +5,7 @@ import QuickActionCard from '../../components/QuickActionCard/QuickActionCard'
 import NewsCard from '../../components/NewsCard/NewsCard'
 import Button from '../../components/Button/Button'
 import DisciplineCard from '../../components/DisciplineCard/DisciplineCard'
+import { ArrowRightIcon, CalendarIcon, ZapIcon } from '../../components/icons'
 import { studentMock } from '../../mocks/studentMock'
 import './PaginaInicial.css'
 
@@ -66,18 +67,7 @@ function PaginaInicial({ onNavigate }) {
             onClick={() => onNavigate && onNavigate('minhas-disciplinas')}
           >
             <span>Ver todas</span>
-            <svg
-              width="11"
-              height="11"
-              viewBox="0 0 11 11"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M8.117 6H0V4.667H8.117L4.383 0.933L5.333 0L10.667 5.333L5.333 10.667L4.383 9.733L8.117 6Z"
-                fill="currentColor"
-              />
-            </svg>
+            <ArrowRightIcon size={11} />
           </button>
         </header>
 
@@ -99,21 +89,7 @@ function PaginaInicial({ onNavigate }) {
           <header className="pagina-inicial__compromissos-header">
             <div className="pagina-inicial__compromissos-title-group">
               <div className="pagina-inicial__compromissos-icon-tile">
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#1D4ED8"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                  <line x1="16" y1="2" x2="16" y2="6" />
-                  <line x1="8" y1="2" x2="8" y2="6" />
-                  <line x1="3" y1="10" x2="21" y2="10" />
-                </svg>
+                <CalendarIcon size={20} />
               </div>
               <div>
                 <h2 className="pagina-inicial__compromissos-title">
@@ -141,18 +117,7 @@ function PaginaInicial({ onNavigate }) {
           <header className="pagina-inicial__acesso-rapido-header">
             <div className="pagina-inicial__acesso-rapido-title-group">
               <div className="pagina-inicial__acesso-rapido-icon-tile">
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#090D16"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-                </svg>
+                <ZapIcon size={20} />
               </div>
               <div>
                 <h2 className="pagina-inicial__acesso-rapido-title">
@@ -190,18 +155,7 @@ function PaginaInicial({ onNavigate }) {
           </div>
           <a href="#" className="pagina-inicial__ver-todos-link">
             <span>Ver todos</span>
-            <svg
-              width="11"
-              height="11"
-              viewBox="0 0 11 11"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M8.117 6H0V4.667H8.117L4.383 0.933L5.333 0L10.667 5.333L5.333 10.667L4.383 9.733L8.117 6Z"
-                fill="currentColor"
-              />
-            </svg>
+            <ArrowRightIcon size={11} />
           </a>
         </header>
 

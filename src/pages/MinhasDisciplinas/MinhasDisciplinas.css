@@ -239,6 +239,7 @@
   position: absolute;
   left: 14px;
   pointer-events: none;
+  color: var(--color-text-secondary);
 }
 
 .minhas-disciplinas__search-input {
@@ -379,6 +380,7 @@
   width: 100%;
   height: auto;
   opacity: 0.4;
+  color: var(--color-surface);
 }
 
 .minhas-disciplinas__banner-svg--top {
@@ -560,6 +562,7 @@
 
 .minhas-disciplinas__empty-icon {
   margin-bottom: 4px;
+  color: var(--color-text-secondary);
 }
 
 .minhas-disciplinas__empty-title {
@@ -635,11 +638,12 @@
 
 .minhas-disciplinas__icon-container--sand {
   background-color: var(--color-surface-soft);
+  color: var(--color-text);
 }
 
 .minhas-disciplinas__icon-container--white {
-  background-color: rgba(255, 255, 255, 0.18);
-  color: var(--color-surface);
+  background-color: var(--color-surface);
+  color: var(--color-primary-dark);
 }
 
 .minhas-disciplinas__module-title {
@@ -690,6 +694,7 @@
   width: 32px;
   height: 32px;
   background-color: var(--color-surface);
+  color: var(--color-text);
   border-radius: 8px;
   display: flex;
   align-items: center;

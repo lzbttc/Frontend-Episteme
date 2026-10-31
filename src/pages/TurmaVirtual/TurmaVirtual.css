@@ -283,6 +283,7 @@
   height: 30px;
   flex-shrink: 0;
   background-color: var(--color-surface);
+  color: var(--color-primary-dark);
   border-radius: 8px;
 }
 
@@ -361,6 +362,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  color: var(--color-text);
 }
 
 .turma-virtual__resource-heading svg {
