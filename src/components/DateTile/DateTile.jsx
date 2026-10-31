@@ -9,7 +9,7 @@ import './DateTile.css'
  * @param {string | number} props.day - Número do dia (ex.: "24", 15)
  * @param {string} props.month - Sigla ou nome do mês (ex.: "OUT", "NOV")
  * @param {'strong' | 'soft'} [props.variant='strong'] - Variante de cor de fundo
- * @param {'md' | 'lg'} [props.size='md'] - Tamanho do tile ('md' para 48px, 'lg' para 56px)
+ * @param {'sm' | 'md' | 'lg'} [props.size='md'] - Tamanho do tile ('md' para 48px, 'lg' para 56px)
  * @param {string} [props.className=''] - Classes CSS adicionais
  */
 function DateTile({

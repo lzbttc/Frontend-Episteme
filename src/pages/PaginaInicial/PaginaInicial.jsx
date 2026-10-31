@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import GaugeCard from '../../components/GaugeCard/GaugeCard'
 import EventCard from '../../components/EventCard/EventCard'
 import QuickActionCard from '../../components/QuickActionCard/QuickActionCard'
@@ -9,6 +9,7 @@ import DisciplineCard from '../../components/DisciplineCard/DisciplineCard'
 import SectionHeading from '../../components/SectionHeading/SectionHeading'
 import { ArrowRightIcon, CalendarIcon, ZapIcon } from '../../components/icons'
 import { PATHS } from '../../routes/paths'
+import { getGreeting } from '../../utils/greeting'
 import { usePageTitle } from '../../hooks/usePageTitle'
 import { useAsyncData } from '../../hooks/useAsyncData'
 import {
@@ -22,7 +23,6 @@ import './PaginaInicial.css'
 
 function PaginaInicial() {
   usePageTitle('Portal Acadêmico')
-  const navigate = useNavigate()
 
   const carregarHome = useCallback(async () => {
     const [alunoData, disciplines, event, actions, news] = await Promise.all([
@@ -70,7 +70,7 @@ function PaginaInicial() {
         <div className="pagina-inicial__greeting">
           <span className="pagina-inicial__badge">Portal Acadêmico</span>
           <h1 className="pagina-inicial__title">
-            Boa tarde, {student.name.split(' ')[0]}!
+            {getGreeting()}, {student.name.split(' ')[0]}!
           </h1>
           <p className="pagina-inicial__subtitle">
             Acompanhe suas disciplinas, notas, prazos e mantenha sua jornada
@@ -91,12 +91,19 @@ function PaginaInicial() {
       </section>
 
       {/* 2. Minhas Disciplinas Section */}
-      <section className="pagina-inicial__section">
+      <section className="pagina-inicial__disciplines-card">
         <SectionHeading
           title="Minhas Disciplinas"
           subtitle="Acompanhamento e acesso ao conteúdo das turmas virtuais"
-          actionLabel="Ver todas"
-          onAction={() => navigate(PATHS.minhasDisciplinas)}
+          action={
+            <Link
+              to={PATHS.minhasDisciplinas}
+              className="pagina-inicial__ver-todas-link"
+            >
+              <span>Ver todas</span>
+              <ArrowRightIcon size={11} />
+            </Link>
+          }
           className="pagina-inicial__disciplines-header"
         />
 
@@ -121,7 +128,8 @@ function PaginaInicial() {
             subtitle="Atividades avaliativas e sessões presenciais"
             action={
               <Button variant="ghost-light" size="sm" to={PATHS.emBreve}>
-                Ver agenda
+                <span>Ver agenda</span>
+                <ArrowRightIcon size={12} className="arrow-shift" />
               </Button>
             }
             className="pagina-inicial__compromissos-header"

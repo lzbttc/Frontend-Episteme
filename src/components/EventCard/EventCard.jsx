@@ -1,5 +1,7 @@
 import DateTile from '../DateTile/DateTile'
+import Button from '../Button/Button'
 import { ClockIcon, MapPinIcon } from '../icons'
+import { PATHS } from '../../routes/paths'
 import './EventCard.css'
 
 /**
@@ -16,8 +18,8 @@ function EventCard({ event }) {
       <DateTile day={dateDay} month={dateMonth} variant="strong" size="lg" />
 
       <div className="event-card__content">
-        <h4 className="event-card__title">{title}</h4>
-        <p className="event-card__topic">{topic}</p>
+        <span className="event-card__label">{title}</span>
+        <h4 className="event-card__title">{topic}</h4>
         <div className="event-card__meta">
           <span className="event-card__time">
             <ClockIcon size={14} />
@@ -32,9 +34,9 @@ function EventCard({ event }) {
       </div>
 
       <div className="event-card__action">
-        <button type="button" className="event-card__btn-dark">
+        <Button variant="dark" size="sm" to={PATHS.emBreve}>
           Ver detalhes
-        </button>
+        </Button>
       </div>
     </div>
   )

@@ -13,7 +13,7 @@ function NewsCard({ news }) {
 
   return (
     <article className="news-card">
-      <DateTile day={dateDay} month={dateMonth} variant="soft" size="md" />
+      <DateTile day={dateDay} month={dateMonth} variant="soft" size="sm" />
 
       <div className="news-card__content">
         <h4 className="news-card__title">{title}</h4>

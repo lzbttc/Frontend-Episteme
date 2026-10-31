@@ -21,20 +21,21 @@
   min-width: 0;
 }
 
-.event-card__title {
-  font-size: 0.9375rem;
-  font-weight: 700;
-  color: var(--color-text);
-  margin: 0 0 2px 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.event-card__label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  margin-bottom: 2px;
+  letter-spacing: 0.02em;
 }
 
-.event-card__topic {
-  font-size: 0.8125rem;
-  color: var(--color-text-secondary);
+.event-card__title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text);
   margin: 0 0 6px 0;
+  line-height: 1.3;
 }
 
 .event-card__meta {
@@ -61,28 +62,6 @@
   flex-shrink: 0;
 }
 
-.event-card__btn-dark {
-  background-color: var(--color-text);
-  color: var(--color-surface);
-  border-radius: 12px;
-  padding: 8px 16px;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  transition:
-    background-color var(--duration-base) var(--ease-standard),
-    transform var(--duration-fast) var(--ease-standard);
-}
-
-.event-card__btn-dark:active {
-  transform: scale(var(--press-scale));
-}
-
-.event-card__btn-dark:hover {
-  background-color: var(--color-text);
-}
-
 @media (max-width: 640px) {
   .event-card {
     flex-direction: column;
@@ -94,7 +73,7 @@
     margin-top: 8px;
   }
 
-  .event-card__btn-dark {
+  .event-card__action .btn {
     width: 100%;
   }
 }
