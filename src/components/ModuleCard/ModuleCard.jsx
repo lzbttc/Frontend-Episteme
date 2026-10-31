@@ -55,10 +55,7 @@ function ModuleCard({ module, onMaterialAction, defaultExpanded = false }) {
             isExpanded ? `Recolher ${module.title}` : `Expandir ${module.title}`
           }
         >
-          <ChevronDownFilledIcon
-            size={10}
-            className="module-card__chevron"
-          />
+          <ChevronDownFilledIcon size={10} className="module-card__chevron" />
         </button>
       </header>
 

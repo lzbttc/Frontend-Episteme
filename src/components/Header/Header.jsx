@@ -1,10 +1,5 @@
 import logo from '../../assets/logo.svg'
-import {
-  BellIcon,
-  ChevronDownIcon,
-  HelpCircleIcon,
-  UserIcon,
-} from '../icons'
+import { BellIcon, ChevronDownIcon, HelpCircleIcon, UserIcon } from '../icons'
 import './Header.css'
 
 function Header({ student, onNavigate }) {
