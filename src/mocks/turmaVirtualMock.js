@@ -1,6 +1,6 @@
 // Dados específicos de cada turma, indexados pelo id da disciplina.
 // Os dados básicos da disciplina (nome, código, professor, horário) ficam em
-// studentMock.disciplines, a mesma fonte usada pela página inicial.
+// disciplinas.js, a mesma fonte usada pelos serviços.
 export const turmaVirtualMock = {
   bd002: {
     metrics: {
