@@ -5,6 +5,7 @@ import QuickActionCard from '../../components/QuickActionCard/QuickActionCard'
 import NewsCard from '../../components/NewsCard/NewsCard'
 import Button from '../../components/Button/Button'
 import DisciplineCard from '../../components/DisciplineCard/DisciplineCard'
+import SectionHeading from '../../components/SectionHeading/SectionHeading'
 import { ArrowRightIcon, CalendarIcon, ZapIcon } from '../../components/icons'
 import { studentMock } from '../../mocks/studentMock'
 import './PaginaInicial.css'
@@ -52,24 +53,13 @@ function PaginaInicial({ onNavigate }) {
 
       {/* 2. Minhas Disciplinas Section */}
       <section className="pagina-inicial__section">
-        <header className="pagina-inicial__disciplines-header">
-          <div>
-            <h2 className="pagina-inicial__disciplines-title">
-              Minhas Disciplinas
-            </h2>
-            <p className="pagina-inicial__disciplines-subtitle">
-              Acompanhamento e acesso ao conteúdo das turmas virtuais
-            </p>
-          </div>
-          <button
-            type="button"
-            className="pagina-inicial__ver-todas-link"
-            onClick={() => onNavigate && onNavigate('minhas-disciplinas')}
-          >
-            <span>Ver todas</span>
-            <ArrowRightIcon size={11} />
-          </button>
-        </header>
+        <SectionHeading
+          title="Minhas Disciplinas"
+          subtitle="Acompanhamento e acesso ao conteúdo das turmas virtuais"
+          actionLabel="Ver todas"
+          onAction={() => onNavigate && onNavigate('minhas-disciplinas')}
+          className="pagina-inicial__disciplines-header"
+        />
 
         <div className="pagina-inicial__disciplines-grid">
           {disciplines.map((discipline) => (
@@ -86,24 +76,21 @@ function PaginaInicial({ onNavigate }) {
       <div className="pagina-inicial__two-col">
         {/* Left Column: Próximos compromissos (7 cols) */}
         <section className="pagina-inicial__section pagina-inicial__col-left pagina-inicial__compromissos-card">
-          <header className="pagina-inicial__compromissos-header">
-            <div className="pagina-inicial__compromissos-title-group">
+          <SectionHeading
+            icon={
               <div className="pagina-inicial__compromissos-icon-tile">
                 <CalendarIcon size={20} />
               </div>
-              <div>
-                <h2 className="pagina-inicial__compromissos-title">
-                  Próximos compromissos
-                </h2>
-                <p className="pagina-inicial__compromissos-subtitle">
-                  Atividades avaliativas e sessões presenciais
-                </p>
-              </div>
-            </div>
-            <Button variant="ghost-light" size="sm">
-              Ver agenda
-            </Button>
-          </header>
+            }
+            title="Próximos compromissos"
+            subtitle="Atividades avaliativas e sessões presenciais"
+            action={
+              <Button variant="ghost-light" size="sm">
+                Ver agenda
+              </Button>
+            }
+            className="pagina-inicial__compromissos-header"
+          />
 
           <div className="pagina-inicial__events-list">
             {upcomingEvents.slice(0, 1).map((event) => (
@@ -114,21 +101,16 @@ function PaginaInicial({ onNavigate }) {
 
         {/* Right Column: Acesso rápido (5 cols) */}
         <section className="pagina-inicial__section pagina-inicial__col-right pagina-inicial__acesso-rapido-card">
-          <header className="pagina-inicial__acesso-rapido-header">
-            <div className="pagina-inicial__acesso-rapido-title-group">
+          <SectionHeading
+            icon={
               <div className="pagina-inicial__acesso-rapido-icon-tile">
                 <ZapIcon size={20} />
               </div>
-              <div>
-                <h2 className="pagina-inicial__acesso-rapido-title">
-                  Acesso rápido
-                </h2>
-                <p className="pagina-inicial__acesso-rapido-subtitle">
-                  Serviços acadêmicos mais requisitados
-                </p>
-              </div>
-            </div>
-          </header>
+            }
+            title="Acesso rápido"
+            subtitle="Serviços acadêmicos mais requisitados"
+            className="pagina-inicial__acesso-rapido-header"
+          />
 
           <div className="pagina-inicial__actions-grid">
             {quickActions
@@ -146,18 +128,17 @@ function PaginaInicial({ onNavigate }) {
 
       {/* 4. Últimas Notícias Section */}
       <section className="pagina-inicial__noticias-card">
-        <header className="pagina-inicial__noticias-header">
-          <div>
-            <h2 className="pagina-inicial__noticias-title">Últimas notícias</h2>
-            <p className="pagina-inicial__noticias-subtitle">
-              Comunicados da coordenação e pró-reitoria
-            </p>
-          </div>
-          <a href="#" className="pagina-inicial__ver-todos-link">
-            <span>Ver todos</span>
-            <ArrowRightIcon size={11} />
-          </a>
-        </header>
+        <SectionHeading
+          title="Últimas notícias"
+          subtitle="Comunicados da coordenação e pró-reitoria"
+          action={
+            <a href="#" className="pagina-inicial__ver-todos-link">
+              <span>Ver todos</span>
+              <ArrowRightIcon size={11} />
+            </a>
+          }
+          className="pagina-inicial__noticias-header"
+        />
 
         <div className="pagina-inicial__news-list">
           {latestNews.map((news) => (

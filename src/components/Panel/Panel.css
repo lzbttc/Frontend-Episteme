@@ -1,0 +1,117 @@
+/* ========================================
+   PANEL COMPONENT
+   ======================================== */
+
+.panel {
+  border-radius: 16px;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.panel--brand {
+  background-color: var(--color-primary-dark);
+  color: var(--color-surface);
+  box-shadow: 0 4px 12px rgba(29, 78, 216, 0.2);
+}
+
+.panel--surface {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow:
+    inset 0 0 0 1px var(--color-border),
+    var(--shadow-card);
+}
+
+.panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.panel__title-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.panel__icon-tile {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.panel__icon-tile--brand {
+  background-color: var(--color-surface);
+  color: var(--color-primary-dark);
+  box-shadow: var(--shadow-sm);
+}
+
+.panel__icon-tile--surface {
+  background-color: var(--color-surface-soft);
+  color: var(--color-text);
+}
+
+.panel__titles {
+  display: flex;
+  flex-direction: column;
+}
+
+.panel__title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 2px 0;
+  line-height: 1.3;
+}
+
+.panel--brand .panel__title {
+  color: var(--color-surface);
+}
+
+.panel--surface .panel__title {
+  color: var(--color-text);
+}
+
+.panel__subtitle {
+  font-size: 0.875rem;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.panel--brand .panel__subtitle {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.panel--surface .panel__subtitle {
+  color: var(--color-text-secondary);
+}
+
+.panel__action {
+  flex-shrink: 0;
+}
+
+.panel__content {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 640px) {
+  .panel {
+    padding: 16px;
+  }
+
+  .panel__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .panel__action {
+    width: 100%;
+  }
+}

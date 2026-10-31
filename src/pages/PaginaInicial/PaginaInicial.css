@@ -102,7 +102,8 @@
   gap: 16px;
 }
 
-.pagina-inicial__disciplines-title {
+.pagina-inicial__disciplines-title,
+.pagina-inicial__disciplines-header .section-heading__title {
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   font-size: 1.5rem;
   font-weight: 700;
@@ -112,7 +113,8 @@
   line-height: 1.33;
 }
 
-.pagina-inicial__disciplines-subtitle {
+.pagina-inicial__disciplines-subtitle,
+.pagina-inicial__disciplines-header .section-heading__subtitle {
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   font-size: 0.75rem;
   font-weight: 400;
@@ -121,7 +123,8 @@
   line-height: 1.5;
 }
 
-.pagina-inicial__ver-todas-link {
+.pagina-inicial__ver-todas-link,
+.pagina-inicial__disciplines-header .section-heading__action {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -138,16 +141,19 @@
   cursor: pointer;
 }
 
-.pagina-inicial__ver-todas-link:hover {
+.pagina-inicial__ver-todas-link:hover,
+.pagina-inicial__disciplines-header .section-heading__action:hover {
   opacity: 0.75;
 }
 
-.pagina-inicial__ver-todas-link svg {
+.pagina-inicial__ver-todas-link svg,
+.pagina-inicial__disciplines-header .section-heading__action svg {
   flex-shrink: 0;
   transition: transform var(--duration-base) var(--ease-standard);
 }
 
-.pagina-inicial__ver-todas-link:hover svg {
+.pagina-inicial__ver-todas-link:hover svg,
+.pagina-inicial__disciplines-header .section-heading__action:hover svg {
   transform: translateX(3px);
 }
 
@@ -198,14 +204,16 @@
   box-shadow: var(--shadow-sm);
 }
 
-.pagina-inicial__compromissos-title {
+.pagina-inicial__compromissos-title,
+.pagina-inicial__compromissos-header .section-heading__title {
   font-size: 1.25rem;
   font-weight: 700;
   color: var(--color-surface);
   margin: 0 0 2px 0;
 }
 
-.pagina-inicial__compromissos-subtitle {
+.pagina-inicial__compromissos-subtitle,
+.pagina-inicial__compromissos-header .section-heading__subtitle {
   font-size: 0.875rem;
   color: rgba(255, 255, 255, 0.85);
   margin: 0;
@@ -252,14 +260,16 @@
   flex-shrink: 0;
 }
 
-.pagina-inicial__acesso-rapido-title {
+.pagina-inicial__acesso-rapido-title,
+.pagina-inicial__acesso-rapido-header .section-heading__title {
   font-size: 1.25rem;
   font-weight: 700;
   color: var(--color-text);
   margin: 0 0 2px 0;
 }
 
-.pagina-inicial__acesso-rapido-subtitle {
+.pagina-inicial__acesso-rapido-subtitle,
+.pagina-inicial__acesso-rapido-header .section-heading__subtitle {
   font-size: 0.875rem;
   color: var(--color-text-secondary);
   margin: 0;
@@ -298,7 +308,8 @@
   gap: 16px;
 }
 
-.pagina-inicial__noticias-title {
+.pagina-inicial__noticias-title,
+.pagina-inicial__noticias-header .section-heading__title {
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   font-size: 1.5rem;
   font-weight: 700;
@@ -308,7 +319,8 @@
   line-height: 1.33;
 }
 
-.pagina-inicial__noticias-subtitle {
+.pagina-inicial__noticias-subtitle,
+.pagina-inicial__noticias-header .section-heading__subtitle {
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   font-size: 0.75rem;
   font-weight: 400;

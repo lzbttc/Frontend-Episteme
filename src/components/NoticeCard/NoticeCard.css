@@ -1,12 +1,48 @@
+/* ========================================
+   NOTICE CARD COMPONENT
+   ======================================== */
+
 .notice-card {
   padding: 16px;
-  background-color: var(--color-surface-soft);
-  border: 0;
   border-radius: var(--radius-md);
-  transition: box-shadow var(--duration-base) var(--ease-standard);
+  box-sizing: border-box;
+  text-align: left;
+  font-family: inherit;
+  border: 0;
+  transition:
+    box-shadow var(--duration-base) var(--ease-standard),
+    border-color var(--duration-base) var(--ease-standard),
+    transform var(--duration-base) var(--ease-standard);
 }
 
-.notice-card:hover {
+.notice-card--soft {
+  background-color: var(--color-surface-soft);
+}
+
+.notice-card--surface {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.notice-card--interactive {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.notice-card--interactive:hover {
+  transform: translateY(var(--lift-card));
+  box-shadow: var(--shadow-card-hover);
+}
+
+.notice-card--interactive:active {
+  transform: scale(var(--press-scale));
+}
+
+.notice-card:not(.notice-card--interactive):hover {
   border-color: var(--color-border);
   box-shadow: var(--shadow-sm);
 }
@@ -16,15 +52,17 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 10px;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
+.notice-card__source,
 .notice-card__author {
   display: flex;
   align-items: center;
   gap: 6px;
   color: var(--color-text-secondary);
   font-size: 0.7rem;
+  font-weight: 600;
   line-height: 1.4;
 }
 

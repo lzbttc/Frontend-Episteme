@@ -1,0 +1,51 @@
+/* ========================================
+   BADGE COMPONENT
+   ======================================== */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.badge--sm {
+  padding: 2px 7px;
+  font-size: 0.65rem;
+}
+
+.badge--md {
+  padding: 4px 9px;
+  font-size: 0.72rem;
+}
+
+.badge--primary {
+  background-color: var(--color-primary);
+  color: var(--color-surface);
+}
+
+.badge--dark {
+  background-color: var(--color-text);
+  color: var(--color-surface);
+}
+
+.badge--soft {
+  background-color: var(--color-surface-soft);
+  color: var(--color-primary-dark);
+}
+
+.badge--success {
+  background-color: var(--color-success);
+  color: var(--color-surface);
+}
+
+.badge__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}

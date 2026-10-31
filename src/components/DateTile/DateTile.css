@@ -1,0 +1,64 @@
+/* ========================================
+   DATE TILE COMPONENT
+   ======================================== */
+
+.date-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  color: var(--color-surface);
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.date-tile--strong {
+  background-color: var(--color-primary-dark);
+}
+
+.date-tile--soft {
+  background-color: var(--color-primary);
+}
+
+.date-tile--md {
+  min-width: 48px;
+  width: 48px;
+  height: 48px;
+}
+
+.date-tile--md .date-tile__day {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.date-tile--md .date-tile__month {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+
+.date-tile--lg {
+  min-width: 56px;
+  width: 56px;
+  height: 56px;
+}
+
+.date-tile--lg .date-tile__day {
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.date-tile--lg .date-tile__month {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}

@@ -9,6 +9,24 @@
   gap: 12px;
 }
 
+.section-heading__main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.section-heading__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.section-heading__text {
+  min-width: 0;
+}
+
 .section-heading__title {
   margin: 0 0 5px;
   color: var(--color-text);
@@ -38,6 +56,7 @@
   font-size: 0.72rem;
   font-weight: 600;
   white-space: nowrap;
+  cursor: pointer;
   transition:
     color var(--duration-base) var(--ease-standard),
     opacity var(--duration-base) var(--ease-standard);
@@ -54,6 +73,10 @@
 
 .section-heading__action:hover svg {
   transform: translateX(3px);
+}
+
+.section-heading__custom-action {
+  flex-shrink: 0;
 }
 
 @media (max-width: 640px) {

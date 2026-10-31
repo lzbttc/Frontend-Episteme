@@ -16,36 +16,6 @@
   box-shadow: var(--shadow-card-hover);
 }
 
-.news-card__date {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-width: 48px;
-  height: 48px;
-  background-color: var(--color-primary);
-  border: none;
-  border-radius: 12px;
-  color: var(--color-surface);
-  flex-shrink: 0;
-}
-
-.news-card__day {
-  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-  font-size: 1.125rem;
-  font-weight: 700;
-  line-height: 1;
-}
-
-.news-card__month {
-  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-  font-size: 0.625rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-top: 2px;
-}
-
 .news-card__content {
   flex: 1;
   min-width: 0;
