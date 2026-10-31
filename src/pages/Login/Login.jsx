@@ -135,11 +135,18 @@ function Login() {
                     placeholder="Matrícula"
                     autoComplete="username"
                     onChange={handleMatriculaChange}
+                    error={errors.matricula}
                   />
                 </div>
 
                 {errors.matricula && (
-                  <span className="login-field-error">{errors.matricula}</span>
+                  <span
+                    id="matricula-error"
+                    className="login-field-error"
+                    role="alert"
+                  >
+                    {errors.matricula}
+                  </span>
                 )}
               </div>
 
@@ -163,6 +170,7 @@ function Login() {
                     placeholder="••••••••••••"
                     autoComplete="current-password"
                     onChange={handleSenhaChange}
+                    error={errors.senha}
                   />
 
                   <button
@@ -182,7 +190,13 @@ function Login() {
                 </div>
 
                 {errors.senha && (
-                  <span className="login-field-error">{errors.senha}</span>
+                  <span
+                    id="senha-error"
+                    className="login-field-error"
+                    role="alert"
+                  >
+                    {errors.senha}
+                  </span>
                 )}
               </div>
 

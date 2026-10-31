@@ -6,13 +6,8 @@ import {
   DownloadIcon,
   ExternalLinkIcon,
 } from '../icons'
+import { STATUS_LABEL } from '../../constants/status'
 import './ModuleCard.css'
-
-const STATUS_LABEL = {
-  completed: 'Concluído',
-  in_progress: 'Em andamento',
-  pending: 'Pendente',
-}
 
 function ModuleCard({ module, onMaterialAction, defaultExpanded = false }) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded)

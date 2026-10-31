@@ -213,17 +213,6 @@
   margin: 0;
 }
 
-.btn--white-ghost {
-  color: var(--color-surface) !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
-  background-color: transparent !important;
-}
-
-.btn--white-ghost:hover {
-  background-color: rgba(255, 255, 255, 0.15) !important;
-  border-color: rgba(255, 255, 255, 0.5) !important;
-}
-
 .pagina-inicial__events-list {
   display: flex;
   flex-direction: column;

@@ -1,12 +1,7 @@
 import Button from '../Button/Button'
 import { CalendarSolidIcon, CheckIcon } from '../icons'
+import { STATUS_LABEL } from '../../constants/status'
 import './ActivityCard.css'
-
-const STATUS_LABEL = {
-  completed: 'Concluído',
-  in_progress: 'Em andamento',
-  pending: 'Pendente',
-}
 
 const STATUS_MODIFIER = {
   completed: 'complete',
