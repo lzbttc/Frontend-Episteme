@@ -10,7 +10,7 @@
 .header__container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 12px 24px;
+  padding: 12px 32px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -19,6 +19,11 @@
 .header__brand {
   display: flex;
   align-items: center;
+  transition: transform var(--duration-fast) var(--ease-standard);
+}
+
+.header__brand:active {
+  transform: scale(var(--press-scale));
 }
 
 .header__logo {
@@ -32,7 +37,7 @@
 .header__actions {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 }
 
 .header__icon-btn {
@@ -47,6 +52,8 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  text-decoration: none;
+  flex-shrink: 0;
   transition:
     background-color var(--duration-base) var(--ease-standard),
     color var(--duration-base) var(--ease-standard),
@@ -61,14 +68,6 @@
 }
 
 .header__icon-btn:active {
-  transform: scale(var(--press-scale));
-}
-
-.header__brand {
-  transition: transform var(--duration-fast) var(--ease-standard);
-}
-
-.header__brand:active {
   transform: scale(var(--press-scale));
 }
 
@@ -87,9 +86,8 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding-left: 12px;
+  padding-left: 16px;
   border-left: 1px solid var(--color-border);
-  cursor: pointer;
   user-select: none;
 }
 
@@ -113,7 +111,6 @@
 }
 
 .header__user-name {
-  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   font-size: 0.875rem;
   font-weight: 600;
   color: var(--color-text);
@@ -121,7 +118,6 @@
 }
 
 .header__user-sub {
-  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   font-size: 0.75rem;
   font-weight: 400;
   color: var(--color-text-secondary);
@@ -137,15 +133,21 @@
   justify-content: center;
   cursor: pointer;
   margin-left: 2px;
-  transition: transform 0.2s ease;
+  color: var(--color-text-secondary);
+  transition:
+    transform var(--duration-base) var(--ease-standard),
+    color var(--duration-base) var(--ease-standard);
 }
 
-.header__user-profile:hover .header__profile-shortcut svg path {
-  stroke: var(--color-text);
-}
-
-.header__user-profile:hover .header__profile-shortcut {
+.header__profile-shortcut:hover {
+  color: var(--color-text);
   transform: translateY(2px);
+}
+
+@media (max-width: 768px) {
+  .header__container {
+    padding: 12px 20px;
+  }
 }
 
 @media (max-width: 640px) {

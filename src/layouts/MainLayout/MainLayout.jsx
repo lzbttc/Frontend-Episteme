@@ -1,25 +1,20 @@
 import { Outlet } from 'react-router-dom'
 import Header from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
-import { useAsyncData } from '../../hooks/useAsyncData'
-import { obterAluno } from '../../services/alunoService'
 import './MainLayout.css'
 
 /**
  * Layout estrutural compartilhado para as páginas internas da aplicação.
- * Renderiza Header superior com dados do aluno via serviço, Outlet para as rotas filhas e Footer.
- *
- * @param {Object} props
- * @param {import('react').ReactNode} [props.children] - Conteúdo alternativo (se não usar Outlet)
+ * Renderiza Header com dados do aluno lidos do AuthContext, Outlet para as rotas filhas e Footer.
+ * Não realiza requisições próprias: o dado do aluno vem direto do contexto de autenticação.
  */
-function MainLayout({ children }) {
-  const { data } = useAsyncData(obterAluno)
-  const student = data?.student || { name: 'Aluno', matricula: '' }
-
+function MainLayout() {
   return (
     <div className="main-layout">
-      <Header student={student} />
-      <main className="main-layout__content">{children || <Outlet />}</main>
+      <Header />
+      <main className="main-layout__content">
+        <Outlet />
+      </main>
       <Footer />
     </div>
   )
