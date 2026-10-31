@@ -1,4 +1,6 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { PATHS, turmaPath } from '../../routes/paths'
 import {
   CheckCircleIcon,
   ChevronRightSmallIcon,
@@ -15,10 +17,11 @@ import {
   MegaphoneIcon,
 } from '../../components/icons'
 import { minhasDisciplinasMock } from '../../mocks/minhasDisciplinasMock'
-import { scrollToTop } from '../../utils/scroll'
+import { usePageTitle } from '../../hooks/usePageTitle'
 import './MinhasDisciplinas.css'
 
-function MinhasDisciplinas({ onNavigate }) {
+function MinhasDisciplinas() {
+  const navigate = useNavigate()
   const {
     activeDisciplines,
     completedDisciplines,
@@ -31,11 +34,7 @@ function MinhasDisciplinas({ onNavigate }) {
   const [toastMessage, setToastMessage] = useState('')
   const [activeNoticeModal, setActiveNoticeModal] = useState(null)
   const [activeQuickActionModal, setActiveQuickActionModal] = useState(null)
-
-  useEffect(() => {
-    document.title = 'Minhas Disciplinas | Episteme'
-    scrollToTop()
-  }, [])
+  usePageTitle('Minhas Disciplinas')
 
   const showToast = (message) => {
     setToastMessage(message)
@@ -66,9 +65,7 @@ function MinhasDisciplinas({ onNavigate }) {
   }, [activeTab, searchTerm, activeDisciplines, completedDisciplines])
 
   const handleAccessClass = (discipline) => {
-    if (onNavigate) {
-      onNavigate(discipline.route || 'turma-virtual')
-    }
+    navigate(turmaPath(discipline.id))
   }
 
   const handleQuickAction = (action) => {
@@ -104,14 +101,13 @@ function MinhasDisciplinas({ onNavigate }) {
             className="minhas-disciplinas__breadcrumbs"
             aria-label="Navegação estrutural"
           >
-            <button
-              type="button"
+            <Link
+              to={PATHS.inicio}
               className="minhas-disciplinas__breadcrumb-link"
-              onClick={() => onNavigate && onNavigate('inicio')}
               title="Voltar para a Página Inicial"
             >
               Portal Acadêmico
-            </button>
+            </Link>
             <span
               className="minhas-disciplinas__breadcrumb-separator"
               aria-hidden="true"

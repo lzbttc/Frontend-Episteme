@@ -1,6 +1,7 @@
 import Badge from '../Badge/Badge'
 import Button from '../Button/Button'
 import { ClockIcon, MapPinIcon, UserIcon } from '../icons'
+import { turmaPath } from '../../routes/paths'
 import './DisciplineCard.css'
 
 /**
@@ -8,10 +9,9 @@ import './DisciplineCard.css'
  *
  * @param {Object} props
  * @param {Object} props.discipline - Dados da disciplina
- * @param {Function} [props.onAccess] - Callback ao clicar em acessar turma
  */
-function DisciplineCard({ discipline, onAccess }) {
-  const { code, name, professor, schedule, room, progress } = discipline
+function DisciplineCard({ discipline }) {
+  const { id, code, name, professor, schedule, room, progress } = discipline
 
   return (
     <div className="discipline-card">
@@ -54,7 +54,7 @@ function DisciplineCard({ discipline, onAccess }) {
         <Button
           variant="outline"
           size="sm"
-          onClick={() => onAccess && onAccess(discipline)}
+          to={turmaPath(id)}
         >
           Acessar Turma
         </Button>

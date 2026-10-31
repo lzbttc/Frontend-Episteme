@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { usePageTitle } from '../../hooks/usePageTitle'
+import { PATHS } from '../../routes/paths'
 
 import Button from '../../components/Button/Button'
 import Input from '../../components/Input/Input'
@@ -13,6 +16,7 @@ import {
 import './Login.css'
 
 function Login() {
+  usePageTitle('Login')
   const [showPassword, setShowPassword] = useState(false)
 
   const [errors, setErrors] = useState({
@@ -211,7 +215,7 @@ function Login() {
                   <span>Lembrar meu usuário</span>
                 </label>
 
-                <a href="/recuperar-senha">Esqueceu a senha?</a>
+                <Link to={PATHS.emBreve}>Esqueceu a senha?</Link>
               </div>
 
               <Button type="submit">Acessar o Portal</Button>
@@ -224,11 +228,11 @@ function Login() {
         <footer className="login-footer">
           <nav className="login-footer-links" aria-label="Links institucionais">
             <div className="login-footer-links-row">
-              <a href="/termos-de-uso">Termos de Uso</a>
-              <a href="/politica-de-privacidade">Privacidade</a>
+              <Link to={PATHS.emBreve}>Termos de Uso</Link>
+              <Link to={PATHS.emBreve}>Privacidade</Link>
             </div>
 
-            <a href="/central-de-ajuda">Ajuda e Suporte</a>
+            <Link to={PATHS.emBreve}>Ajuda e Suporte</Link>
           </nav>
 
           <div className="login-footer-info">

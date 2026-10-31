@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+import { PATHS } from '../../routes/paths'
 import './Footer.css'
 
 function Footer() {
@@ -5,17 +7,17 @@ function Footer() {
     <footer className="footer">
       <div className="footer__container">
         <div className="footer__links">
-          <a href="#termos" className="footer__link">
+          <Link to={PATHS.emBreve} className="footer__link">
             Termos de Uso
-          </a>
+          </Link>
           <span className="footer__dot">•</span>
-          <a href="#privacidade" className="footer__link">
+          <Link to={PATHS.emBreve} className="footer__link">
             Política de Privacidade
-          </a>
+          </Link>
           <span className="footer__dot">•</span>
-          <a href="#ajuda" className="footer__link">
+          <Link to={PATHS.emBreve} className="footer__link">
             Central de Ajuda
-          </a>
+          </Link>
         </div>
 
         <div className="footer__info">

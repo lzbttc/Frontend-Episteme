@@ -1,4 +1,5 @@
-import { useEffect } from 'react'
+import { usePageTitle } from '../../hooks/usePageTitle'
+import { Link, useNavigate } from 'react-router-dom'
 import GaugeCard from '../../components/GaugeCard/GaugeCard'
 import EventCard from '../../components/EventCard/EventCard'
 import QuickActionCard from '../../components/QuickActionCard/QuickActionCard'
@@ -7,10 +8,12 @@ import Button from '../../components/Button/Button'
 import DisciplineCard from '../../components/DisciplineCard/DisciplineCard'
 import SectionHeading from '../../components/SectionHeading/SectionHeading'
 import { ArrowRightIcon, CalendarIcon, ZapIcon } from '../../components/icons'
+import { PATHS } from '../../routes/paths'
 import { studentMock } from '../../mocks/studentMock'
 import './PaginaInicial.css'
 
-function PaginaInicial({ onNavigate }) {
+function PaginaInicial() {
+  const navigate = useNavigate()
   const {
     student,
     metrics,
@@ -20,9 +23,7 @@ function PaginaInicial({ onNavigate }) {
     latestNews,
   } = studentMock
 
-  useEffect(() => {
-    document.title = 'Portal Acadêmico | Episteme'
-  }, [])
+  usePageTitle('Portal Acadêmico')
 
   return (
     <div className="pagina-inicial">
@@ -57,7 +58,7 @@ function PaginaInicial({ onNavigate }) {
           title="Minhas Disciplinas"
           subtitle="Acompanhamento e acesso ao conteúdo das turmas virtuais"
           actionLabel="Ver todas"
-          onAction={() => onNavigate && onNavigate('minhas-disciplinas')}
+          onAction={() => navigate(PATHS.minhasDisciplinas)}
           className="pagina-inicial__disciplines-header"
         />
 
@@ -66,7 +67,6 @@ function PaginaInicial({ onNavigate }) {
             <DisciplineCard
               key={discipline.id}
               discipline={discipline}
-              onAccess={() => onNavigate && onNavigate('turma-virtual')}
             />
           ))}
         </div>
@@ -85,7 +85,7 @@ function PaginaInicial({ onNavigate }) {
             title="Próximos compromissos"
             subtitle="Atividades avaliativas e sessões presenciais"
             action={
-              <Button variant="ghost-light" size="sm">
+              <Button variant="ghost-light" size="sm" to={PATHS.emBreve}>
                 Ver agenda
               </Button>
             }
@@ -132,10 +132,10 @@ function PaginaInicial({ onNavigate }) {
           title="Últimas notícias"
           subtitle="Comunicados da coordenação e pró-reitoria"
           action={
-            <a href="#" className="pagina-inicial__ver-todos-link">
+            <Link to={PATHS.emBreve} className="pagina-inicial__ver-todos-link">
               <span>Ver todos</span>
               <ArrowRightIcon size={11} />
-            </a>
+            </Link>
           }
           className="pagina-inicial__noticias-header"
         />
