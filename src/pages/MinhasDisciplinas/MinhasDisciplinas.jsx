@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { PATHS, turmaPath } from '../../routes/paths'
 import {
@@ -17,7 +17,7 @@ import {
   MegaphoneIcon,
 } from '../../components/icons'
 import { minhasDisciplinasMock } from '../../mocks/minhasDisciplinasMock'
-import { scrollToTop } from '../../utils/scroll'
+import { usePageTitle } from '../../hooks/usePageTitle'
 import './MinhasDisciplinas.css'
 
 function MinhasDisciplinas() {
@@ -34,11 +34,7 @@ function MinhasDisciplinas() {
   const [toastMessage, setToastMessage] = useState('')
   const [activeNoticeModal, setActiveNoticeModal] = useState(null)
   const [activeQuickActionModal, setActiveQuickActionModal] = useState(null)
-
-  useEffect(() => {
-    document.title = 'Minhas Disciplinas | Episteme'
-    scrollToTop()
-  }, [])
+  usePageTitle('Minhas Disciplinas')
 
   const showToast = (message) => {
     setToastMessage(message)

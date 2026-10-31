@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { usePageTitle } from '../../hooks/usePageTitle'
 import { PATHS } from '../../routes/paths'
 
 import Button from '../../components/Button/Button'
@@ -26,6 +27,7 @@ import { turmaVirtualMock } from '../../mocks/turmaVirtualMock'
 import './TurmaVirtual.css'
 
 function TurmaVirtual() {
+  usePageTitle('Turma Virtual')
   // Provisório até a Fase 2 (rota por id): abre sempre a primeira disciplina.
   // Leitura dos dados concentrada aqui: na integração com o backend, este
   // bloco vira uma chamada à API (com estados de carregando e erro).

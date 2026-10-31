@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { usePageTitle } from '../../hooks/usePageTitle'
 import { Link, useNavigate } from 'react-router-dom'
 import GaugeCard from '../../components/GaugeCard/GaugeCard'
 import EventCard from '../../components/EventCard/EventCard'
@@ -23,9 +23,7 @@ function PaginaInicial() {
     latestNews,
   } = studentMock
 
-  useEffect(() => {
-    document.title = 'Portal Acadêmico | Episteme'
-  }, [])
+  usePageTitle('Portal Acadêmico')
 
   return (
     <div className="pagina-inicial">
