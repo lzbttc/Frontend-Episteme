@@ -5,6 +5,7 @@ import Login from '../pages/Login/Login'
 import PaginaInicial from '../pages/PaginaInicial/PaginaInicial'
 import TurmaVirtual from '../pages/TurmaVirtual/TurmaVirtual'
 import MinhasDisciplinas from '../pages/MinhasDisciplinas/MinhasDisciplinas'
+import { scrollToTop } from '../utils/scroll'
 
 function AppRoutes() {
   const navigate = useNavigate()
@@ -21,7 +22,7 @@ function AppRoutes() {
       } else {
         navigate('/inicio')
       }
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      scrollToTop()
     },
     [navigate]
   )

@@ -47,7 +47,11 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    background-color var(--duration-base) var(--ease-standard),
+    color var(--duration-base) var(--ease-standard),
+    border-color var(--duration-base) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard);
 }
 
 .header__icon-btn:hover {
@@ -57,15 +61,15 @@
 }
 
 .header__icon-btn:active {
-  transform: scale(0.93);
+  transform: scale(var(--press-scale));
 }
 
 .header__brand {
-  transition: transform 0.15s ease;
+  transition: transform var(--duration-fast) var(--ease-standard);
 }
 
 .header__brand:active {
-  transform: scale(0.98);
+  transform: scale(var(--press-scale));
 }
 
 .header__badge-dot {

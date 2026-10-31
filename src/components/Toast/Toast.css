@@ -11,21 +11,10 @@
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-modal);
   border-left: 4px solid var(--color-success, #16a34a);
-  animation: slideInToast 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: slideInToast var(--duration-slow) var(--ease-emphasized);
   color: var(--color-text);
   font-size: 0.875rem;
   max-width: 400px;
-}
-
-@keyframes slideInToast {
-  from {
-    transform: translateY(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
 }
 
 .toast--error {

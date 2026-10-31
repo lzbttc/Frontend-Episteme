@@ -3,7 +3,7 @@
   background-color: var(--color-surface-soft);
   border: 0;
   border-radius: var(--radius-md);
-  transition: all 0.2s ease;
+  transition: box-shadow var(--duration-base) var(--ease-standard);
 }
 
 .notice-card:hover {

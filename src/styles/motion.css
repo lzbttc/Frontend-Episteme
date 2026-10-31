@@ -1,0 +1,67 @@
+:root {
+  --duration-fast: 150ms;
+  --duration-base: 200ms;
+  --duration-slow: 300ms;
+
+  --ease-standard: ease;
+  --ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --lift-card: -2px;
+  --lift-button: -1px;
+  --press-scale: 0.98;
+}
+
+/* Animações compartilhadas */
+@keyframes modalBackdropFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalPopIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes slideInToast {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Classe utilitária para setas animadas no hover */
+.arrow-shift {
+  transition: transform var(--duration-base) var(--ease-standard);
+}
+
+:hover > .arrow-shift,
+button:hover .arrow-shift,
+a:hover .arrow-shift {
+  transform: translateX(3px);
+}
+
+/* Respeito à preferência do sistema por movimento reduzido */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
