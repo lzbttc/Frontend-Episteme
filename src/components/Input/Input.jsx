@@ -16,7 +16,8 @@ function Input({
   ...rest
 }) {
   const errorId = id && error ? `${id}-error` : undefined
-  const describedBy = [ariaDescribedBy, errorId].filter(Boolean).join(' ') || undefined
+  const describedBy =
+    [ariaDescribedBy, errorId].filter(Boolean).join(' ') || undefined
 
   return (
     <input
