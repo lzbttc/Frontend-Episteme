@@ -2,7 +2,7 @@
 // Os dados básicos da disciplina (nome, código, professor, horário) ficam em
 // studentMock.disciplines, a mesma fonte usada pela página inicial.
 export const turmaVirtualMock = {
-  d1: {
+  bd002: {
     metrics: {
       average: 8.8,
       attendance: 96,
