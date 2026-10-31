@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import GaugeCard from '../../components/GaugeCard/GaugeCard'
 import EventCard from '../../components/EventCard/EventCard'
 import QuickActionCard from '../../components/QuickActionCard/QuickActionCard'
@@ -22,7 +22,6 @@ import './PaginaInicial.css'
 
 function PaginaInicial() {
   usePageTitle('Portal Acadêmico')
-  const navigate = useNavigate()
 
   const carregarHome = useCallback(async () => {
     const [alunoData, disciplines, event, actions, news] = await Promise.all([
@@ -91,12 +90,19 @@ function PaginaInicial() {
       </section>
 
       {/* 2. Minhas Disciplinas Section */}
-      <section className="pagina-inicial__section">
+      <section className="pagina-inicial__disciplines-card">
         <SectionHeading
           title="Minhas Disciplinas"
           subtitle="Acompanhamento e acesso ao conteúdo das turmas virtuais"
-          actionLabel="Ver todas"
-          onAction={() => navigate(PATHS.minhasDisciplinas)}
+          action={
+            <Link
+              to={PATHS.minhasDisciplinas}
+              className="pagina-inicial__ver-todas-link"
+            >
+              <span>Ver todas</span>
+              <ArrowRightIcon size={11} />
+            </Link>
+          }
           className="pagina-inicial__disciplines-header"
         />
 
