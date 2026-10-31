@@ -7,7 +7,7 @@
   background-color: var(--color-surface-soft);
   border: 0;
   border-radius: 14px;
-  transition: all 0.2s ease;
+  transition: box-shadow var(--duration-base) var(--ease-standard);
 }
 
 .activity-card:hover {

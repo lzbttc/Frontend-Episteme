@@ -7,12 +7,14 @@
   padding: 16px;
   text-decoration: none;
   min-height: 126px;
-  transition: all 0.2s ease;
+  transition:
+    transform var(--duration-base) var(--ease-standard),
+    box-shadow var(--duration-base) var(--ease-standard);
   box-sizing: border-box;
 }
 
 .quick-action-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(var(--lift-card));
   box-shadow: var(--shadow-card-hover);
 }
 
