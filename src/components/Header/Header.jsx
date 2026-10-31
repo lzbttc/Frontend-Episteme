@@ -1,16 +1,26 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import logo from '../../assets/logo.svg'
 import { BellIcon, ChevronDownIcon, HelpCircleIcon, UserIcon } from '../icons'
 import { PATHS } from '../../routes/paths'
+import { useAuth } from '../../hooks/useAuth'
 import './Header.css'
 
 /**
  * Cabeçalho principal da aplicação para as páginas internas autenticadas.
- *
- * @param {Object} props
- * @param {Object} props.student - Dados do aluno logado
+ * Exibe logo, ações de ícone (notificações, ajuda) e perfil do aluno logado.
+ * O nome do aluno é lido diretamente do contexto de autenticação, sem nova requisição.
  */
-function Header({ student }) {
+function Header() {
+  const { aluno, logout } = useAuth()
+  const navigate = useNavigate()
+
+  const student = aluno || { name: 'Aluno', matricula: '' }
+
+  function handleLogout() {
+    logout()
+    navigate(PATHS.login, { replace: true })
+  }
+
   return (
     <header className="header">
       <div className="header__container">
@@ -31,31 +41,41 @@ function Header({ student }) {
             className="header__icon-btn"
             title="Notificações"
             aria-label="Notificações"
+            type="button"
           >
             <BellIcon size={20} />
-            <span className="header__badge-dot"></span>
+            <span className="header__badge-dot" />
           </button>
 
-          <button className="header__icon-btn" title="Ajuda" aria-label="Ajuda">
+          <Link
+            to={PATHS.emBreve}
+            className="header__icon-btn"
+            title="Ajuda"
+            aria-label="Ajuda"
+          >
             <HelpCircleIcon size={20} />
-          </button>
+          </Link>
 
           <div
             className="header__user-profile"
-            role="button"
-            tabIndex={0}
-            title="Perfil do Usuário"
+            role="group"
+            aria-label="Menu do usuário"
           >
-            <div className="header__avatar">
+            <div className="header__avatar" aria-hidden="true">
               <UserIcon size={18} />
             </div>
+
             <div className="header__user-info">
               <span className="header__user-name">{student.name}</span>
               <span className="header__user-sub">{student.matricula}</span>
             </div>
+
             <button
               className="header__profile-shortcut"
-              aria-label="Atalho do perfil"
+              aria-label="Abrir menu do perfil"
+              type="button"
+              onClick={handleLogout}
+              title="Sair do sistema"
             >
               <ChevronDownIcon size={10} />
             </button>
