@@ -21,6 +21,29 @@
   background-color: var(--color-primary);
 }
 
+.date-tile--sm {
+  min-width: 40px;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+}
+
+.date-tile--sm .date-tile__day {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.date-tile--sm .date-tile__month {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 0.5625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 1px;
+}
+
 .date-tile--md {
   min-width: 48px;
   width: 48px;

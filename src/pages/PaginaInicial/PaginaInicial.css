@@ -290,7 +290,6 @@
 .pagina-inicial__news-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
 }
 
 /* Últimas Notícias Container Card */
