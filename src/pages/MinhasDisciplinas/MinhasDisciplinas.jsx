@@ -1,4 +1,6 @@
 import { useState, useMemo, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { PATHS, turmaPath } from '../../routes/paths'
 import {
   CheckCircleIcon,
   ChevronRightSmallIcon,
@@ -18,7 +20,8 @@ import { minhasDisciplinasMock } from '../../mocks/minhasDisciplinasMock'
 import { scrollToTop } from '../../utils/scroll'
 import './MinhasDisciplinas.css'
 
-function MinhasDisciplinas({ onNavigate }) {
+function MinhasDisciplinas() {
+  const navigate = useNavigate()
   const {
     activeDisciplines,
     completedDisciplines,
@@ -66,9 +69,7 @@ function MinhasDisciplinas({ onNavigate }) {
   }, [activeTab, searchTerm, activeDisciplines, completedDisciplines])
 
   const handleAccessClass = (discipline) => {
-    if (onNavigate) {
-      onNavigate(discipline.route || 'turma-virtual')
-    }
+    navigate(turmaPath(discipline.id))
   }
 
   const handleQuickAction = (action) => {
@@ -104,14 +105,13 @@ function MinhasDisciplinas({ onNavigate }) {
             className="minhas-disciplinas__breadcrumbs"
             aria-label="Navegação estrutural"
           >
-            <button
-              type="button"
+            <Link
+              to={PATHS.inicio}
               className="minhas-disciplinas__breadcrumb-link"
-              onClick={() => onNavigate && onNavigate('inicio')}
               title="Voltar para a Página Inicial"
             >
               Portal Acadêmico
-            </button>
+            </Link>
             <span
               className="minhas-disciplinas__breadcrumb-separator"
               aria-hidden="true"

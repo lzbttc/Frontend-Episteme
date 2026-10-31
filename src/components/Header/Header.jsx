@@ -1,22 +1,22 @@
+import { Link } from 'react-router-dom'
 import logo from '../../assets/logo.svg'
 import { BellIcon, ChevronDownIcon, HelpCircleIcon, UserIcon } from '../icons'
+import { PATHS } from '../../routes/paths'
 import './Header.css'
 
-function Header({ student, onNavigate }) {
+/**
+ * Cabeçalho principal da aplicação para as páginas internas autenticadas.
+ *
+ * @param {Object} props
+ * @param {Object} props.student - Dados do aluno logado
+ */
+function Header({ student }) {
   return (
     <header className="header">
       <div className="header__container">
-        <div
+        <Link
+          to={PATHS.inicio}
           className="header__brand"
-          onClick={() => onNavigate && onNavigate('inicio')}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              onNavigate && onNavigate('inicio')
-            }
-          }}
-          style={{ cursor: 'pointer' }}
           title="Ir para a Página Inicial"
         >
           <img
@@ -24,7 +24,7 @@ function Header({ student, onNavigate }) {
             alt="Episteme - Sistema Acadêmico"
             className="header__logo"
           />
-        </div>
+        </Link>
 
         <div className="header__actions">
           <button

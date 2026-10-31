@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { PATHS } from '../../routes/paths'
 
 import Button from '../../components/Button/Button'
 import GaugeCard from '../../components/GaugeCard/GaugeCard'
@@ -102,9 +104,9 @@ function TurmaVirtual() {
       {/* 1. Course header card */}
       <section className="turma-virtual__course-card">
         <nav className="turma-virtual__breadcrumb" aria-label="Navegação">
-          <a href="/inicio">Portal Acadêmico</a>
+          <Link to={PATHS.inicio}>Portal Acadêmico</Link>
           <span aria-hidden="true">›</span>
-          <a href="/inicio">Minhas disciplinas</a>
+          <Link to={PATHS.minhasDisciplinas}>Minhas disciplinas</Link>
           <span aria-hidden="true">›</span>
           <span>{discipline.name}</span>
           <span aria-hidden="true">›</span>
