@@ -1,14 +1,24 @@
+import Badge from '../Badge/Badge'
 import Button from '../Button/Button'
 import { ClockIcon, MapPinIcon, UserIcon } from '../icons'
 import './DisciplineCard.css'
 
+/**
+ * Card para exibição de turma/disciplina matriculada com progresso e detalhes.
+ *
+ * @param {Object} props
+ * @param {Object} props.discipline - Dados da disciplina
+ * @param {Function} [props.onAccess] - Callback ao clicar em acessar turma
+ */
 function DisciplineCard({ discipline, onAccess }) {
   const { code, name, professor, schedule, room, progress } = discipline
 
   return (
     <div className="discipline-card">
       <div className="discipline-card__header">
-        <span className="discipline-card__code">{code}</span>
+        <Badge variant="soft" className="discipline-card__code">
+          {code}
+        </Badge>
         <span className="discipline-card__progress-badge">
           {progress}% concluído
         </span>

@@ -1,3 +1,4 @@
+import Badge from '../Badge/Badge'
 import Button from '../Button/Button'
 import { CalendarSolidIcon, CheckIcon } from '../icons'
 import { STATUS_LABEL } from '../../constants/status'
@@ -38,6 +39,13 @@ function formatDeadline(dueAt) {
   return isOpen ? `${deadline} às ${timeFormatter.format(date)}` : deadline
 }
 
+/**
+ * Card para exibição de atividades avaliativas, prazos e status de entrega.
+ *
+ * @param {Object} props
+ * @param {Object} props.activity - Dados da atividade
+ * @param {Function} props.onAction - Callback para a ação do botão
+ */
 function ActivityCard({ activity, onAction }) {
   const isComplete = activity.status === 'completed'
 
@@ -50,13 +58,17 @@ function ActivityCard({ activity, onAction }) {
           <span className="activity-card__category">{activity.category}</span>
 
           {activity.points != null && (
-            <span className="activity-card__points">
+            <Badge
+              variant="soft"
+              size="sm"
+              className="activity-card__points"
+            >
               Valor:{' '}
               {activity.points.toLocaleString('pt-BR', {
                 minimumFractionDigits: 1,
               })}{' '}
               pts
-            </span>
+            </Badge>
           )}
         </div>
 
@@ -72,14 +84,21 @@ function ActivityCard({ activity, onAction }) {
       </div>
 
       <div className="activity-card__actions">
-        <span
+        <Badge
+          variant={
+            activity.status === 'completed'
+              ? 'primary'
+              : activity.status === 'in_progress'
+                ? 'dark'
+                : 'dark'
+          }
           className={`activity-card__status activity-card__status--${
             STATUS_MODIFIER[activity.status]
           }`}
+          icon={isComplete ? <CheckIcon size={10} /> : undefined}
         >
-          {isComplete && <CheckIcon size={10} />}
           {STATUS_LABEL[activity.status]}
-        </span>
+        </Badge>
 
         <Button
           variant="secondary"

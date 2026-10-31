@@ -1,15 +1,19 @@
+import DateTile from '../DateTile/DateTile'
 import { ClockIcon, MapPinIcon } from '../icons'
 import './EventCard.css'
 
+/**
+ * Card para exibição de eventos acadêmicos e avaliações.
+ *
+ * @param {Object} props
+ * @param {Object} props.event - Dados do evento
+ */
 function EventCard({ event }) {
   const { dateDay, dateMonth, title, topic, time, location } = event
 
   return (
     <div className="event-card">
-      <div className="event-card__date">
-        <span className="event-card__day">{dateDay}</span>
-        <span className="event-card__month">{dateMonth}</span>
-      </div>
+      <DateTile day={dateDay} month={dateMonth} variant="strong" size="lg" />
 
       <div className="event-card__content">
         <h4 className="event-card__title">{title}</h4>

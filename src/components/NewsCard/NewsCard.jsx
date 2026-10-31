@@ -1,15 +1,19 @@
+import DateTile from '../DateTile/DateTile'
 import { ChevronRightIcon } from '../icons'
 import './NewsCard.css'
 
+/**
+ * Card para exibição de comunicados e notícias acadêmicas.
+ *
+ * @param {Object} props
+ * @param {Object} props.news - Dados da notícia
+ */
 function NewsCard({ news }) {
   const { dateDay, dateMonth, title, summary } = news
 
   return (
     <article className="news-card">
-      <div className="news-card__date">
-        <span className="news-card__day">{dateDay}</span>
-        <span className="news-card__month">{dateMonth}</span>
-      </div>
+      <DateTile day={dateDay} month={dateMonth} variant="soft" size="md" />
 
       <div className="news-card__content">
         <h4 className="news-card__title">{title}</h4>

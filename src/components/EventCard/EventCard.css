@@ -16,33 +16,6 @@
   box-shadow: var(--shadow-card-hover);
 }
 
-.event-card__date {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 56px;
-  height: 56px;
-  background-color: var(--color-primary-dark);
-  border-radius: 12px;
-  color: var(--color-surface);
-  flex-shrink: 0;
-}
-
-.event-card__day {
-  font-size: 1.25rem;
-  font-weight: 800;
-  line-height: 1;
-}
-
-.event-card__month {
-  font-size: 0.6875rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-top: 2px;
-}
-
 .event-card__content {
   flex: 1;
   min-width: 0;
