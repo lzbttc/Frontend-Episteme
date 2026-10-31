@@ -128,7 +128,8 @@ function PaginaInicial() {
             subtitle="Atividades avaliativas e sessões presenciais"
             action={
               <Button variant="ghost-light" size="sm" to={PATHS.emBreve}>
-                Ver agenda
+                <span>Ver agenda</span>
+                <ArrowRightIcon size={12} className="arrow-shift" />
               </Button>
             }
             className="pagina-inicial__compromissos-header"
