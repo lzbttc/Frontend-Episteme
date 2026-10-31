@@ -135,6 +135,7 @@
   border: none;
   border-radius: var(--radius-full);
   background-color: transparent;
+  color: var(--color-text-secondary);
   cursor: pointer;
   overflow: visible;
 }
@@ -241,6 +242,7 @@
   left: 16px;
   z-index: 1;
   display: block;
+  color: var(--color-text-secondary);
   transform: translateY(-50%);
   pointer-events: none;
 }
@@ -262,6 +264,7 @@
   justify-content: center;
   border: none;
   background-color: transparent;
+  color: var(--color-text-secondary);
   cursor: pointer;
   transform: translateY(-50%);
 }
