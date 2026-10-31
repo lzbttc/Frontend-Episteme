@@ -15,6 +15,7 @@ import {
   MegaphoneIcon,
 } from '../../components/icons'
 import { minhasDisciplinasMock } from '../../mocks/minhasDisciplinasMock'
+import { scrollToTop } from '../../utils/scroll'
 import './MinhasDisciplinas.css'
 
 function MinhasDisciplinas({ onNavigate }) {
@@ -33,7 +34,7 @@ function MinhasDisciplinas({ onNavigate }) {
 
   useEffect(() => {
     document.title = 'Minhas Disciplinas | Episteme'
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    scrollToTop()
   }, [])
 
   const showToast = (message) => {
