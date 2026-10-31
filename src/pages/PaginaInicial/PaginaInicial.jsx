@@ -100,7 +100,7 @@ function PaginaInicial({ onNavigate }) {
                 </p>
               </div>
             </div>
-            <Button variant="ghost" size="sm" className="btn--white-ghost">
+            <Button variant="ghost-light" size="sm">
               Ver agenda
             </Button>
           </header>

@@ -7,12 +7,16 @@ function Button({
   onClick,
   className = '',
   type = 'button',
+  disabled = false,
+  ...rest
 }) {
   return (
     <button
       type={type}
+      disabled={disabled}
       className={`btn btn--${variant} btn--${size} ${className}`}
       onClick={onClick}
+      {...rest}
     >
       {children}
     </button>

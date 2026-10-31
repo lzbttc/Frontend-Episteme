@@ -23,6 +23,11 @@
   outline-offset: 2px;
 }
 
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 .btn--sm {
   padding: 6px 12px;
   font-size: 0.8125rem;
@@ -43,8 +48,17 @@
   color: var(--color-surface);
 }
 
-.btn--primary:hover {
+.btn--primary:hover:not(:disabled) {
   background-color: var(--color-primary);
+}
+
+.btn--dark {
+  background-color: var(--color-text);
+  color: var(--color-surface);
+}
+
+.btn--dark:hover:not(:disabled) {
+  background-color: #1a2233;
 }
 
 .btn--secondary {
@@ -53,7 +67,7 @@
   border-color: var(--color-border);
 }
 
-.btn--secondary:hover {
+.btn--secondary:hover:not(:disabled) {
   background-color: var(--color-border);
 }
 
@@ -63,7 +77,7 @@
   border-color: var(--color-border);
 }
 
-.btn--outline:hover {
+.btn--outline:hover:not(:disabled) {
   background-color: var(--color-surface-soft);
   border-color: var(--color-primary);
 }
@@ -73,7 +87,18 @@
   color: var(--color-text-secondary);
 }
 
-.btn--ghost:hover {
+.btn--ghost:hover:not(:disabled) {
   background-color: var(--color-surface-soft);
   color: var(--color-text);
+}
+
+.btn--ghost-light {
+  color: var(--color-surface);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background-color: transparent;
+}
+
+.btn--ghost-light:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.5);
 }
