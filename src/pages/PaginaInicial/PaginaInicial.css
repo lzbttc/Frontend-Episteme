@@ -134,9 +134,7 @@
   color: var(--color-text);
   text-decoration: none;
   letter-spacing: 0.01em;
-  transition:
-    opacity 0.2s ease,
-    transform 0.2s ease;
+  transition: opacity var(--duration-base) var(--ease-standard);
   cursor: pointer;
 }
 
@@ -146,7 +144,7 @@
 
 .pagina-inicial__ver-todas-link svg {
   flex-shrink: 0;
-  transition: transform 0.2s ease;
+  transition: transform var(--duration-base) var(--ease-standard);
 }
 
 .pagina-inicial__ver-todas-link:hover svg {
@@ -329,9 +327,7 @@
   color: var(--color-text);
   text-decoration: none;
   letter-spacing: 0.01em;
-  transition:
-    opacity 0.2s ease,
-    transform 0.2s ease;
+  transition: opacity var(--duration-base) var(--ease-standard);
   cursor: pointer;
 }
 
@@ -341,7 +337,7 @@
 
 .pagina-inicial__ver-todos-link svg {
   flex-shrink: 0;
-  transition: transform 0.2s ease;
+  transition: transform var(--duration-base) var(--ease-standard);
 }
 
 .pagina-inicial__ver-todos-link:hover svg {

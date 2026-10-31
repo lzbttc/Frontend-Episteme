@@ -149,12 +149,6 @@
   flex-shrink: 0;
 }
 
-.login-help-button:focus-visible,
-.login-password-toggle:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
-}
-
 .login-header-divider,
 .login-footer-divider {
   height: 1px;
