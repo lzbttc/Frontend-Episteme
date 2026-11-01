@@ -53,6 +53,12 @@
   margin: 0 0 8px 0;
 }
 
+.pagina-inicial__vazio {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
 .pagina-inicial__subtitle {
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   font-size: 0.875rem;

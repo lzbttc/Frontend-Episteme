@@ -72,7 +72,9 @@ function PaginaInicial() {
           <h1 className="pagina-inicial__title">
             {getGreeting()}, {student.name.split(' ')[0]}!
           </h1>
-          <p className="pagina-inicial__course">{student.course}</p>
+          {student.course && (
+            <p className="pagina-inicial__course">{student.course}</p>
+          )}
           <p className="pagina-inicial__subtitle">
             Acompanhe suas disciplinas, notas, prazos e mantenha sua jornada
             acadêmica sempre em dia.
@@ -109,9 +111,15 @@ function PaginaInicial() {
         />
 
         <div className="pagina-inicial__disciplines-grid">
-          {disciplines.map((discipline) => (
-            <DisciplineCard key={discipline.id} discipline={discipline} />
-          ))}
+          {disciplines.length === 0 ? (
+            <p className="pagina-inicial__vazio">
+              Nenhuma disciplina em andamento.
+            </p>
+          ) : (
+            disciplines.map((discipline) => (
+              <DisciplineCard key={discipline.id} discipline={discipline} />
+            ))
+          )}
         </div>
       </section>
 

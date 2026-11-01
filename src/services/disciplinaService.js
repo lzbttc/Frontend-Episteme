@@ -1,6 +1,6 @@
 import { disciplinas as disciplinasMock } from '../mocks/disciplinas'
 import { minhasDisciplinasMock } from '../mocks/minhasDisciplinasMock'
-import { requisitar } from './apiClient'
+import { ErroApi, requisitar } from './apiClient'
 
 const DIAS_ABREVIADOS = {
   Segunda: 'Seg',
@@ -51,7 +51,7 @@ function mapearDisciplina(item) {
 
 /**
  * Serviço responsável pela listagem e consulta detalhada de disciplinas.
- * Na fase atual lê do mock; quando houver API, apenas este arquivo será alterado.
+ * As disciplinas do aluno vêm da API. Avisos e ações rápidas continuam no mock.
  */
 
 /**
@@ -65,11 +65,16 @@ export async function listarDisciplinas(status = 'todas') {
     return []
   }
 
-  const { disciplinas } = await requisitar(
-    'academico',
-    '/matricula/minhas-disciplinas'
-  )
-  return disciplinas.map(mapearDisciplina)
+  let resposta
+  try {
+    resposta = await requisitar('academico', '/matricula/minhas-disciplinas')
+  } catch (err) {
+    if (err instanceof ErroApi && err.status === 404) {
+      return []
+    }
+    throw err
+  }
+  return resposta.disciplinas.map(mapearDisciplina)
 }
 
 /**

@@ -1,10 +1,10 @@
 import { studentMock } from '../mocks/studentMock'
-import { requisitar, obterToken } from './apiClient'
+import { ErroApi, requisitar, obterToken } from './apiClient'
 import { lerUsuarioId } from './authService'
 
 /**
  * Serviço responsável por obter os dados do estudante e informações gerais da home.
- * Na fase atual lê do mock; quando houver API, apenas este arquivo será alterado.
+ * Nome, matrícula e curso vêm da API. Métricas, compromissos e notícias continuam no mock.
  */
 
 /**
@@ -14,11 +14,16 @@ import { lerUsuarioId } from './authService'
  */
 export async function obterAluno() {
   const usuarioId = lerUsuarioId(obterToken())
+  const usuario = await requisitar('identidade', `/usuarios/${usuarioId}`)
+  const aluno = await buscarCadastroAluno(usuarioId)
 
-  const [usuario, aluno] = await Promise.all([
-    requisitar('identidade', `/usuarios/${usuarioId}`),
-    requisitar('turma', `/alunos/usuario_id/${usuarioId}`),
-  ])
+  if (!aluno) {
+    return {
+      student: { name: usuario.nome, matricula: '', course: '' },
+      metrics: studentMock.metrics,
+    }
+  }
+
   const curso = await requisitar('academico', `/cursos/${aluno.curso_id}`)
 
   return {
@@ -28,6 +33,17 @@ export async function obterAluno() {
       course: curso.nome,
     },
     metrics: studentMock.metrics,
+  }
+}
+
+async function buscarCadastroAluno(usuarioId) {
+  try {
+    return await requisitar('turma', `/alunos/usuario_id/${usuarioId}`)
+  } catch (err) {
+    if (err instanceof ErroApi && err.status === 404) {
+      return null
+    }
+    throw err
   }
 }
 
