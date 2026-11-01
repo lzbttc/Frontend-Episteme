@@ -58,11 +58,7 @@ function ActivityCard({ activity, onAction }) {
           <span className="activity-card__category">{activity.category}</span>
 
           {activity.points != null && (
-            <Badge
-              variant="soft"
-              size="sm"
-              className="activity-card__points"
-            >
+            <Badge variant="soft" size="sm" className="activity-card__points">
               Valor:{' '}
               {activity.points.toLocaleString('pt-BR', {
                 minimumFractionDigits: 1,
