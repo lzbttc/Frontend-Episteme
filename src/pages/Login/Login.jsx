@@ -20,11 +20,11 @@ const REMEMBER_USER_KEY = 'episteme_lembrar_usuario'
 
 function Login() {
   usePageTitle('Login')
-  const { aluno, login } = useAuth()
+  const { token, login } = useAuth()
   const location = useLocation()
   const navigate = useNavigate()
 
-  const [matricula, setMatricula] = useState(() => {
+  const [email, setEmail] = useState(() => {
     try {
       return localStorage.getItem(REMEMBER_USER_KEY) || ''
     } catch {
@@ -44,13 +44,13 @@ function Login() {
   const [generalError, setGeneralError] = useState('')
 
   const [errors, setErrors] = useState({
-    matricula: '',
+    email: '',
     senha: '',
   })
 
   const destino = location.state?.from?.pathname || PATHS.inicio
 
-  if (aluno) {
+  if (token) {
     return <Navigate to={destino} replace />
   }
 
@@ -62,8 +62,8 @@ function Login() {
       return
     }
 
-    if (name === 'matricula') {
-      setMatricula(value)
+    if (name === 'email') {
+      setEmail(value)
     } else if (name === 'senha') {
       setSenha(value)
     }
@@ -83,29 +83,29 @@ function Login() {
   async function handleSubmit(event) {
     event.preventDefault()
 
-    const trimmedMatricula = matricula.trim()
+    const trimmedEmail = email.trim()
     const trimmedSenha = senha.trim()
 
     const newErrors = {
-      matricula: !trimmedMatricula ? 'Preencha este campo.' : '',
+      email: !trimmedEmail ? 'Preencha este campo.' : '',
       senha: !trimmedSenha ? 'Preencha este campo.' : '',
     }
 
     setErrors(newErrors)
     setGeneralError('')
 
-    if (newErrors.matricula || newErrors.senha) {
+    if (newErrors.email || newErrors.senha) {
       return
     }
 
     setLoading(true)
 
     try {
-      await login({ matricula: trimmedMatricula, senha: trimmedSenha })
+      await login({ email: trimmedEmail, senha: trimmedSenha })
 
       try {
         if (lembrarUsuario) {
-          localStorage.setItem(REMEMBER_USER_KEY, trimmedMatricula)
+          localStorage.setItem(REMEMBER_USER_KEY, trimmedEmail)
         } else {
           localStorage.removeItem(REMEMBER_USER_KEY)
         }
@@ -195,34 +195,34 @@ function Login() {
               )}
 
               <div className="login-form-field">
-                <label htmlFor="matricula">USUÁRIO</label>
+                <label htmlFor="email">E-MAIL</label>
 
                 <div
                   className={`login-input-wrapper ${
-                    errors.matricula ? 'has-error' : ''
+                    errors.email ? 'has-error' : ''
                   }`}
                 >
                   <UserOutlineIcon size={17} className="login-input-icon" />
 
                   <Input
-                    id="matricula"
-                    name="matricula"
-                    type="text"
-                    placeholder="Matrícula"
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="E-mail"
                     autoComplete="username"
-                    value={matricula}
+                    value={email}
                     onChange={handleChange}
-                    error={errors.matricula}
+                    error={errors.email}
                   />
                 </div>
 
-                {errors.matricula && (
+                {errors.email && (
                   <span
-                    id="matricula-error"
+                    id="email-error"
                     className="login-field-error"
                     role="alert"
                   >
-                    {errors.matricula}
+                    {errors.email}
                   </span>
                 )}
               </div>

@@ -1,4 +1,6 @@
 import { studentMock } from '../mocks/studentMock'
+import { requisitar, obterToken } from './apiClient'
+import { lerUsuarioId } from './authService'
 
 /**
  * Serviço responsável por obter os dados do estudante e informações gerais da home.
@@ -11,10 +13,22 @@ import { studentMock } from '../mocks/studentMock'
  * @returns {Promise<{ student: Object, metrics: Array }>}
  */
 export async function obterAluno() {
-  return Promise.resolve({
-    student: studentMock.student,
+  const usuarioId = lerUsuarioId(obterToken())
+
+  const [usuario, aluno] = await Promise.all([
+    requisitar('identidade', `/usuarios/${usuarioId}`),
+    requisitar('turma', `/alunos/usuario_id/${usuarioId}`),
+  ])
+  const curso = await requisitar('academico', `/cursos/${aluno.curso_id}`)
+
+  return {
+    student: {
+      name: usuario.nome,
+      matricula: aluno.matricula_id,
+      course: curso.nome,
+    },
     metrics: studentMock.metrics,
-  })
+  }
 }
 
 /**
