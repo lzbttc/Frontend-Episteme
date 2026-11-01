@@ -51,7 +51,7 @@ function mapearDisciplina(item) {
 
 /**
  * Serviço responsável pela listagem e consulta detalhada de disciplinas.
- * Na fase atual lê do mock; quando houver API, apenas este arquivo será alterado.
+ * As disciplinas do aluno vêm da API. Avisos e ações rápidas continuam no mock.
  */
 
 /**

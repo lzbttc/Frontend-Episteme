@@ -4,7 +4,7 @@ import { lerUsuarioId } from './authService'
 
 /**
  * Serviço responsável por obter os dados do estudante e informações gerais da home.
- * Na fase atual lê do mock; quando houver API, apenas este arquivo será alterado.
+ * Nome, matrícula e curso vêm da API. Métricas, compromissos e notícias continuam no mock.
  */
 
 /**
