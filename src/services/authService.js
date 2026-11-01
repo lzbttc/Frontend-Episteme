@@ -4,9 +4,7 @@ import { decodificarPayloadJwt } from '../utils/jwt'
 /**
  * Realiza autenticação do usuário.
  *
- * TODO(API): Quando a API real for integrada, este endpoint fará um POST HTTPS para /auth/login.
- * A sessão deverá utilizar cookies HttpOnly + SameSite do backend.
- * Nunca persistir a senha no cliente.
+ * A senha não é guardada no cliente.
  *
  * @param {{ email: string, senha: string }} credenciais
  * @returns {Promise<{ token: string }>}
