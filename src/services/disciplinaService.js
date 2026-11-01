@@ -1,5 +1,53 @@
-import { disciplinas } from '../mocks/disciplinas'
+import { disciplinas as disciplinasMock } from '../mocks/disciplinas'
 import { minhasDisciplinasMock } from '../mocks/minhasDisciplinasMock'
+import { requisitar } from './apiClient'
+
+const DIAS_ABREVIADOS = {
+  Segunda: 'Seg',
+  Terça: 'Ter',
+  Quarta: 'Qua',
+  Quinta: 'Qui',
+  Sexta: 'Sex',
+}
+
+function formatarHora(horario) {
+  return horario.slice(0, 5)
+}
+
+function mapearDisciplina(item) {
+  const [turma] = item.turmas
+  const horarios = turma.horarios
+  const primeiro = horarios[0]
+  const referencia =
+    disciplinasMock.find((disciplina) => disciplina.name === item.nome) || {}
+  const dias = horarios.map((h) => DIAS_ABREVIADOS[h.dia_semana]).join(' & ')
+  const horas = primeiro
+    ? `${formatarHora(primeiro.horario_inicio)} - ${formatarHora(primeiro.horario_fim)}`
+    : ''
+
+  return {
+    id: turma.id,
+    code: item.codigo,
+    name: item.nome,
+    turma: `Turma ${turma.periodo_letivo}`,
+    semester: turma.periodo_letivo,
+    professor: turma.professor
+      ? `Matrícula ${turma.professor.matricula_id}`
+      : '',
+    department: item.departamento,
+    campus: '',
+    location: primeiro?.local ?? '',
+    scheduleDays: dias,
+    scheduleHours: horas,
+    schedule: `${dias.replace(' & ', '/')} ${horas}`.trim(),
+    room: primeiro?.local ?? '',
+    progress: referencia.progress ?? 0,
+    frequencia: referencia.frequencia ?? '—',
+    finalGrade: referencia.finalGrade,
+    status: 'em-andamento',
+    route: 'turma-virtual',
+  }
+}
 
 /**
  * Serviço responsável pela listagem e consulta detalhada de disciplinas.
@@ -13,10 +61,15 @@ import { minhasDisciplinasMock } from '../mocks/minhasDisciplinasMock'
  * @returns {Promise<Array>} Lista de disciplinas
  */
 export async function listarDisciplinas(status = 'todas') {
-  if (status === 'todas') {
-    return Promise.resolve(disciplinas)
+  if (status === 'concluida') {
+    return []
   }
-  return Promise.resolve(disciplinas.filter((d) => d.status === status))
+
+  const { disciplinas } = await requisitar(
+    'academico',
+    '/matricula/minhas-disciplinas'
+  )
+  return disciplinas.map(mapearDisciplina)
 }
 
 /**
@@ -26,8 +79,8 @@ export async function listarDisciplinas(status = 'todas') {
  * @returns {Promise<Object | null>} Dados da disciplina ou null se não encontrada
  */
 export async function obterDisciplina(id) {
-  const disc = disciplinas.find((d) => d.id === id) || null
-  return Promise.resolve(disc)
+  const lista = await listarDisciplinas()
+  return lista.find((disciplina) => disciplina.id === id) || null
 }
 
 /**
