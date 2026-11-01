@@ -10,10 +10,10 @@ const SESSION_STORAGE_KEY = 'episteme_aluno_sessao'
  * Provedor de contexto de autenticação do aluno.
  *
  * NOTA DE SEGURANÇA:
- * Na fase atual de mock, armazenamos apenas o objeto não sensível do aluno no sessionStorage.
- * A senha NUNCA é armazenada no cliente.
- * Quando a API real for conectada, a sessão utilizará cookie HttpOnly do backend
- * e este armazenamento em sessionStorage será removido.
+ * O token JWT fica em sessionStorage. Ele some ao fechar a aba, mas qualquer script
+ * que rode na página consegue lê-lo, então uma falha de XSS expõe a sessão.
+ * A senha nunca é guardada no cliente. O backend valida o token em cada requisição.
+ * O cliente só confere a data de expiração (exp) para encerrar a sessão sem esperar a API.
  */
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => obterToken())
