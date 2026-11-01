@@ -32,7 +32,7 @@ function mapearDocumento(documento, indice) {
 
 /**
  * Serviço responsável por carregar os dados específicos da turma virtual.
- * Na fase atual lê do mock; quando houver API, apenas este arquivo será alterado.
+ * Avisos e documentos vêm da API. Módulos, atividades e métricas continuam no mock.
  */
 
 /**
