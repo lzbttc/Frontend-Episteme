@@ -1,30 +1,81 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { AuthContext } from './AuthContext'
 import { login as apiLogin } from '../services/authService'
 import { obterAluno } from '../services/alunoService'
-import { obterToken, removerToken, salvarToken } from '../services/apiClient'
+import {
+  definirAoExpirarSessao,
+  expirarSessao,
+  limparAvisoSessaoExpirada,
+  obterToken,
+  removerToken,
+  salvarToken,
+} from '../services/apiClient'
+import { expiracaoDoToken } from '../utils/jwt'
 
 const SESSION_STORAGE_KEY = 'episteme_aluno_sessao'
+const MAXIMO_TIMEOUT_MS = 2147483647
+
+function lerAlunoSalvo() {
+  try {
+    const sessaoSalva = sessionStorage.getItem(SESSION_STORAGE_KEY)
+    return sessaoSalva ? JSON.parse(sessaoSalva) : null
+  } catch {
+    return null
+  }
+}
+
+function removerAlunoSalvo() {
+  sessionStorage.removeItem(SESSION_STORAGE_KEY)
+}
 
 /**
  * Provedor de contexto de autenticação do aluno.
  *
  * NOTA DE SEGURANÇA:
- * Na fase atual de mock, armazenamos apenas o objeto não sensível do aluno no sessionStorage.
- * A senha NUNCA é armazenada no cliente.
- * Quando a API real for conectada, a sessão utilizará cookie HttpOnly do backend
- * e este armazenamento em sessionStorage será removido.
+ * O token JWT fica em sessionStorage. Ele some ao fechar a aba, mas qualquer script
+ * que rode na página consegue lê-lo, então uma falha de XSS expõe a sessão.
+ * A senha nunca é guardada no cliente. O backend valida o token em cada requisição.
+ * O cliente só confere a data de expiração (exp) para encerrar a sessão sem esperar a API.
  */
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => obterToken())
   const [aluno, setAluno] = useState(() => {
-    try {
-      const sessaoSalva = sessionStorage.getItem(SESSION_STORAGE_KEY)
-      return sessaoSalva ? JSON.parse(sessaoSalva) : null
-    } catch {
+    if (!token) {
+      removerAlunoSalvo()
       return null
     }
+    return lerAlunoSalvo()
   })
+
+  const encerrarSessaoLocal = useCallback(() => {
+    removerAlunoSalvo()
+    setToken(null)
+    setAluno(null)
+  }, [])
+
+  useEffect(() => {
+    definirAoExpirarSessao(encerrarSessaoLocal)
+    return () => definirAoExpirarSessao(null)
+  }, [encerrarSessaoLocal])
+
+  useEffect(() => {
+    if (!token) {
+      return undefined
+    }
+
+    const expiracao = expiracaoDoToken(token)
+    if (expiracao === null) {
+      return undefined
+    }
+
+    const restante = expiracao - Date.now()
+    if (restante > MAXIMO_TIMEOUT_MS) {
+      return undefined
+    }
+
+    const timer = setTimeout(expirarSessao, Math.max(restante, 0))
+    return () => clearTimeout(timer)
+  }, [token])
 
   const login = useCallback(async ({ email, senha }) => {
     const { token: novoToken } = await apiLogin({ email, senha })
@@ -33,6 +84,7 @@ export function AuthProvider({ children }) {
     try {
       const { student } = await obterAluno()
       sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(student))
+      limparAvisoSessaoExpirada()
       setToken(novoToken)
       setAluno(student)
       return student
@@ -44,7 +96,8 @@ export function AuthProvider({ children }) {
 
   const logout = useCallback(() => {
     removerToken()
-    sessionStorage.removeItem(SESSION_STORAGE_KEY)
+    removerAlunoSalvo()
+    limparAvisoSessaoExpirada()
     setToken(null)
     setAluno(null)
   }, [])

@@ -1,11 +1,10 @@
 import { requisitar } from './apiClient'
+import { decodificarPayloadJwt } from '../utils/jwt'
 
 /**
  * Realiza autenticação do usuário.
  *
- * TODO(API): Quando a API real for integrada, este endpoint fará um POST HTTPS para /auth/login.
- * A sessão deverá utilizar cookies HttpOnly + SameSite do backend.
- * Nunca persistir a senha no cliente.
+ * A senha não é guardada no cliente.
  *
  * @param {{ email: string, senha: string }} credenciais
  * @returns {Promise<{ token: string }>}
@@ -30,6 +29,5 @@ export async function login({ email, senha }) {
 }
 
 export function lerUsuarioId(token) {
-  const payload = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')
-  return JSON.parse(atob(payload)).id ?? null
+  return decodificarPayloadJwt(token)?.id ?? null
 }
