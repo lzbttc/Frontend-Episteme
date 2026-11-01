@@ -1,3 +1,5 @@
+import { expiracaoDoToken } from '../utils/jwt'
+
 const BASES_DOS_SERVICOS = {
   identidade:
     import.meta.env.VITE_IDENTIDADE_API_URL || 'http://localhost:8000',
@@ -6,9 +8,12 @@ const BASES_DOS_SERVICOS = {
 }
 
 const CHAVE_TOKEN = 'episteme_token'
+const CHAVE_SESSAO_EXPIRADA = 'episteme_sessao_expirada'
 
 const MSG_FALHA_CONEXAO = 'Não foi possível conectar ao servidor.'
 const MSG_FALHA_GENERICA = 'Não foi possível concluir a operação.'
+
+let aoExpirarSessao = null
 
 export class ErroApi extends Error {
   constructor(mensagem, status) {
@@ -18,12 +23,30 @@ export class ErroApi extends Error {
   }
 }
 
+export function definirAoExpirarSessao(callback) {
+  aoExpirarSessao = callback
+}
+
 export function obterToken() {
+  let token
   try {
-    return sessionStorage.getItem(CHAVE_TOKEN)
+    token = sessionStorage.getItem(CHAVE_TOKEN)
   } catch {
     return null
   }
+
+  if (!token) {
+    return null
+  }
+
+  const expiracao = expiracaoDoToken(token)
+  if (expiracao !== null && expiracao <= Date.now()) {
+    removerToken()
+    marcarSessaoExpirada()
+    return null
+  }
+
+  return token
 }
 
 export function salvarToken(token) {
@@ -32,6 +55,28 @@ export function salvarToken(token) {
 
 export function removerToken() {
   sessionStorage.removeItem(CHAVE_TOKEN)
+}
+
+export function expirarSessao() {
+  removerToken()
+  marcarSessaoExpirada()
+  aoExpirarSessao?.()
+}
+
+export function sessaoFoiExpirada() {
+  try {
+    return sessionStorage.getItem(CHAVE_SESSAO_EXPIRADA) === '1'
+  } catch {
+    return false
+  }
+}
+
+export function limparAvisoSessaoExpirada() {
+  sessionStorage.removeItem(CHAVE_SESSAO_EXPIRADA)
+}
+
+function marcarSessaoExpirada() {
+  sessionStorage.setItem(CHAVE_SESSAO_EXPIRADA, '1')
 }
 
 async function extrairMensagemDeErro(resposta) {
@@ -76,6 +121,9 @@ export async function requisitar(
   }
 
   if (!resposta.ok) {
+    if (resposta.status === 401 && token) {
+      expirarSessao()
+    }
     throw new ErroApi(await extrairMensagemDeErro(resposta), resposta.status)
   }
 

@@ -1,4 +1,5 @@
 import { requisitar } from './apiClient'
+import { decodificarPayloadJwt } from '../utils/jwt'
 
 /**
  * Realiza autenticação do usuário.
@@ -30,6 +31,5 @@ export async function login({ email, senha }) {
 }
 
 export function lerUsuarioId(token) {
-  const payload = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')
-  return JSON.parse(atob(payload)).id ?? null
+  return decodificarPayloadJwt(token)?.id ?? null
 }
