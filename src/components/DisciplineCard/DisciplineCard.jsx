@@ -51,11 +51,7 @@ function DisciplineCard({ discipline }) {
       </div>
 
       <div className="discipline-card__footer">
-        <Button
-          variant="outline"
-          size="sm"
-          to={turmaPath(id)}
-        >
+        <Button variant="outline" size="sm" to={turmaPath(id)}>
           Acessar Turma
         </Button>
       </div>
