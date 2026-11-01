@@ -72,6 +72,7 @@ function PaginaInicial() {
           <h1 className="pagina-inicial__title">
             {getGreeting()}, {student.name.split(' ')[0]}!
           </h1>
+          <p className="pagina-inicial__course">{student.course}</p>
           <p className="pagina-inicial__subtitle">
             Acompanhe suas disciplinas, notas, prazos e mantenha sua jornada
             acadêmica sempre em dia.

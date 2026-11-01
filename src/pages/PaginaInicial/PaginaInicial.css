@@ -45,6 +45,14 @@
   line-height: 1.2;
 }
 
+.pagina-inicial__course {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0 0 8px 0;
+}
+
 .pagina-inicial__subtitle {
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   font-size: 0.875rem;
