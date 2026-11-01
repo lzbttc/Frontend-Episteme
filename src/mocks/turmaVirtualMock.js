@@ -105,53 +105,5 @@ export const turmaVirtualMock = {
         action: 'Abrir',
       },
     ],
-
-    notices: [
-      {
-        id: 'notice-1',
-        author: 'Prof. Ricardo Santos',
-        date: 'Hoje, 11:20',
-        title: 'Atualização do conteúdo',
-        message:
-          'Foram adicionados os scripts SQL de benchmark da aula teórica.',
-      },
-      {
-        id: 'notice-2',
-        author: 'Prof. Ricardo Santos',
-        date: '10/Set',
-        title: 'Atualização dos scripts SQL',
-        message:
-          'Atualização do script de teste postado no repositório com correções para compatibilidade no PostgreSQL v16.',
-      },
-      {
-        id: 'notice-3',
-        author: 'Prof. Ricardo Santos',
-        date: '08/Set',
-        title: 'Cronograma da disciplina',
-        message:
-          'Consulte o cronograma atualizado para acompanhar as próximas avaliações.',
-      },
-    ],
-
-    resources: [
-      {
-        id: 'resource-1',
-        title: 'Ementa e Bibliografia Básica',
-        description: 'Date, Silberschatz & Navathe',
-        type: 'document',
-      },
-      {
-        id: 'resource-2',
-        title: 'Repositório Git da Turma',
-        description: 'github.com/dcomp-epis/bd2-2026-2',
-        type: 'link',
-      },
-      {
-        id: 'resource-3',
-        title: 'Calendário de Provas & Aulas',
-        description: 'Sincronizar com Google Agenda',
-        type: 'calendar',
-      },
-    ],
   },
 }
