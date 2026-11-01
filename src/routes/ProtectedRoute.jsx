@@ -11,10 +11,10 @@ import { PATHS } from './paths'
  * de autenticação e autorização é responsabilidade do backend.
  */
 export function ProtectedRoute({ children }) {
-  const { aluno } = useAuth()
+  const { token } = useAuth()
   const location = useLocation()
 
-  if (!aluno) {
+  if (!token) {
     return <Navigate to={PATHS.login} state={{ from: location }} replace />
   }
 

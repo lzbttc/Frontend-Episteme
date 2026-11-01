@@ -1,6 +1,8 @@
 import { useState, useCallback } from 'react'
 import { AuthContext } from './AuthContext'
 import { login as apiLogin } from '../services/authService'
+import { obterAluno } from '../services/alunoService'
+import { obterToken, removerToken, salvarToken } from '../services/apiClient'
 
 const SESSION_STORAGE_KEY = 'episteme_aluno_sessao'
 
@@ -14,6 +16,7 @@ const SESSION_STORAGE_KEY = 'episteme_aluno_sessao'
  * e este armazenamento em sessionStorage será removido.
  */
 export function AuthProvider({ children }) {
+  const [token, setToken] = useState(() => obterToken())
   const [aluno, setAluno] = useState(() => {
     try {
       const sessaoSalva = sessionStorage.getItem(SESSION_STORAGE_KEY)
@@ -23,20 +26,31 @@ export function AuthProvider({ children }) {
     }
   })
 
-  const login = useCallback(async ({ matricula, senha }) => {
-    const { student } = await apiLogin({ matricula, senha })
-    sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(student))
-    setAluno(student)
-    return student
+  const login = useCallback(async ({ email, senha }) => {
+    const { token: novoToken } = await apiLogin({ email, senha })
+    salvarToken(novoToken)
+
+    try {
+      const { student } = await obterAluno()
+      sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(student))
+      setToken(novoToken)
+      setAluno(student)
+      return student
+    } catch (err) {
+      removerToken()
+      throw err
+    }
   }, [])
 
   const logout = useCallback(() => {
+    removerToken()
     sessionStorage.removeItem(SESSION_STORAGE_KEY)
+    setToken(null)
     setAluno(null)
   }, [])
 
   return (
-    <AuthContext.Provider value={{ aluno, login, logout }}>
+    <AuthContext.Provider value={{ token, aluno, login, logout }}>
       {children}
     </AuthContext.Provider>
   )
