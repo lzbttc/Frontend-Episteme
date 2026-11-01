@@ -3,6 +3,7 @@ import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { usePageTitle } from '../../hooks/usePageTitle'
 import { PATHS } from '../../routes/paths'
+import { sessaoFoiExpirada } from '../../services/apiClient'
 
 import Button from '../../components/Button/Button'
 import Input from '../../components/Input/Input'
@@ -17,6 +18,7 @@ import {
 import './Login.css'
 
 const REMEMBER_USER_KEY = 'episteme_lembrar_usuario'
+const MSG_SESSAO_EXPIRADA = 'Sua sessão expirou. Entre novamente.'
 
 function Login() {
   usePageTitle('Login')
@@ -41,7 +43,9 @@ function Login() {
   })
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [generalError, setGeneralError] = useState('')
+  const [generalError, setGeneralError] = useState(() =>
+    sessaoFoiExpirada() ? MSG_SESSAO_EXPIRADA : ''
+  )
 
   const [errors, setErrors] = useState({
     email: '',
