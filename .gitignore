@@ -25,6 +25,8 @@ dist-ssr
 
 contexto/
 
+KIRO.md
+
 # Environments
 .env
 .env.*

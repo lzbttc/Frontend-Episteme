@@ -5,6 +5,8 @@ const BASES_DOS_SERVICOS = {
     import.meta.env.VITE_IDENTIDADE_API_URL || 'http://localhost:8000',
   turma: import.meta.env.VITE_TURMA_API_URL || 'http://localhost:8001',
   academico: import.meta.env.VITE_ACADEMICO_API_URL || 'http://localhost:8002',
+  comunicacao:
+    import.meta.env.VITE_COMUNICACAO_API_URL || 'http://localhost:8003',
 }
 
 const CHAVE_TOKEN = 'episteme_token'
@@ -128,4 +130,30 @@ export async function requisitar(
   }
 
   return resposta.json()
+}
+
+export async function baixarArquivo(servico, caminho) {
+  const cabecalhos = {}
+  const token = obterToken()
+  if (token) {
+    cabecalhos.Authorization = `Bearer ${token}`
+  }
+
+  let resposta
+  try {
+    resposta = await fetch(`${BASES_DOS_SERVICOS[servico]}${caminho}`, {
+      headers: cabecalhos,
+    })
+  } catch {
+    throw new ErroApi(MSG_FALHA_CONEXAO, 0)
+  }
+
+  if (!resposta.ok) {
+    if (resposta.status === 401 && token) {
+      expirarSessao()
+    }
+    throw new ErroApi(await extrairMensagemDeErro(resposta), resposta.status)
+  }
+
+  return resposta.blob()
 }
