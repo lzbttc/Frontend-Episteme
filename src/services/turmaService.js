@@ -1,4 +1,4 @@
-import { ErroApi, requisitar } from './apiClient'
+import { ErroApi, baixarArquivo, requisitar } from './apiClient'
 import { obterDisciplina } from './disciplinaService'
 
 const METRICAS_PADRAO = { average: 0, attendance: 0 }
@@ -182,6 +182,10 @@ export async function obterTurma(id) {
 
 export async function registrarAcessoMaterial(id) {
   return requisitar('turma', `/materiais/${id}/acesso`, { metodo: 'POST' })
+}
+
+export async function baixarMaterial(id) {
+  return baixarArquivo('turma', `/materiais/${id}/arquivo`)
 }
 
 export async function enviarEntregaAtividade(id) {

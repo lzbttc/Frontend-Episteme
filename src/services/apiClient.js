@@ -131,3 +131,29 @@ export async function requisitar(
 
   return resposta.json()
 }
+
+export async function baixarArquivo(servico, caminho) {
+  const cabecalhos = {}
+  const token = obterToken()
+  if (token) {
+    cabecalhos.Authorization = `Bearer ${token}`
+  }
+
+  let resposta
+  try {
+    resposta = await fetch(`${BASES_DOS_SERVICOS[servico]}${caminho}`, {
+      headers: cabecalhos,
+    })
+  } catch {
+    throw new ErroApi(MSG_FALHA_CONEXAO, 0)
+  }
+
+  if (!resposta.ok) {
+    if (resposta.status === 401 && token) {
+      expirarSessao()
+    }
+    throw new ErroApi(await extrairMensagemDeErro(resposta), resposta.status)
+  }
+
+  return resposta.blob()
+}
