@@ -199,7 +199,7 @@ function Login() {
               )}
 
               <div className="login-form-field">
-                <label htmlFor="email">E-MAIL</label>
+                <label htmlFor="email">MATRÍCULA</label>
 
                 <div
                   className={`login-input-wrapper ${
@@ -211,8 +211,8 @@ function Login() {
                   <Input
                     id="email"
                     name="email"
-                    type="email"
-                    placeholder="E-mail"
+                    type="text"
+                    placeholder="Matrícula"
                     autoComplete="username"
                     value={email}
                     onChange={handleChange}
