@@ -26,6 +26,7 @@ import {
   obterTurma,
   registrarAcessoMaterial,
   enviarEntregaAtividade,
+  baixarMaterial,
 } from '../../services/turmaService'
 import { ErroApi } from '../../services/apiClient'
 
@@ -119,6 +120,12 @@ function TurmaVirtual() {
   async function handleMaterialAction(item) {
     try {
       await registrarAcessoMaterial(item.id)
+      if (item.type === 'file') {
+        const arquivo = await baixarMaterial(item.id)
+        const url = URL.createObjectURL(arquivo)
+        window.open(url, '_blank')
+        setTimeout(() => URL.revokeObjectURL(url), 60000)
+      }
       setFeedbackMessage(`Acesso ao material "${item.title}" registrado.`)
     } catch (err) {
       const mensagem =
