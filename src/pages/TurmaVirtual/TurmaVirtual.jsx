@@ -22,7 +22,12 @@ import {
 } from '../../components/icons'
 
 import { useAsyncData } from '../../hooks/useAsyncData'
-import { obterTurma } from '../../services/turmaService'
+import {
+  obterTurma,
+  registrarAcessoMaterial,
+  enviarEntregaAtividade,
+} from '../../services/turmaService'
+import { ErroApi } from '../../services/apiClient'
 
 import './TurmaVirtual.css'
 
@@ -111,14 +116,30 @@ function TurmaVirtual() {
     )
   }
 
-  function handleMaterialAction(item) {
-    showPendingIntegration(`O acesso ao material "${item.title}"`)
+  async function handleMaterialAction(item) {
+    try {
+      await registrarAcessoMaterial(item.id)
+      setFeedbackMessage(`Acesso ao material "${item.title}" registrado.`)
+    } catch (err) {
+      const mensagem =
+        err instanceof ErroApi
+          ? err.message
+          : 'Não foi possível registrar o acesso ao material.'
+      setFeedbackMessage(mensagem)
+    }
   }
 
-  function handleActivityAction(activity) {
-    showPendingIntegration(
-      `A ação "${activity.action}" da atividade "${activity.title}"`
-    )
+  async function handleActivityAction(activity) {
+    try {
+      await enviarEntregaAtividade(activity.id)
+      setFeedbackMessage(`Entrega da atividade "${activity.title}" registrada.`)
+    } catch (err) {
+      const mensagem =
+        err instanceof ErroApi
+          ? err.message
+          : 'Não foi possível registrar a entrega da atividade.'
+      setFeedbackMessage(mensagem)
+    }
   }
 
   function handleResourceAction(resource) {

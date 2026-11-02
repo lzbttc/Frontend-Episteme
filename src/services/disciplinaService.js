@@ -1,6 +1,5 @@
-import { disciplinas as disciplinasMock } from '../mocks/disciplinas'
-import { minhasDisciplinasMock } from '../mocks/minhasDisciplinasMock'
 import { ErroApi, requisitar } from './apiClient'
+import { ACESSO_RAPIDO_DISCIPLINAS } from '../constants/acessoRapido'
 
 const DIAS_ABREVIADOS = {
   Segunda: 'Seg',
@@ -14,15 +13,36 @@ function formatarHora(horario) {
   return horario.slice(0, 5)
 }
 
+function formatarNota(valor) {
+  if (valor === null || valor === undefined) {
+    return undefined
+  }
+  return Number(valor).toLocaleString('pt-BR', { minimumFractionDigits: 1 })
+}
+
+function formatarFrequencia(valor) {
+  if (valor === null || valor === undefined) {
+    return '—'
+  }
+  return `${Math.round(Number(valor))}%`
+}
+
+function nomeDoProfessor(professor) {
+  if (!professor) {
+    return ''
+  }
+  return professor.nome || `Matrícula ${professor.matricula_id}`
+}
+
 function mapearDisciplina(item) {
   const [turma] = item.turmas
-  const horarios = turma.horarios
+  const horarios = turma.horarios || []
   const primeiro = horarios[0]
-  const referencia =
-    disciplinasMock.find((disciplina) => disciplina.name === item.nome) || {}
   const dias = horarios.map((h) => DIAS_ABREVIADOS[h.dia_semana]).join(' & ')
   const horas = primeiro
-    ? `${formatarHora(primeiro.horario_inicio)} - ${formatarHora(primeiro.horario_fim)}`
+    ? `${formatarHora(primeiro.horario_inicio)} - ${formatarHora(
+        primeiro.horario_fim
+      )}`
     : ''
 
   return {
@@ -31,9 +51,7 @@ function mapearDisciplina(item) {
     name: item.nome,
     turma: `Turma ${turma.periodo_letivo}`,
     semester: turma.periodo_letivo,
-    professor: turma.professor
-      ? `Matrícula ${turma.professor.matricula_id}`
-      : '',
+    professor: nomeDoProfessor(turma.professor),
     department: item.departamento,
     campus: '',
     location: primeiro?.local ?? '',
@@ -41,30 +59,38 @@ function mapearDisciplina(item) {
     scheduleHours: horas,
     schedule: `${dias.replace(' & ', '/')} ${horas}`.trim(),
     room: primeiro?.local ?? '',
-    progress: referencia.progress ?? 0,
-    frequencia: referencia.frequencia ?? '—',
-    finalGrade: referencia.finalGrade,
+    progress: turma.progresso ?? 0,
+    frequencia: formatarFrequencia(turma.frequencia),
+    finalGrade: formatarNota(turma.nota_final),
     status: 'em-andamento',
     route: 'turma-virtual',
   }
 }
 
-/**
- * Serviço responsável pela listagem e consulta detalhada de disciplinas.
- * As disciplinas do aluno vêm da API. Avisos e ações rápidas continuam no mock.
- */
-
-/**
- * Lista todas as disciplinas, opcionalmente filtradas por status.
- *
- * @param {'em-andamento' | 'concluida' | 'todas'} [status='todas'] - Filtro de status
- * @returns {Promise<Array>} Lista de disciplinas
- */
-export async function listarDisciplinas(status = 'todas') {
-  if (status === 'concluida') {
-    return []
+function mapearHistorico(item) {
+  return {
+    id: item.turma_id,
+    code: '',
+    name: item.disciplina,
+    turma: `Turma ${item.periodo_letivo}`,
+    semester: item.periodo_letivo,
+    professor: '',
+    department: '',
+    campus: '',
+    location: '',
+    scheduleDays: '',
+    scheduleHours: '',
+    schedule: '',
+    room: '',
+    progress: 100,
+    frequencia: formatarFrequencia(item.frequencia_final),
+    finalGrade: formatarNota(item.nota_final),
+    status: 'concluida',
+    route: 'turma-virtual',
   }
+}
 
+async function listarEmAndamento() {
   let resposta
   try {
     resposta = await requisitar('academico', '/matricula/minhas-disciplinas')
@@ -77,31 +103,63 @@ export async function listarDisciplinas(status = 'todas') {
   return resposta.disciplinas.map(mapearDisciplina)
 }
 
-/**
- * Obtém os detalhes de uma disciplina pelo seu ID.
- *
- * @param {string} id - Identificador da disciplina (ex.: "bd002")
- * @returns {Promise<Object | null>} Dados da disciplina ou null se não encontrada
- */
+async function listarConcluidas() {
+  let resposta
+  try {
+    resposta = await requisitar('academico', '/alunos/me/historico')
+  } catch (err) {
+    if (err instanceof ErroApi && err.status === 404) {
+      return []
+    }
+    throw err
+  }
+  return resposta.disciplinas.map(mapearHistorico)
+}
+
+export async function listarDisciplinas(status = 'todas') {
+  if (status === 'em-andamento') {
+    return listarEmAndamento()
+  }
+  if (status === 'concluida') {
+    return listarConcluidas()
+  }
+
+  const [emAndamento, concluidas] = await Promise.all([
+    listarEmAndamento(),
+    listarConcluidas(),
+  ])
+  return [...emAndamento, ...concluidas]
+}
+
 export async function obterDisciplina(id) {
-  const lista = await listarDisciplinas()
+  const lista = await listarEmAndamento()
   return lista.find((disciplina) => disciplina.id === id) || null
 }
 
-/**
- * Lista os avisos recentes das disciplinas do aluno.
- *
- * @returns {Promise<Array>} Lista de avisos
- */
-export async function listarAvisosRecentes() {
-  return Promise.resolve(minhasDisciplinasMock.recentNotices || [])
+function mapearAviso(aviso) {
+  return {
+    id: aviso.id,
+    discipline: aviso.disciplina,
+    disciplineCode: '',
+    timestamp: aviso.data,
+    title: aviso.titulo,
+    description: aviso.mensagem,
+  }
 }
 
-/**
- * Lista os atalhos de ações rápidas de Minhas Disciplinas.
- *
- * @returns {Promise<Array>}
- */
+export async function listarAvisosRecentes() {
+  let resposta
+  try {
+    resposta = await requisitar('turma', '/alunos/me/avisos?limite=2')
+  } catch (err) {
+    if (err instanceof ErroApi && err.status === 404) {
+      return []
+    }
+    throw err
+  }
+  return (resposta.avisos || []).map(mapearAviso)
+}
+
 export async function listarAcoesRapidas() {
-  return Promise.resolve(minhasDisciplinasMock.quickActions || [])
+  return ACESSO_RAPIDO_DISCIPLINAS
 }

@@ -5,6 +5,8 @@ const BASES_DOS_SERVICOS = {
     import.meta.env.VITE_IDENTIDADE_API_URL || 'http://localhost:8000',
   turma: import.meta.env.VITE_TURMA_API_URL || 'http://localhost:8001',
   academico: import.meta.env.VITE_ACADEMICO_API_URL || 'http://localhost:8002',
+  comunicacao:
+    import.meta.env.VITE_COMUNICACAO_API_URL || 'http://localhost:8003',
 }
 
 const CHAVE_TOKEN = 'episteme_token'
