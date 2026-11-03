@@ -6,10 +6,8 @@ import {
   ChevronRightSmallIcon,
   SearchIcon,
   SearchSlashIcon,
-  ButterflyIcon,
   UserFilledIcon,
   ClockSolidIcon,
-  ArrowRightLineIcon,
   ZapOutlineIcon,
   CalendarGridIcon,
   ReportCardIcon,
@@ -23,6 +21,7 @@ import {
   listarAcoesRapidas,
 } from '../../services/disciplinaService'
 import { usePageTitle } from '../../hooks/usePageTitle'
+import imagemCard from '../../assets/imagem-card.png'
 import './MinhasDisciplinas.css'
 
 const EMPTY_LIST = []
@@ -290,7 +289,7 @@ function MinhasDisciplinas() {
                       isCompleted ? 'minhas-disciplinas__card--completed' : ''
                     }`}
                   >
-                    {/* Left Banner Illustration with SVG subtract pattern */}
+                    {/* Left Banner Illustration (imagem do card) */}
                     <div
                       className={`minhas-disciplinas__card-banner ${
                         isCompleted
@@ -299,36 +298,25 @@ function MinhasDisciplinas() {
                       }`}
                       aria-hidden="true"
                     >
-                      <div className="minhas-disciplinas__banner-shapes">
-                        <ButterflyIcon className="minhas-disciplinas__banner-svg minhas-disciplinas__banner-svg--top" />
-                        <ButterflyIcon className="minhas-disciplinas__banner-svg minhas-disciplinas__banner-svg--bottom" />
-                      </div>
+                      <img
+                        src={imagemCard}
+                        alt=""
+                        className="minhas-disciplinas__banner-image"
+                      />
                     </div>
 
                     {/* Card Body */}
                     <div className="minhas-disciplinas__card-body">
-                      {/* Top Badges */}
+                      {/* Top row: code text (left) + turma pill (right) */}
                       <div className="minhas-disciplinas__card-top">
-                        <div className="minhas-disciplinas__code-turma">
-                          <span className="minhas-disciplinas__code-tag">
-                            {disc.code}
-                          </span>
-                          <span className="minhas-disciplinas__turma-tag">
-                            {disc.turma}
-                          </span>
-                        </div>
-                        {isCompleted ? (
-                          <div className="minhas-disciplinas__completed-badge">
-                            <span className="minhas-disciplinas__completed-dot">
-                              ✓
-                            </span>
-                            <span>Média: {disc.finalGrade}</span>
-                          </div>
-                        ) : (
-                          <div className="minhas-disciplinas__progress-badge">
-                            <span>Freq: {disc.frequencia}</span>
-                          </div>
-                        )}
+                        <span className="minhas-disciplinas__code-text">
+                          {disc.code}
+                        </span>
+                        <span className="minhas-disciplinas__turma-pill">
+                          {isCompleted
+                            ? `Turma ${disc.semester}`
+                            : `Turma ${disc.semester}`}
+                        </span>
                       </div>
 
                       {/* Title */}
@@ -339,45 +327,44 @@ function MinhasDisciplinas() {
                       {/* Professor & Department info */}
                       <div className="minhas-disciplinas__info-row">
                         <UserFilledIcon className="minhas-disciplinas__info-icon" />
-                        <span className="minhas-disciplinas__prof-name">
+                        <span className="minhas-disciplinas__info-text">
                           {disc.professor}
-                        </span>
-                        <span className="minhas-disciplinas__bullet">•</span>
-                        <span className="minhas-disciplinas__dept-name">
-                          {disc.department}
-                        </span>
-                      </div>
-
-                      {/* Schedule & Location info */}
-                      <div className="minhas-disciplinas__info-row">
-                        <ClockSolidIcon className="minhas-disciplinas__info-icon" />
-                        <span className="minhas-disciplinas__schedule-days">
-                          {disc.scheduleDays}
-                        </span>
-                        <span className="minhas-disciplinas__bullet">•</span>
-                        <span className="minhas-disciplinas__schedule-hours">
-                          {disc.scheduleHours}
-                        </span>
-                        <span className="minhas-disciplinas__bullet">•</span>
-                        <span className="minhas-disciplinas__schedule-room">
-                          {disc.room}
+                          {disc.department ? ` • ${disc.department}` : ''}
+                          {isCompleted && disc.finalGrade
+                            ? ` • Média: ${disc.finalGrade}`
+                            : ''}
+                          {!isCompleted && disc.frequencia
+                            ? ` • Freq: ${disc.frequencia}`
+                            : ''}
                         </span>
                       </div>
 
-                      {/* Bottom Action Button with enhanced sensitivity */}
-                      <div className="minhas-disciplinas__card-actions">
+                      {/* Bottom row: schedule pill (left) + action button (right) */}
+                      <div className="minhas-disciplinas__card-bottom">
+                        <div className="minhas-disciplinas__schedule-pill">
+                          <ClockSolidIcon className="minhas-disciplinas__schedule-icon" />
+                          <span className="minhas-disciplinas__schedule-days">
+                            {disc.scheduleDays}
+                          </span>
+                          <span className="minhas-disciplinas__bullet">•</span>
+                          <span className="minhas-disciplinas__schedule-hours">
+                            {disc.scheduleHours}
+                          </span>
+                          <span className="minhas-disciplinas__bullet">•</span>
+                          <span className="minhas-disciplinas__schedule-room">
+                            {disc.room}
+                          </span>
+                        </div>
+
                         <button
                           type="button"
                           className="minhas-disciplinas__action-btn"
                           onClick={() => handleAccessClass(disc)}
                           title={`Acessar turma virtual de ${disc.name}`}
                         >
-                          <span>
-                            {isCompleted
-                              ? 'Acessar arquivo da turma'
-                              : 'Acessar turma virtual'}
-                          </span>
-                          <ArrowRightLineIcon className="minhas-disciplinas__btn-arrow" />
+                          {isCompleted
+                            ? 'Acessar arquivo da turma'
+                            : 'Acessar turma virtual'}
                         </button>
                       </div>
                     </div>
