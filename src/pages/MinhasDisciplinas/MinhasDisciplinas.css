@@ -300,23 +300,22 @@
   gap: 20px;
 }
 
-/* Discipline Card */
+/* Discipline Card (matches exemplo/Card.svg: 637×168 content, 16px radius, 16px padding) */
 .minhas-disciplinas__card {
   display: flex;
+  gap: 16px;
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 16px;
-  overflow: hidden;
-  box-shadow: var(--shadow-sm);
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07);
   transition:
-    transform var(--duration-base) var(--ease-standard),
     box-shadow var(--duration-base) var(--ease-standard),
     border-color var(--duration-base) var(--ease-standard);
   position: relative;
 }
 
 .minhas-disciplinas__card:hover {
-  transform: translateY(var(--lift-card));
   border-color: var(--color-border);
   box-shadow: var(--shadow-card-hover);
 }
@@ -325,132 +324,85 @@
   opacity: 0.95;
 }
 
-/* Card Left Banner */
+/* Card Left Banner — inset rounded tile with card image */
 .minhas-disciplinas__card-banner {
-  width: 64px;
+  width: 60px;
+  align-self: stretch;
   flex-shrink: 0;
-  background: linear-gradient(
-    180deg,
-    var(--color-primary) 0%,
-    var(--color-primary-dark) 100%
-  );
+  background-color: var(--color-primary);
+  border-radius: 16px;
   position: relative;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .minhas-disciplinas__card-banner--completed {
-  background: linear-gradient(
-    180deg,
-    var(--color-success) 0%,
-    var(--color-success) 100%
-  );
+  background-color: var(--color-success);
 }
 
-.minhas-disciplinas__banner-shapes {
+.minhas-disciplinas__banner-image {
   position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
+  object-fit: cover;
   pointer-events: none;
-}
-
-.minhas-disciplinas__banner-svg {
-  width: 100%;
-  height: auto;
-  opacity: 0.4;
-  color: var(--color-surface);
-}
-
-.minhas-disciplinas__banner-svg--top {
-  transform: translateY(-20%) scale(1.2);
-}
-
-.minhas-disciplinas__banner-svg--bottom {
-  transform: translateY(20%) scale(1.2) rotate(180deg);
 }
 
 /* Card Body */
 .minhas-disciplinas__card-body {
   flex: 1;
-  padding: 20px 24px;
+  min-width: 0;
+  padding: 4px 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 
+/* Top row: code text (left) + turma pill (right) */
 .minhas-disciplinas__card-top {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
 }
 
-.minhas-disciplinas__code-turma {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.minhas-disciplinas__code-tag {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--color-primary-dark);
-  background-color: var(--color-surface-soft);
-  padding: 4px 8px;
-  border-radius: 6px;
-  letter-spacing: 0.025em;
-}
-
-.minhas-disciplinas__turma-tag {
-  font-size: 0.75rem;
+.minhas-disciplinas__code-text {
+  font-size: 12px;
   font-weight: 600;
   color: var(--color-text-secondary);
+  letter-spacing: 0.02em;
+  line-height: 20px;
 }
 
-.minhas-disciplinas__progress-badge {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--color-success);
-  background-color: var(--color-surface-soft);
-  padding: 3px 8px;
-  border-radius: 6px;
-}
-
-.minhas-disciplinas__completed-badge {
-  display: flex;
+.minhas-disciplinas__turma-pill {
+  flex-shrink: 0;
+  height: 20px;
+  display: inline-flex;
   align-items: center;
-  gap: 4px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--color-success);
-  background-color: var(--color-surface-soft);
-  padding: 3px 8px;
+  padding: 0 10px;
+  background-color: var(--color-primary);
+  color: var(--color-surface);
   border-radius: 6px;
-}
-
-.minhas-disciplinas__completed-dot {
-  font-size: 0.8125rem;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .minhas-disciplinas__card-title {
-  font-size: 1.1875rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--color-text);
   margin: 0;
   line-height: 1.3;
 }
 
-/* Info rows (Professor & Schedule) */
+/* Info row (Professor • Department • ...) */
 .minhas-disciplinas__info-row {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.8125rem;
+  font-size: 12px;
   color: var(--color-text-secondary);
   flex-wrap: wrap;
 }
@@ -460,20 +412,56 @@
   color: var(--color-text-secondary);
 }
 
-.minhas-disciplinas__prof-name {
-  font-weight: 600;
-  color: var(--color-text);
+.minhas-disciplinas__info-text {
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.minhas-disciplinas__dept-name,
-.minhas-disciplinas__schedule-hours,
-.minhas-disciplinas__schedule-room {
+/* Bottom row: schedule pill (left) + dark action button (right) */
+.minhas-disciplinas__card-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.minhas-disciplinas__schedule-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px;
+  background-color: var(--color-surface-soft);
+  border-radius: 12px;
+  font-size: 12px;
+  color: var(--color-text);
+  min-width: 0;
+}
+
+.minhas-disciplinas__schedule-icon {
+  flex-shrink: 0;
   color: var(--color-text-secondary);
 }
 
 .minhas-disciplinas__schedule-days {
-  font-weight: 600;
+  font-weight: 700;
   color: var(--color-text);
+}
+
+.minhas-disciplinas__schedule-hours {
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.minhas-disciplinas__schedule-room {
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .minhas-disciplinas__bullet {
@@ -481,50 +469,37 @@
   font-size: 0.75rem;
 }
 
-/* Card Actions with High-Precision Button Sensitivity */
-.minhas-disciplinas__card-actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 4px;
-}
-
+/* Dark action button (no arrow, matches exemplo) */
 .minhas-disciplinas__action-btn {
+  flex-shrink: 0;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  height: 32px;
+  padding: 0 16px;
   background-color: var(--color-text);
   color: var(--color-surface);
   border: 1px solid transparent;
   border-radius: 12px;
-  padding: 9px 18px;
-  min-height: 40px;
-  font-size: 0.8125rem;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   transition:
-    border-color var(--duration-base) var(--ease-standard),
-    box-shadow var(--duration-base) var(--ease-standard);
+    box-shadow var(--duration-base) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard);
   user-select: none;
+  white-space: nowrap;
 }
 
 .minhas-disciplinas__action-btn:hover {
-  background-color: var(--color-text);
-  transform: translateY(var(--lift-button));
   box-shadow: var(--shadow-card-hover);
-}
-
-.minhas-disciplinas__action-btn:hover .minhas-disciplinas__btn-arrow {
-  transform: translateX(3px);
+  transform: translateY(var(--lift-button));
 }
 
 .minhas-disciplinas__action-btn:active {
   transform: scale(var(--press-scale));
-  box-shadow: var(--shadow-sm);
-}
-
-.minhas-disciplinas__btn-arrow {
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 /* Empty State */
@@ -1016,16 +991,16 @@
     width: 48px;
   }
 
-  .minhas-disciplinas__card-body {
-    padding: 16px;
-  }
-
   .minhas-disciplinas__card-title {
     font-size: 1.0625rem;
   }
 
+  .minhas-disciplinas__card-bottom {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
   .minhas-disciplinas__action-btn {
     width: 100%;
-    justify-content: center;
   }
 }
