@@ -423,9 +423,6 @@ function MinhasDisciplinas() {
                     {quickActions[0].subtitle}
                   </span>
                 </div>
-                <span className="minhas-disciplinas__tile-badge">
-                  {quickActions[0].badge}
-                </span>
               </button>
 
               {/* Tile 2: Boletim Escolar Oficial */}
@@ -446,9 +443,6 @@ function MinhasDisciplinas() {
                     {quickActions[1].subtitle}
                   </span>
                 </div>
-                <span className="minhas-disciplinas__tile-badge">
-                  {quickActions[1].badge}
-                </span>
               </button>
 
               {/* Tile 3: Ajuste de Matrícula */}
@@ -469,9 +463,6 @@ function MinhasDisciplinas() {
                     {quickActions[2].subtitle}
                   </span>
                 </div>
-                <span className="minhas-disciplinas__tile-badge">
-                  {quickActions[2].badge}
-                </span>
               </button>
             </div>
           </div>

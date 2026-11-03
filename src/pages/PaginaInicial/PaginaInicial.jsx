@@ -5,7 +5,6 @@ import EventCard from '../../components/EventCard/EventCard'
 import QuickActionCard from '../../components/QuickActionCard/QuickActionCard'
 import NewsCard from '../../components/NewsCard/NewsCard'
 import Button from '../../components/Button/Button'
-import DisciplineCard from '../../components/DisciplineCard/DisciplineCard'
 import SectionHeading from '../../components/SectionHeading/SectionHeading'
 import { ArrowRightIcon, CalendarIcon, ZapIcon } from '../../components/icons'
 import { PATHS } from '../../routes/paths'
@@ -18,16 +17,14 @@ import {
   listarAcessoRapidoDestaque,
   listarNoticiasRecentes,
 } from '../../services/alunoService'
-import { listarDisciplinas } from '../../services/disciplinaService'
 import './PaginaInicial.css'
 
 function PaginaInicial() {
   usePageTitle('Portal Acadêmico')
 
   const carregarHome = useCallback(async () => {
-    const [alunoData, disciplines, event, actions, news] = await Promise.all([
+    const [alunoData, event, actions, news] = await Promise.all([
       obterAluno(),
-      listarDisciplinas('em-andamento'),
       obterProximoCompromisso(),
       listarAcessoRapidoDestaque(),
       listarNoticiasRecentes(),
@@ -36,7 +33,6 @@ function PaginaInicial() {
     return {
       student: alunoData.student,
       metrics: alunoData.metrics,
-      disciplines,
       event,
       actions,
       news,
@@ -61,7 +57,7 @@ function PaginaInicial() {
     )
   }
 
-  const { student, metrics, disciplines, event, actions, news } = data
+  const { student, metrics, event, actions, news } = data
 
   return (
     <div className="pagina-inicial">
@@ -109,18 +105,6 @@ function PaginaInicial() {
           }
           className="pagina-inicial__disciplines-header"
         />
-
-        <div className="pagina-inicial__disciplines-grid">
-          {disciplines.length === 0 ? (
-            <p className="pagina-inicial__vazio">
-              Nenhuma disciplina em andamento.
-            </p>
-          ) : (
-            disciplines.map((discipline) => (
-              <DisciplineCard key={discipline.id} discipline={discipline} />
-            ))
-          )}
-        </div>
       </section>
 
       {/* 3. Compromissos & Acesso Rápido (2-Column Grid) */}
