@@ -160,7 +160,7 @@ function CentralAjuda() {
     return lista
   }, [categoriaAtiva, perfilAutenticado, termoBusca])
 
-  // Separação em dois grupos claros: Prioritárias para o perfil e Gerais
+  // Separação em dois grupos: Prioritárias para o perfil e Gerais
   const { faqsPrioritarias, faqsGerais } = useMemo(() => {
     const prioritarias = []
     const gerais = []
@@ -189,7 +189,7 @@ function CentralAjuda() {
     setOpenFaqIds([])
   }, [])
 
-  // Helper para criar itens de acordeão para cada grupo
+  // Helper para criar itens de acordeão sem repetição do selo "Destaque Aluno"
   const mapearFaqParaAcordeao = useCallback(
     (faq, ehPrioritaria) => {
       const categoria = CATEGORIAS_AJUDA.find((c) => c.id === faq.categoriaId)
@@ -198,24 +198,14 @@ function CentralAjuda() {
         id: faq.id,
         title: faq.pergunta,
         highlighted: ehPrioritaria,
-        badge: (
-          <span className="central-ajuda__faq-badges">
-            {categoriaAtiva === 'todas' && categoria && (
+        badge:
+          categoriaAtiva === 'todas' && categoria ? (
+            <span className="central-ajuda__faq-badges">
               <Badge variant="soft" size="sm">
                 {categoria.nome}
               </Badge>
-            )}
-            {ehPrioritaria ? (
-              <Badge variant="primary" size="sm">
-                Destaque {PERFIS_LABELS[perfilAutenticado]}
-              </Badge>
-            ) : (
-              <Badge variant="soft" size="sm">
-                Geral
-              </Badge>
-            )}
-          </span>
-        ),
+            </span>
+          ) : null,
         content: (
           <div className="central-ajuda__faq-resposta">
             <p className="central-ajuda__faq-texto">{faq.resposta}</p>
@@ -243,7 +233,7 @@ function CentralAjuda() {
         ),
       }
     },
-    [categoriaAtiva, perfilAutenticado]
+    [categoriaAtiva]
   )
 
   const accordionItemsPrioritarias = useMemo(() => {
@@ -392,7 +382,7 @@ function CentralAjuda() {
       </nav>
 
       {/* ====================================================================
-          C. Barra de Ações e Informações (Resultados, Destaque e Ações Rápidas)
+          C. Barra de Ações e Informações (Toolbar Compacta e Limpa)
           ==================================================================== */}
       <section
         className="central-ajuda__toolbar"
@@ -402,13 +392,6 @@ function CentralAjuda() {
           <span className="central-ajuda__toolbar-count">
             {totalFaqs}{' '}
             {totalFaqs === 1 ? 'dúvida disponível' : 'dúvidas disponíveis'}
-          </span>
-          <span className="central-ajuda__toolbar-sep" aria-hidden="true">
-            &bull;
-          </span>
-          <span className="central-ajuda__toolbar-priority-hint">
-            Dúvidas relevantes para{' '}
-            <strong>{PERFIS_LABELS[perfilAutenticado]}</strong> priorizadas
           </span>
         </div>
 
@@ -524,24 +507,22 @@ function CentralAjuda() {
       )}
 
       {/* ====================================================================
-          E. Perguntas Frequentes (Separadas em Grupos: Prioritárias e Gerais)
+          E. Perguntas Frequentes (Sem caixas repetitivas ou badges desnecessários)
           ==================================================================== */}
       {totalFaqs > 0 && (
         <section
           className="central-ajuda__faq-section"
           aria-label="Perguntas Frequentes"
         >
-          {/* Grupo 1: Perguntas Prioritárias para o Perfil */}
+          {/* Grupo 1: Perguntas do Perfil */}
           {faqsPrioritarias.length > 0 && (
             <div className="central-ajuda__faq-group">
               <div className="central-ajuda__faq-group-header">
                 <h2 className="central-ajuda__faq-group-title">
-                  Perguntas Prioritárias para {PERFIS_LABELS[perfilAutenticado]}
+                  {categoriaAtiva === 'todas'
+                    ? `Perguntas para ${PERFIS_LABELS[perfilAutenticado]}`
+                    : `Dúvidas sobre ${categoriaAtualObj?.nome}`}
                 </h2>
-                <span className="central-ajuda__faq-group-count">
-                  {faqsPrioritarias.length}{' '}
-                  {faqsPrioritarias.length === 1 ? 'pergunta' : 'perguntas'}
-                </span>
               </div>
               <Accordion
                 items={accordionItemsPrioritarias}
@@ -558,10 +539,6 @@ function CentralAjuda() {
                 <h2 className="central-ajuda__faq-group-title">
                   Perguntas Gerais
                 </h2>
-                <span className="central-ajuda__faq-group-count">
-                  {faqsGerais.length}{' '}
-                  {faqsGerais.length === 1 ? 'pergunta' : 'perguntas'}
-                </span>
               </div>
               <Accordion
                 items={accordionItemsGerais}
