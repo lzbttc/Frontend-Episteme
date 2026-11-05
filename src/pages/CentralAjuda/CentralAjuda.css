@@ -265,12 +265,25 @@
 }
 
 .central-ajuda__toolbar-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-size: 0.8125rem;
   color: var(--color-text-secondary);
+  flex-wrap: wrap;
 }
 
 .central-ajuda__toolbar-info strong {
   color: var(--color-text);
+}
+
+.central-ajuda__toolbar-destaque-tag {
+  color: var(--color-primary-dark);
+  font-weight: 600;
+  font-size: 0.75rem;
+  background-color: rgba(59, 130, 246, 0.08);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
 }
 
 .central-ajuda__toolbar-actions {
@@ -382,13 +395,23 @@
 .central-ajuda__guia-card {
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-left: 4px solid var(--color-primary);
+  border-left: 4px solid #cbd5e1;
   border-radius: var(--radius-md);
   padding: 20px 24px;
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
   gap: 10px;
+  transition: border-color var(--duration-fast) var(--ease-standard);
+}
+
+.central-ajuda__guia-card--destaque {
+  border-left: 4px solid var(--color-primary);
+  background: linear-gradient(
+    to right,
+    rgba(59, 130, 246, 0.03) 0%,
+    var(--color-surface) 100%
+  );
 }
 
 .central-ajuda__guia-header {

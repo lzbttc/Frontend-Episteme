@@ -68,7 +68,7 @@ function CentralAjuda() {
   usePageTitle('Central de Ajuda')
   const { aluno, token } = useAuth()
 
-  // Perfil autenticado exclusivo do usuário logado (cada perfil tem sua própria central)
+  // Perfil autenticado exclusivo do usuário logado
   const perfilAutenticado = useMemo(
     () => identificarPerfilAutenticado(aluno, token),
     [aluno, token]
@@ -99,10 +99,11 @@ function CentralAjuda() {
     setCategoriaAtiva('todas')
   }, [])
 
-  // Orientações estritamente contextualizadas para o perfil do usuário logado
+  // Orientações da categoria com prioridade/destaque para o perfil atual,
+  // sem impedir o acesso aos guias gerais
   const orientacoesFiltradas = useMemo(() => {
-    let lista = ORIENTACOES_AJUDA.filter((ori) =>
-      ori.perfis.includes(perfilAutenticado)
+    let lista = ORIENTACOES_AJUDA.filter(
+      (ori) => ori.perfis.includes(perfilAutenticado) || ori.perfis.length >= 2
     )
 
     if (categoriaAtiva !== 'todas') {
@@ -124,13 +125,23 @@ function CentralAjuda() {
       })
     }
 
-    return lista
+    // Ordenação com destaque para orientações pertinentes ao perfil atual
+    return [...lista].sort((a, b) => {
+      const aEspecifico =
+        a.perfis.includes(perfilAutenticado) && a.perfis.length === 1
+      const bEspecifico =
+        b.perfis.includes(perfilAutenticado) && b.perfis.length === 1
+      if (aEspecifico && !bEspecifico) return -1
+      if (!aEspecifico && bEspecifico) return 1
+      return 0
+    })
   }, [categoriaAtiva, perfilAutenticado, termoBusca])
 
-  // FAQs estritamente contextualizadas para o perfil do usuário logado
+  // FAQs filtradas: informações pertinentes ao perfil atual recebem destaque,
+  // enquanto conteúdos gerais continuam acessíveis
   const faqsFiltradas = useMemo(() => {
-    let lista = FAQS_AJUDA.filter((faq) =>
-      faq.perfis.includes(perfilAutenticado)
+    let lista = FAQS_AJUDA.filter(
+      (faq) => faq.perfis.includes(perfilAutenticado) || faq.perfis.length >= 2
     )
 
     if (categoriaAtiva !== 'todas') {
@@ -149,7 +160,17 @@ function CentralAjuda() {
       })
     }
 
-    return lista
+    // Ordenação: primeiro os tópicos específicos do perfil autenticado (destaque no topo),
+    // seguidos pelos conteúdos de interesse geral
+    return [...lista].sort((a, b) => {
+      const aEspecifico =
+        a.perfis.includes(perfilAutenticado) && a.perfis.length === 1
+      const bEspecifico =
+        b.perfis.includes(perfilAutenticado) && b.perfis.length === 1
+      if (aEspecifico && !bEspecifico) return -1
+      if (!aEspecifico && bEspecifico) return 1
+      return 0
+    })
   }, [categoriaAtiva, perfilAutenticado, termoBusca])
 
   // Ações de expandir e recolher todos os FAQs
@@ -166,23 +187,36 @@ function CentralAjuda() {
     return CATEGORIAS_AJUDA.find((c) => c.id === categoriaAtiva) || null
   }, [categoriaAtiva])
 
-  // Itens do acordeão limpos e objetivos
+  // Itens do acordeão com destaque explícito para o perfil atual e indicação de tópicos gerais
   const accordionItems = useMemo(() => {
     return faqsFiltradas.map((faq) => {
       const categoria = CATEGORIAS_AJUDA.find((c) => c.id === faq.categoriaId)
+      const ehEspecificoDoPerfil =
+        faq.perfis.includes(perfilAutenticado) && faq.perfis.length === 1
+      const ehGeral = faq.perfis.length > 1
 
       return {
         id: faq.id,
         title: faq.pergunta,
-        highlighted: false,
-        badge:
-          categoriaAtiva === 'todas' && categoria ? (
-            <span className="central-ajuda__faq-badges">
+        highlighted: ehEspecificoDoPerfil,
+        badge: (
+          <span className="central-ajuda__faq-badges">
+            {categoriaAtiva === 'todas' && categoria && (
               <Badge variant="soft" size="sm">
                 {categoria.nome}
               </Badge>
-            </span>
-          ) : null,
+            )}
+            {ehEspecificoDoPerfil ? (
+              <Badge variant="primary" size="sm">
+                Destaque {PERFIS_LABELS[perfilAutenticado]}
+              </Badge>
+            ) : ehGeral ? (
+              <Badge variant="soft" size="sm">
+                Geral
+              </Badge>
+            ) : null}
+          </span>
+        ),
         content: (
           <div className="central-ajuda__faq-resposta">
             <p>{faq.resposta}</p>
@@ -206,13 +240,13 @@ function CentralAjuda() {
         ),
       }
     })
-  }, [faqsFiltradas, categoriaAtiva])
+  }, [faqsFiltradas, categoriaAtiva, perfilAutenticado])
 
   const totalResultados = faqsFiltradas.length + orientacoesFiltradas.length
 
   return (
     <div className="central-ajuda">
-      {/* 1. Header Card Limpo com Título, Perfil e Campo de Busca */}
+      {/* 1. Header Card com Título, Identificação do Perfil e Campo de Busca */}
       <header className="central-ajuda__header-card">
         <nav
           className="central-ajuda__breadcrumbs"
@@ -339,7 +373,7 @@ function CentralAjuda() {
         })}
       </nav>
 
-      {/* 3. Barra de Ações Rápidas do Conteúdo */}
+      {/* 3. Barra de Ações Rápidas com Indicador de Destaque */}
       <section
         className="central-ajuda__toolbar"
         aria-label="Controle de visualização"
@@ -353,6 +387,10 @@ function CentralAjuda() {
             )}
             &nbsp;&bull; {faqsFiltradas.length}{' '}
             {faqsFiltradas.length === 1 ? 'pergunta' : 'perguntas'}
+          </span>
+          <span className="central-ajuda__toolbar-destaque-tag">
+            (Itens prioritários de {PERFIS_LABELS[perfilAutenticado]} em
+            destaque)
           </span>
         </div>
 
@@ -416,8 +454,8 @@ function CentralAjuda() {
             Nenhum conteúdo encontrado
           </h2>
           <p className="central-ajuda__empty-desc">
-            Não encontramos resultados para a busca atual no seu perfil. Tente
-            palavras-chave mais gerais ou redefina os filtros.
+            Não encontramos resultados para a busca atual. Tente palavras-chave
+            mais gerais ou redefina os filtros.
           </p>
           <Button variant="primary" size="md" onClick={handleResetFiltros}>
             Redefinir filtros
@@ -433,12 +471,22 @@ function CentralAjuda() {
         >
           {orientacoesFiltradas.map((ori) => {
             const cat = CATEGORIAS_AJUDA.find((c) => c.id === ori.categoriaId)
+            const ehEspecifico =
+              ori.perfis.includes(perfilAutenticado) && ori.perfis.length === 1
+
             return (
-              <div key={ori.id} className="central-ajuda__guia-card">
+              <div
+                key={ori.id}
+                className={`central-ajuda__guia-card ${
+                  ehEspecifico ? 'central-ajuda__guia-card--destaque' : ''
+                }`}
+              >
                 <div className="central-ajuda__guia-header">
                   <div className="central-ajuda__guia-title-box">
                     <span className="central-ajuda__guia-badge">
-                      Orientações &bull; {cat?.nome || 'Geral'}
+                      {ehEspecifico
+                        ? `Destaque para seu perfil • ${cat?.nome || 'Geral'}`
+                        : `Orientações Gerais • ${cat?.nome || 'Geral'}`}
                     </span>
                     <h2 className="central-ajuda__guia-titulo">{ori.titulo}</h2>
                   </div>
