@@ -48,10 +48,10 @@ function Header() {
           </button>
 
           <Link
-            to={PATHS.emBreve}
+            to={PATHS.ajuda}
             className="header__icon-btn"
-            title="Ajuda"
-            aria-label="Ajuda"
+            title="Central de Ajuda"
+            aria-label="Central de Ajuda"
           >
             <HelpCircleIcon size={20} />
           </Link>

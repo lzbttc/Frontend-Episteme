@@ -19,7 +19,7 @@ function Footer() {
           <span className="footer__dot" aria-hidden="true">
             •
           </span>
-          <Link to={PATHS.emBreve} className="footer__link">
+          <Link to={PATHS.ajuda} className="footer__link">
             Central de Ajuda
           </Link>
         </nav>

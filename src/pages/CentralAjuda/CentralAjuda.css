@@ -1,0 +1,786 @@
+/* ==========================================================================
+   Central de Ajuda — EPIS Design System
+   Layout, Typography, Category Grid, Orientations & FAQ
+   ========================================================================== */
+
+.central-ajuda {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-bottom: 40px;
+}
+
+/* ==========================================================================
+   Visually Hidden Utility (Accessibility)
+   ========================================================================== */
+.central-ajuda__visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ==========================================================================
+   1. Header Card & Hero
+   ========================================================================== */
+.central-ajuda__header-card {
+  background: linear-gradient(
+    135deg,
+    var(--color-surface) 0%,
+    var(--color-surface-warm) 100%
+  );
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.central-ajuda__breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8125rem;
+}
+
+.central-ajuda__breadcrumb-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+.central-ajuda__breadcrumb-link:hover {
+  color: var(--color-primary);
+}
+
+.central-ajuda__breadcrumb-separator {
+  color: var(--color-text-secondary);
+  display: inline-flex;
+  align-items: center;
+}
+
+.central-ajuda__breadcrumb-current {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.central-ajuda__hero {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.central-ajuda__title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.central-ajuda__badge-destaque {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: rgba(59, 130, 246, 0.1);
+  color: var(--color-primary-dark);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.central-ajuda__user-role-badge {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.8125rem;
+}
+
+.central-ajuda__user-role-badge strong {
+  color: var(--color-text);
+  margin-left: 4px;
+}
+
+.central-ajuda__title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+.central-ajuda__subtitle {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  max-width: 680px;
+}
+
+/* ==========================================================================
+   Search Input Bar
+   ========================================================================== */
+.central-ajuda__search-container {
+  width: 100%;
+  max-width: 720px;
+}
+
+.central-ajuda__search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.central-ajuda__search-icon {
+  position: absolute;
+  left: 16px;
+  color: var(--color-text-secondary);
+  pointer-events: none;
+}
+
+.central-ajuda__search-input {
+  width: 100%;
+  height: 50px;
+  padding: 12px 44px 12px 48px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 0.9375rem;
+  color: var(--color-text);
+  box-shadow: var(--shadow-sm);
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
+}
+
+.central-ajuda__search-input:hover {
+  border-color: #cbd5e1;
+}
+
+.central-ajuda__search-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-input-focus);
+}
+
+.central-ajuda__search-clear {
+  position: absolute;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: 1.5rem;
+  line-height: 1;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+}
+
+.central-ajuda__search-clear:hover {
+  background-color: var(--color-surface-soft);
+  color: var(--color-text);
+}
+
+.central-ajuda__search-clear:focus-visible {
+  outline: 2px solid var(--color-primary);
+}
+
+/* ==========================================================================
+   2. Contextual Profile Bar
+   ========================================================================== */
+.central-ajuda__contexto-perfil-bar {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  box-shadow: var(--shadow-sm);
+}
+
+.central-ajuda__contexto-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.875rem;
+  color: var(--color-text);
+}
+
+.central-ajuda__contexto-icon {
+  color: var(--color-success);
+  flex-shrink: 0;
+}
+
+.central-ajuda__contexto-ativo-tag {
+  color: var(--color-primary-dark);
+  font-weight: 600;
+}
+
+.central-ajuda__perfil-botoes {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.central-ajuda__perfil-btn {
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-family: inherit;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-standard);
+}
+
+.central-ajuda__perfil-btn:hover {
+  border-color: #cbd5e1;
+  color: var(--color-text);
+  background-color: var(--color-surface-warm);
+}
+
+.central-ajuda__perfil-btn--active {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #ffffff;
+}
+
+.central-ajuda__perfil-btn--active:hover {
+  background-color: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+  color: #ffffff;
+}
+
+.central-ajuda__perfil-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   3. Categories Section
+   ========================================================================== */
+.central-ajuda__section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.central-ajuda__section-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.central-ajuda__section-subtitle {
+  margin: 4px 0 0 0;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.central-ajuda__reset-categoria-btn {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+
+.central-ajuda__reset-categoria-btn:hover {
+  background-color: rgba(59, 130, 246, 0.08);
+}
+
+.central-ajuda__reset-categoria-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+}
+
+.central-ajuda__categorias-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.central-ajuda__categoria-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 20px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  transition:
+    transform var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
+}
+
+.central-ajuda__categoria-card:hover {
+  transform: translateY(-2px);
+  border-color: #cbd5e1;
+  box-shadow: var(--shadow-card-hover);
+}
+
+.central-ajuda__categoria-card:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.central-ajuda__categoria-card--active {
+  border-color: var(--color-primary);
+  background-color: #f0f7ff;
+  box-shadow: 0 0 0 1px var(--color-primary);
+}
+
+.central-ajuda__categoria-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-soft);
+  color: var(--color-primary-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+
+.central-ajuda__categoria-card--active .central-ajuda__categoria-icon-box {
+  background-color: var(--color-primary);
+  color: #ffffff;
+}
+
+.central-ajuda__categoria-info {
+  flex: 1;
+}
+
+.central-ajuda__categoria-nome {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.central-ajuda__categoria-desc {
+  margin: 6px 0 0 0;
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+  line-height: 1.45;
+}
+
+.central-ajuda__categoria-count {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  background-color: rgba(59, 130, 246, 0.1);
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+}
+
+/* ==========================================================================
+   4. Search Feedback
+   ========================================================================== */
+.central-ajuda__busca-feedback {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 18px;
+  background-color: var(--color-surface-soft);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  color: var(--color-text);
+}
+
+.central-ajuda__busca-limpar-btn {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  padding: 2px 6px;
+}
+
+.central-ajuda__busca-limpar-btn:hover {
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   5. Empty State
+   ========================================================================== */
+.central-ajuda__empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 24px;
+  text-align: center;
+  background-color: var(--color-surface);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.central-ajuda__empty-icon {
+  color: var(--color-text-secondary);
+  margin-bottom: 16px;
+}
+
+.central-ajuda__empty-title {
+  margin: 0 0 8px 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.central-ajuda__empty-desc {
+  margin: 0 0 24px 0;
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+  max-width: 480px;
+  line-height: 1.5;
+}
+
+.central-ajuda__empty-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* ==========================================================================
+   6. Orientations Section
+   ========================================================================== */
+.central-ajuda__badge-contagem {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+}
+
+.central-ajuda__orientacoes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.central-ajuda__orientacao-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition:
+    box-shadow var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard);
+}
+
+.central-ajuda__orientacao-card:hover {
+  box-shadow: var(--shadow-card-hover);
+  border-color: #cbd5e1;
+}
+
+.central-ajuda__orientacao-card--destaque {
+  border-top: 3px solid var(--color-primary);
+}
+
+.central-ajuda__orientacao-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.central-ajuda__orientacao-categoria-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary);
+}
+
+.central-ajuda__orientacao-perfis {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.central-ajuda__orientacao-titulo {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1.35;
+}
+
+.central-ajuda__orientacao-resumo {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.central-ajuda__orientacao-passos {
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border);
+}
+
+.central-ajuda__passos-subtitulo {
+  margin: 0 0 8px 0;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-text);
+  letter-spacing: 0.04em;
+}
+
+.central-ajuda__passos-lista {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.central-ajuda__passo-item {
+  font-size: 0.875rem;
+  color: var(--color-text);
+  line-height: 1.5;
+}
+
+/* ==========================================================================
+   7. FAQ Section & Badges
+   ========================================================================== */
+.central-ajuda__faq-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.central-ajuda__faq-toggle-btn {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: var(--radius-sm);
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+
+.central-ajuda__faq-toggle-btn:hover {
+  background-color: rgba(59, 130, 246, 0.08);
+}
+
+.central-ajuda__faq-toggle-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+}
+
+.central-ajuda__faq-action-divider {
+  color: var(--color-border);
+}
+
+.central-ajuda__faq-badges {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.central-ajuda__faq-resposta p {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--color-text);
+  line-height: 1.65;
+}
+
+.central-ajuda__faq-tags {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--color-border);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.central-ajuda__faq-tags-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.central-ajuda__tag-btn {
+  background-color: var(--color-surface-soft);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-standard);
+}
+
+.central-ajuda__tag-btn:hover {
+  color: var(--color-primary-dark);
+  border-color: var(--color-primary);
+  background-color: #f0f7ff;
+}
+
+.central-ajuda__tag-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+}
+
+/* ==========================================================================
+   8. Complementary Support Aside
+   ========================================================================== */
+.central-ajuda__suporte-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 24px 28px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.central-ajuda__suporte-icon {
+  color: var(--color-primary);
+  flex-shrink: 0;
+  padding: 6px;
+  background-color: rgba(59, 130, 246, 0.1);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.central-ajuda__suporte-content {
+  flex: 1;
+}
+
+.central-ajuda__suporte-title {
+  margin: 0 0 6px 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.central-ajuda__suporte-desc {
+  margin: 0 0 12px 0;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.central-ajuda__suporte-info-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 0.8125rem;
+  color: var(--color-text);
+}
+
+.central-ajuda__suporte-dot {
+  color: var(--color-text-secondary);
+}
+
+/* ==========================================================================
+   Responsive Adaptations
+   ========================================================================== */
+@media (max-width: 768px) {
+  .central-ajuda {
+    gap: 20px;
+  }
+
+  .central-ajuda__header-card {
+    padding: 20px;
+  }
+
+  .central-ajuda__title {
+    font-size: 1.5rem;
+  }
+
+  .central-ajuda__categorias-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .central-ajuda__contexto-perfil-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .central-ajuda__perfil-botoes {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .central-ajuda__suporte-card {
+    flex-direction: column;
+    padding: 20px;
+  }
+}

@@ -5,6 +5,7 @@ export const PATHS = {
   login: '/login',
   inicio: '/inicio',
   minhasDisciplinas: '/minhas-disciplinas',
+  ajuda: '/ajuda',
   emBreve: '/em-breve',
 }
 

@@ -6,6 +6,7 @@ import Login from '../pages/Login/Login'
 import PaginaInicial from '../pages/PaginaInicial/PaginaInicial'
 import TurmaVirtual from '../pages/TurmaVirtual/TurmaVirtual'
 import MinhasDisciplinas from '../pages/MinhasDisciplinas/MinhasDisciplinas'
+import CentralAjuda from '../pages/CentralAjuda/CentralAjuda'
 import EmBreve from '../pages/EmBreve/EmBreve'
 import NotFound from '../pages/NotFound/NotFound'
 import { PATHS } from './paths'
@@ -37,6 +38,11 @@ function AppRoutes() {
           <Route
             path="/turma-virtual/:disciplinaId"
             element={<TurmaVirtual />}
+          />
+          <Route path={PATHS.ajuda} element={<CentralAjuda />} />
+          <Route
+            path="/central-de-ajuda"
+            element={<Navigate to={PATHS.ajuda} replace />}
           />
         </Route>
 
