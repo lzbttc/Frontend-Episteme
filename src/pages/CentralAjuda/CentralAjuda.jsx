@@ -11,7 +11,6 @@ import {
   BellIcon,
   BookOpenIcon,
   CalendarIcon,
-  CheckCircleIcon,
   ChevronRightSmallIcon,
   HelpCircleIcon,
   MegaphoneIcon,
@@ -29,7 +28,7 @@ import {
 import { identificarPerfilAutenticado } from '../../services/ajudaService'
 import './CentralAjuda.css'
 
-function obterIconeCategoria(iconeNome, size = 22) {
+function obterIconeCategoria(iconeNome, size = 18) {
   switch (iconeNome) {
     case 'user':
       return <UserIcon size={size} />
@@ -60,19 +59,19 @@ function CentralAjuda() {
   usePageTitle('Central de Ajuda')
   const { aluno, token } = useAuth()
 
-  // Perfil autenticado real derivado da sessão
+  // Perfil autenticado derivado da sessão
   const perfilAutenticado = useMemo(
     () => identificarPerfilAutenticado(aluno, token),
     [aluno, token]
   )
 
-  // Estados de filtro e busca
+  // Estados principais
   const [categoriaAtiva, setCategoriaAtiva] = useState('todas')
   const [perfilFiltro, setPerfilFiltro] = useState(perfilAutenticado)
   const [termoBusca, setTermoBusca] = useState('')
   const [openFaqIds, setOpenFaqIds] = useState([])
 
-  // Alterna item individual do FAQ
+  // Alterna FAQ individual
   const handleToggleFaq = useCallback((id) => {
     setOpenFaqIds((atuais) =>
       atuais.includes(id)
@@ -81,10 +80,17 @@ function CentralAjuda() {
     )
   }, [])
 
-  // Limpa a busca e restaura a visualização
+  // Limpa a busca
   const handleLimparBusca = useCallback(() => {
     setTermoBusca('')
   }, [])
+
+  // Limpa todos os filtros para estado padrão
+  const handleResetFiltros = useCallback(() => {
+    setTermoBusca('')
+    setCategoriaAtiva('todas')
+    setPerfilFiltro(perfilAutenticado)
+  }, [perfilAutenticado])
 
   // Filtragem de orientações
   const orientacoesFiltradas = useMemo(() => {
@@ -150,21 +156,7 @@ function CentralAjuda() {
     })
   }, [categoriaAtiva, perfilFiltro, termoBusca, perfilAutenticado])
 
-  // Contagem de itens por categoria
-  const contagemPorCategoria = useMemo(() => {
-    const mapa = {}
-    CATEGORIAS_AJUDA.forEach((cat) => {
-      const qtdFaqs = FAQS_AJUDA.filter(
-        (f) =>
-          f.categoriaId === cat.id &&
-          (perfilFiltro === 'todos' || f.perfis.includes(perfilFiltro))
-      ).length
-      mapa[cat.id] = qtdFaqs
-    })
-    return mapa
-  }, [perfilFiltro])
-
-  // Ações de expandir e recolher todos os FAQs visíveis
+  // Ações de expandir e recolher todos os FAQs
   const handleExpandirTodos = useCallback(() => {
     setOpenFaqIds(faqsFiltradas.map((f) => f.id))
   }, [faqsFiltradas])
@@ -173,7 +165,12 @@ function CentralAjuda() {
     setOpenFaqIds([])
   }, [])
 
-  // Preparação dos itens do acordeão
+  // Categoria atual selecionada (quando não for 'todas')
+  const categoriaAtualObj = useMemo(() => {
+    return CATEGORIAS_AJUDA.find((c) => c.id === categoriaAtiva) || null
+  }, [categoriaAtiva])
+
+  // Itens do acordeão sem poluição visual
   const accordionItems = useMemo(() => {
     return faqsFiltradas.map((faq) => {
       const categoria = CATEGORIAS_AJUDA.find((c) => c.id === faq.categoriaId)
@@ -185,21 +182,16 @@ function CentralAjuda() {
         highlighted: ehDestaquePerfil,
         badge: (
           <span className="central-ajuda__faq-badges">
-            {categoria && (
+            {categoriaAtiva === 'todas' && categoria && (
               <Badge variant="soft" size="sm">
                 {categoria.nome}
               </Badge>
             )}
-            {ehDestaquePerfil && (
+            {ehDestaquePerfil && perfilFiltro === 'todos' && (
               <Badge variant="primary" size="sm">
-                Seu perfil
+                Recomendado
               </Badge>
             )}
-            {faq.perfis.map((p) => (
-              <Badge key={p} variant="dark" size="sm">
-                {PERFIS_LABELS[p]}
-              </Badge>
-            ))}
           </span>
         ),
         content: (
@@ -207,16 +199,14 @@ function CentralAjuda() {
             <p>{faq.resposta}</p>
             {faq.tags && faq.tags.length > 0 && (
               <div className="central-ajuda__faq-tags">
-                <span className="central-ajuda__faq-tags-label">
-                  Palavras-chave:
-                </span>
+                <span className="central-ajuda__faq-tags-label">Tags:</span>
                 {faq.tags.map((tag) => (
                   <button
                     key={tag}
                     type="button"
                     className="central-ajuda__tag-btn"
                     onClick={() => setTermoBusca(tag)}
-                    title={`Filtrar por ${tag}`}
+                    title={`Buscar por ${tag}`}
                   >
                     #{tag}
                   </button>
@@ -227,17 +217,13 @@ function CentralAjuda() {
         ),
       }
     })
-  }, [faqsFiltradas, perfilAutenticado])
+  }, [faqsFiltradas, categoriaAtiva, perfilAutenticado, perfilFiltro])
 
   const totalResultados = faqsFiltradas.length + orientacoesFiltradas.length
-  const temFiltroAtivo =
-    termoBusca.trim() !== '' ||
-    categoriaAtiva !== 'todas' ||
-    perfilFiltro !== perfilAutenticado
 
   return (
     <div className="central-ajuda">
-      {/* 1. Header Card com Breadcrumbs e Apresentação */}
+      {/* 1. Header Card Limpo com Título e Campo de Busca */}
       <header className="central-ajuda__header-card">
         <nav
           className="central-ajuda__breadcrumbs"
@@ -264,28 +250,16 @@ function CentralAjuda() {
           </span>
         </nav>
 
-        <div className="central-ajuda__hero">
-          <div className="central-ajuda__hero-text">
-            <div className="central-ajuda__title-row">
-              <span className="central-ajuda__badge-destaque">
-                <HelpCircleIcon size={16} /> Suporte e Orientações
-              </span>
-              <span className="central-ajuda__user-role-badge">
-                Perfil ativo:{' '}
-                <strong>{PERFIS_LABELS[perfilAutenticado]}</strong>
-              </span>
-            </div>
-            <h1 className="central-ajuda__title">
-              Como podemos ajudar você hoje?
-            </h1>
+        <div className="central-ajuda__header-body">
+          <div className="central-ajuda__header-title-area">
+            <h1 className="central-ajuda__title">Central de Ajuda</h1>
             <p className="central-ajuda__subtitle">
-              Explore orientações de uso, tutoriais rápidos e respostas para as
-              dúvidas mais frequentes sobre o sistema EPIS.
+              Orientações de uso e respostas para as principais dúvidas do EPIS.
             </p>
           </div>
 
-          {/* Campo de Busca de Conteúdo */}
-          <div className="central-ajuda__search-container">
+          {/* Campo de Busca Unificado (sem duplo 'x') */}
+          <div className="central-ajuda__search-wrapper">
             <form
               className="central-ajuda__search-box"
               onSubmit={(e) => e.preventDefault()}
@@ -298,18 +272,20 @@ function CentralAjuda() {
                 Pesquisar na central de ajuda
               </label>
               <SearchIcon
-                size={20}
+                size={18}
                 className="central-ajuda__search-icon"
                 aria-hidden="true"
               />
               <input
                 id="input-busca-ajuda"
-                type="search"
+                type="text"
+                role="searchbox"
                 className="central-ajuda__search-input"
-                placeholder="Pesquise por palavra-chave (ex: matrícula, notas, senha, diário)..."
+                placeholder="Pesquisar por assunto ou palavra-chave..."
                 value={termoBusca}
                 onChange={(e) => setTermoBusca(e.target.value)}
                 autoComplete="off"
+                spellCheck="false"
               />
               {termoBusca && (
                 <button
@@ -319,7 +295,7 @@ function CentralAjuda() {
                   aria-label="Limpar pesquisa"
                   title="Limpar pesquisa"
                 >
-                  ×
+                  &times;
                 </button>
               )}
             </form>
@@ -327,361 +303,250 @@ function CentralAjuda() {
         </div>
       </header>
 
-      {/* 2. Barra de Contextualização por Perfil */}
-      <section
-        className="central-ajuda__contexto-perfil-bar"
-        aria-label="Filtro de contexto por perfil de usuário"
+      {/* 2. Barra de Navegação por Categorias (Abas Horizontais Limpas) */}
+      <nav
+        className="central-ajuda__nav-tabs"
+        role="tablist"
+        aria-label="Categorias de ajuda"
       >
-        <div className="central-ajuda__contexto-info">
-          <CheckCircleIcon size={18} className="central-ajuda__contexto-icon" />
-          <span>
-            Conteúdo contextualizado para{' '}
-            <strong>{PERFIS_LABELS[perfilFiltro] || 'Todos os perfis'}</strong>
-            {perfilFiltro === perfilAutenticado && (
-              <span className="central-ajuda__contexto-ativo-tag">
-                {' '}
-                (Seu Perfil)
-              </span>
-            )}
-          </span>
-        </div>
-
-        <div
-          className="central-ajuda__perfil-botoes"
-          role="group"
-          aria-label="Filtrar por perfil"
+        <button
+          type="button"
+          role="tab"
+          id="tab-todas"
+          aria-selected={categoriaAtiva === 'todas'}
+          className={`central-ajuda__tab-btn ${
+            categoriaAtiva === 'todas' ? 'central-ajuda__tab-btn--active' : ''
+          }`}
+          onClick={() => setCategoriaAtiva('todas')}
         >
-          <button
-            type="button"
-            className={`central-ajuda__perfil-btn ${
-              perfilFiltro === perfilAutenticado
-                ? 'central-ajuda__perfil-btn--active'
-                : ''
-            }`}
-            onClick={() => setPerfilFiltro(perfilAutenticado)}
-          >
-            Meu Perfil ({PERFIS_LABELS[perfilAutenticado]})
-          </button>
-          <button
-            type="button"
-            className={`central-ajuda__perfil-btn ${
-              perfilFiltro === PERFIS.ALUNO
-                ? 'central-ajuda__perfil-btn--active'
-                : ''
-            }`}
-            onClick={() => setPerfilFiltro(PERFIS.ALUNO)}
-          >
-            Aluno
-          </button>
-          <button
-            type="button"
-            className={`central-ajuda__perfil-btn ${
-              perfilFiltro === PERFIS.PROFESSOR
-                ? 'central-ajuda__perfil-btn--active'
-                : ''
-            }`}
-            onClick={() => setPerfilFiltro(PERFIS.PROFESSOR)}
-          >
-            Professor
-          </button>
-          <button
-            type="button"
-            className={`central-ajuda__perfil-btn ${
-              perfilFiltro === PERFIS.COORDENACAO
-                ? 'central-ajuda__perfil-btn--active'
-                : ''
-            }`}
-            onClick={() => setPerfilFiltro(PERFIS.COORDENACAO)}
-          >
-            Coordenação
-          </button>
-          <button
-            type="button"
-            className={`central-ajuda__perfil-btn ${
-              perfilFiltro === 'todos'
-                ? 'central-ajuda__perfil-btn--active'
-                : ''
-            }`}
-            onClick={() => setPerfilFiltro('todos')}
-          >
-            Todos os perfis
-          </button>
-        </div>
-      </section>
+          <HelpCircleIcon size={16} />
+          <span>Todas as Categorias</span>
+        </button>
 
-      {/* 3. Seletor de Categorias Temáticas */}
+        {CATEGORIAS_AJUDA.map((cat) => {
+          const isActive = categoriaAtiva === cat.id
+          return (
+            <button
+              key={cat.id}
+              type="button"
+              role="tab"
+              id={`tab-${cat.id}`}
+              aria-selected={isActive}
+              className={`central-ajuda__tab-btn ${
+                isActive ? 'central-ajuda__tab-btn--active' : ''
+              }`}
+              onClick={() => setCategoriaAtiva(cat.id)}
+            >
+              {obterIconeCategoria(cat.icone, 16)}
+              <span>{cat.nome}</span>
+            </button>
+          )
+        })}
+      </nav>
+
+      {/* 3. Barra de Contexto por Perfil e Ações Rápidas */}
       <section
-        className="central-ajuda__categorias-section"
-        aria-label="Categorias da central de ajuda"
+        className="central-ajuda__toolbar"
+        aria-label="Filtro de perfil e ações"
       >
-        <div className="central-ajuda__section-header">
-          <div>
-            <h2 className="central-ajuda__section-title">
-              Categorias Temáticas
-            </h2>
-            <p className="central-ajuda__section-subtitle">
-              Selecione um módulo do sistema para filtrar orientações e
-              perguntas frequentes
-            </p>
-          </div>
-          {categoriaAtiva !== 'todas' && (
+        <div className="central-ajuda__toolbar-perfil">
+          <span className="central-ajuda__toolbar-label">
+            Perfil:&nbsp;
+            <span className="central-ajuda__toolbar-active-indicator">
+              (Seu: <strong>{PERFIS_LABELS[perfilAutenticado]}</strong>)
+            </span>
+          </span>
+
+          <div
+            className="central-ajuda__perfil-pills"
+            role="group"
+            aria-label="Alternar perfil"
+          >
             <button
               type="button"
-              className="central-ajuda__reset-categoria-btn"
-              onClick={() => setCategoriaAtiva('todas')}
+              className={`central-ajuda__pill-btn ${
+                perfilFiltro === perfilAutenticado
+                  ? 'central-ajuda__pill-btn--active'
+                  : ''
+              }`}
+              onClick={() => setPerfilFiltro(perfilAutenticado)}
             >
-              Ver todas as categorias
+              Meu Perfil ({PERFIS_LABELS[perfilAutenticado]})
             </button>
-          )}
+            <button
+              type="button"
+              className={`central-ajuda__pill-btn ${
+                perfilFiltro === PERFIS.ALUNO
+                  ? 'central-ajuda__pill-btn--active'
+                  : ''
+              }`}
+              onClick={() => setPerfilFiltro(PERFIS.ALUNO)}
+            >
+              Aluno
+            </button>
+            <button
+              type="button"
+              className={`central-ajuda__pill-btn ${
+                perfilFiltro === PERFIS.PROFESSOR
+                  ? 'central-ajuda__pill-btn--active'
+                  : ''
+              }`}
+              onClick={() => setPerfilFiltro(PERFIS.PROFESSOR)}
+            >
+              Professor
+            </button>
+            <button
+              type="button"
+              className={`central-ajuda__pill-btn ${
+                perfilFiltro === PERFIS.COORDENACAO
+                  ? 'central-ajuda__pill-btn--active'
+                  : ''
+              }`}
+              onClick={() => setPerfilFiltro(PERFIS.COORDENACAO)}
+            >
+              Coordenação
+            </button>
+            <button
+              type="button"
+              className={`central-ajuda__pill-btn ${
+                perfilFiltro === 'todos'
+                  ? 'central-ajuda__pill-btn--active'
+                  : ''
+              }`}
+              onClick={() => setPerfilFiltro('todos')}
+            >
+              Todos
+            </button>
+          </div>
         </div>
 
-        <div
-          className="central-ajuda__categorias-grid"
-          role="tablist"
-          aria-label="Abas de categorias"
-        >
-          <button
-            type="button"
-            role="tab"
-            aria-selected={categoriaAtiva === 'todas'}
-            className={`central-ajuda__categoria-card ${
-              categoriaAtiva === 'todas'
-                ? 'central-ajuda__categoria-card--active'
-                : ''
-            }`}
-            onClick={() => setCategoriaAtiva('todas')}
-          >
-            <div className="central-ajuda__categoria-icon-box">
-              <HelpCircleIcon size={24} />
-            </div>
-            <div className="central-ajuda__categoria-info">
-              <h3 className="central-ajuda__categoria-nome">
-                Todas as Categorias
-              </h3>
-              <p className="central-ajuda__categoria-desc">
-                Visão completa de todos os tópicos e perguntas frequentes.
-              </p>
-            </div>
-            <span className="central-ajuda__categoria-count">
-              {
-                FAQS_AJUDA.filter(
-                  (f) =>
-                    perfilFiltro === 'todos' || f.perfis.includes(perfilFiltro)
-                ).length
-              }{' '}
-              FAQs
+        {faqsFiltradas.length > 0 && (
+          <div className="central-ajuda__toolbar-actions">
+            <button
+              type="button"
+              className="central-ajuda__text-action-btn"
+              onClick={handleExpandirTodos}
+            >
+              Expandir todos
+            </button>
+            <span
+              className="central-ajuda__text-action-divider"
+              aria-hidden="true"
+            >
+              &bull;
             </span>
-          </button>
-
-          {CATEGORIAS_AJUDA.map((cat) => {
-            const isActive = categoriaAtiva === cat.id
-            const count = contagemPorCategoria[cat.id] || 0
-
-            return (
-              <button
-                key={cat.id}
-                type="button"
-                role="tab"
-                id={`tab-${cat.id}`}
-                aria-selected={isActive}
-                className={`central-ajuda__categoria-card ${
-                  isActive ? 'central-ajuda__categoria-card--active' : ''
-                }`}
-                onClick={() => setCategoriaAtiva(cat.id)}
-              >
-                <div className="central-ajuda__categoria-icon-box">
-                  {obterIconeCategoria(cat.icone)}
-                </div>
-                <div className="central-ajuda__categoria-info">
-                  <h3 className="central-ajuda__categoria-nome">{cat.nome}</h3>
-                  <p className="central-ajuda__categoria-desc">
-                    {cat.descricao}
-                  </p>
-                </div>
-                <span className="central-ajuda__categoria-count">
-                  {count} {count === 1 ? 'FAQ' : 'FAQs'}
-                </span>
-              </button>
-            )
-          })}
-        </div>
+            <button
+              type="button"
+              className="central-ajuda__text-action-btn"
+              onClick={handleRecolherTodos}
+            >
+              Recolher todos
+            </button>
+          </div>
+        )}
       </section>
 
       {/* 4. Feedback de busca ativo */}
       {termoBusca && (
-        <div className="central-ajuda__busca-feedback" role="status">
+        <div className="central-ajuda__search-feedback" role="status">
           <span>
-            Exibindo resultados para:{' '}
-            <strong>&ldquo;{termoBusca}&rdquo;</strong> ({totalResultados}{' '}
-            {totalResultados === 1 ? 'item encontrado' : 'itens encontrados'})
+            Buscando por: <strong>&ldquo;{termoBusca}&rdquo;</strong> &mdash;{' '}
+            {totalResultados}{' '}
+            {totalResultados === 1 ? 'resultado' : 'resultados'}
           </span>
           <button
             type="button"
-            className="central-ajuda__busca-limpar-btn"
+            className="central-ajuda__search-feedback-clear"
             onClick={handleLimparBusca}
           >
-            Limpar pesquisa
+            Limpar busca
           </button>
         </div>
       )}
 
-      {/* 5. Estado Vazio (Sem resultados encontrados) */}
+      {/* 5. Estado Vazio (Sem resultados) */}
       {totalResultados === 0 && (
         <section
           className="central-ajuda__empty-state"
           role="region"
           aria-label="Nenhum resultado encontrado"
         >
-          <div className="central-ajuda__empty-icon" aria-hidden="true">
-            <SearchSlashIcon size={48} />
-          </div>
+          <SearchSlashIcon
+            size={40}
+            className="central-ajuda__empty-icon"
+            aria-hidden="true"
+          />
           <h2 className="central-ajuda__empty-title">
             Nenhum conteúdo encontrado
           </h2>
           <p className="central-ajuda__empty-desc">
-            Não encontramos nenhuma orientação ou pergunta correspondente aos
-            filtros selecionados
-            {termoBusca ? ` para o termo "${termoBusca}"` : ''}.
+            Não encontramos resultados para a busca atual. Tente palavras-chave
+            mais gerais ou redefina os filtros.
           </p>
-          <div className="central-ajuda__empty-actions">
-            {temFiltroAtivo && (
-              <Button
-                variant="primary"
-                onClick={() => {
-                  setTermoBusca('')
-                  setCategoriaAtiva('todas')
-                  setPerfilFiltro('todos')
-                }}
-              >
-                Limpar todos os filtros
-              </Button>
-            )}
-            {termoBusca && (
-              <Button variant="outline" onClick={handleLimparBusca}>
-                Limpar apenas a busca
-              </Button>
-            )}
-          </div>
+          <Button variant="primary" size="md" onClick={handleResetFiltros}>
+            Redefinir filtros
+          </Button>
         </section>
       )}
 
-      {/* 6. Orientações e Guias Rápidos */}
+      {/* 6. Orientações de Uso da Categoria Ativa (Guia Objetivo e Limpo) */}
       {orientacoesFiltradas.length > 0 && (
         <section
-          className="central-ajuda__orientacoes-section"
-          aria-label="Orientações e guias de uso"
+          className="central-ajuda__orientacoes-block"
+          aria-label="Orientações e Guia de Uso"
         >
-          <div className="central-ajuda__section-header">
-            <div>
-              <h2 className="central-ajuda__section-title">
-                Orientações de Uso
-              </h2>
-              <p className="central-ajuda__section-subtitle">
-                Passo a passo objetivo para as funcionalidades mais importantes
-              </p>
-            </div>
-            <span className="central-ajuda__badge-contagem">
-              {orientacoesFiltradas.length}{' '}
-              {orientacoesFiltradas.length === 1 ? 'guia' : 'guias'}
-            </span>
-          </div>
-
-          <div className="central-ajuda__orientacoes-grid">
-            {orientacoesFiltradas.map((ori) => {
-              const categoria = CATEGORIAS_AJUDA.find(
-                (c) => c.id === ori.categoriaId
-              )
-              const ehDestaque = ori.perfis.includes(perfilAutenticado)
-
-              return (
-                <article
-                  key={ori.id}
-                  className={`central-ajuda__orientacao-card ${
-                    ehDestaque ? 'central-ajuda__orientacao-card--destaque' : ''
-                  }`}
-                >
-                  <div className="central-ajuda__orientacao-topo">
-                    <div className="central-ajuda__orientacao-categoria">
-                      {categoria && (
-                        <span className="central-ajuda__orientacao-categoria-tag">
-                          {obterIconeCategoria(categoria.icone, 16)}
-                          {categoria.nome}
-                        </span>
-                      )}
-                    </div>
-                    <div className="central-ajuda__orientacao-perfis">
-                      {ehDestaque && (
-                        <Badge variant="primary" size="sm">
-                          Seu perfil
-                        </Badge>
-                      )}
-                      {ori.perfis.map((p) => (
-                        <Badge key={p} variant="dark" size="sm">
-                          {PERFIS_LABELS[p]}
-                        </Badge>
-                      ))}
-                    </div>
+          {orientacoesFiltradas.map((ori) => {
+            const cat = CATEGORIAS_AJUDA.find((c) => c.id === ori.categoriaId)
+            return (
+              <div key={ori.id} className="central-ajuda__guia-card">
+                <div className="central-ajuda__guia-header">
+                  <div className="central-ajuda__guia-title-box">
+                    <span className="central-ajuda__guia-badge">
+                      Guia de Uso &bull; {cat?.nome || 'Geral'}
+                    </span>
+                    <h2 className="central-ajuda__guia-titulo">{ori.titulo}</h2>
                   </div>
+                  <span className="central-ajuda__guia-perfis-tag">
+                    {ori.perfis.map((p) => PERFIS_LABELS[p]).join(', ')}
+                  </span>
+                </div>
 
-                  <h3 className="central-ajuda__orientacao-titulo">
-                    {ori.titulo}
+                <p className="central-ajuda__guia-resumo">{ori.resumo}</p>
+
+                <div className="central-ajuda__guia-passos">
+                  <h3 className="central-ajuda__guia-passos-title">
+                    Passo a passo:
                   </h3>
-                  <p className="central-ajuda__orientacao-resumo">
-                    {ori.resumo}
-                  </p>
-
-                  <div className="central-ajuda__orientacao-passos">
-                    <h4 className="central-ajuda__passos-subtitulo">
-                      Instruções:
-                    </h4>
-                    <ol className="central-ajuda__passos-lista">
-                      {ori.passos.map((passo, idx) => (
-                        <li key={idx} className="central-ajuda__passo-item">
-                          {passo}
-                        </li>
-                      ))}
-                    </ol>
-                  </div>
-                </article>
-              )
-            })}
-          </div>
+                  <ol className="central-ajuda__guia-lista">
+                    {ori.passos.map((passo, idx) => (
+                      <li key={idx} className="central-ajuda__guia-item">
+                        {passo}
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              </div>
+            )
+          })}
         </section>
       )}
 
-      {/* 7. Seção de Perguntas Frequentes (FAQ) */}
+      {/* 7. Perguntas Frequentes (FAQ) */}
       {faqsFiltradas.length > 0 && (
         <section
-          className="central-ajuda__faq-section"
+          className="central-ajuda__faq-block"
           aria-label="Perguntas Frequentes"
         >
-          <div className="central-ajuda__section-header">
-            <div>
-              <h2 className="central-ajuda__section-title">
-                Perguntas Frequentes (FAQ)
-              </h2>
-              <p className="central-ajuda__section-subtitle">
-                Respostas diretas e esclarecimentos para as principais dúvidas
-              </p>
-            </div>
-
-            <div className="central-ajuda__faq-actions">
-              <button
-                type="button"
-                className="central-ajuda__faq-toggle-btn"
-                onClick={handleExpandirTodos}
-              >
-                Expandir todos
-              </button>
-              <span className="central-ajuda__faq-action-divider">|</span>
-              <button
-                type="button"
-                className="central-ajuda__faq-toggle-btn"
-                onClick={handleRecolherTodos}
-              >
-                Recolher todos
-              </button>
-            </div>
+          <div className="central-ajuda__faq-header">
+            <h2 className="central-ajuda__faq-title">
+              {categoriaAtualObj
+                ? `Perguntas Frequentes — ${categoriaAtualObj.nome}`
+                : 'Perguntas Frequentes'}
+            </h2>
+            <span className="central-ajuda__faq-count">
+              {faqsFiltradas.length}{' '}
+              {faqsFiltradas.length === 1 ? 'pergunta' : 'perguntas'}
+            </span>
           </div>
 
           <Accordion
@@ -692,36 +557,18 @@ function CentralAjuda() {
         </section>
       )}
 
-      {/* 8. Card de Contato e Suporte Complementar */}
-      <aside
-        className="central-ajuda__suporte-card"
-        aria-label="Canais de suporte adicionais"
-      >
-        <div className="central-ajuda__suporte-icon" aria-hidden="true">
-          <HelpCircleIcon size={32} />
-        </div>
-        <div className="central-ajuda__suporte-content">
-          <h2 className="central-ajuda__suporte-title">
-            Não encontrou o que precisava?
-          </h2>
-          <p className="central-ajuda__suporte-desc">
-            Nossa equipe de suporte acadêmico e a coordenação de curso estão à
-            disposição para esclarecer dúvidas específicas sobre sua situação no
-            EPIS.
-          </p>
-          <div className="central-ajuda__suporte-info-row">
-            <span>
-              <strong>Secretaria Acadêmica:</strong> secretaria@episteme.dev
-            </span>
-            <span className="central-ajuda__suporte-dot" aria-hidden="true">
-              •
-            </span>
-            <span>
-              <strong>Atendimento:</strong> Segunda a Sexta, das 08h às 20h
-            </span>
-          </div>
-        </div>
-      </aside>
+      {/* 8. Rodapé Compacto de Suporte */}
+      <footer className="central-ajuda__footer-suporte">
+        <p>
+          Ainda com dúvidas? Entre em contato com a secretaria acadêmica:{' '}
+          <a
+            href="mailto:secretaria@episteme.dev"
+            className="central-ajuda__footer-link"
+          >
+            secretaria@episteme.dev
+          </a>
+        </p>
+      </footer>
     </div>
   )
 }
