@@ -160,26 +160,6 @@ function CentralAjuda() {
     return lista
   }, [categoriaAtiva, perfilAutenticado, termoBusca])
 
-  // Separação em dois grupos: Prioritárias para o perfil e Gerais
-  const { faqsPrioritarias, faqsGerais } = useMemo(() => {
-    const prioritarias = []
-    const gerais = []
-
-    faqsFiltradas.forEach((faq) => {
-      // Pergunta prioritária: explicitamente direcionada ao perfil do usuário
-      const ehEspecificoDoPerfil =
-        faq.perfis.includes(perfilAutenticado) && faq.perfis.length < 3
-
-      if (ehEspecificoDoPerfil) {
-        prioritarias.push(faq)
-      } else {
-        gerais.push(faq)
-      }
-    })
-
-    return { faqsPrioritarias: prioritarias, faqsGerais: gerais }
-  }, [faqsFiltradas, perfilAutenticado])
-
   // Ações de expandir e recolher todos os FAQs
   const handleExpandirTodos = useCallback(() => {
     setOpenFaqIds(faqsFiltradas.map((f) => f.id))
@@ -236,13 +216,30 @@ function CentralAjuda() {
     [categoriaAtiva]
   )
 
-  const accordionItemsPrioritarias = useMemo(() => {
-    return faqsPrioritarias.map((faq) => mapearFaqParaAcordeao(faq, true))
-  }, [faqsPrioritarias, mapearFaqParaAcordeao])
+  // Lista unificada de itens para o acordeão:
+  // As dúvidas pertinentes ao perfil vêm em primeiro lugar com destaque sutil na borda,
+  // seguidas pelas perguntas gerais.
+  const accordionItems = useMemo(() => {
+    const prioritarias = []
+    const gerais = []
 
-  const accordionItemsGerais = useMemo(() => {
-    return faqsGerais.map((faq) => mapearFaqParaAcordeao(faq, false))
-  }, [faqsGerais, mapearFaqParaAcordeao])
+    faqsFiltradas.forEach((faq) => {
+      const ehEspecificoDoPerfil =
+        faq.perfis.includes(perfilAutenticado) && faq.perfis.length < 3
+      if (ehEspecificoDoPerfil) {
+        prioritarias.push(faq)
+      } else {
+        gerais.push(faq)
+      }
+    })
+
+    const itensPrioritarias = prioritarias.map((faq) =>
+      mapearFaqParaAcordeao(faq, true)
+    )
+    const itensGerais = gerais.map((faq) => mapearFaqParaAcordeao(faq, false))
+
+    return [...itensPrioritarias, ...itensGerais]
+  }, [faqsFiltradas, perfilAutenticado, mapearFaqParaAcordeao])
 
   const totalFaqs = faqsFiltradas.length
   const totalResultados = totalFaqs + (orientacaoAtiva ? 1 : 0)
@@ -507,46 +504,25 @@ function CentralAjuda() {
       )}
 
       {/* ====================================================================
-          E. Perguntas Frequentes (Sem caixas repetitivas ou badges desnecessários)
+          E. Perguntas Frequentes (Dúvidas frequentes)
           ==================================================================== */}
       {totalFaqs > 0 && (
         <section
           className="central-ajuda__faq-section"
-          aria-label="Perguntas Frequentes"
+          aria-label="Dúvidas frequentes"
         >
-          {/* Grupo 1: Perguntas do Perfil */}
-          {faqsPrioritarias.length > 0 && (
-            <div className="central-ajuda__faq-group">
-              <div className="central-ajuda__faq-group-header">
-                <h2 className="central-ajuda__faq-group-title">
-                  {categoriaAtiva === 'todas'
-                    ? `Perguntas para ${PERFIS_LABELS[perfilAutenticado]}`
-                    : `Dúvidas sobre ${categoriaAtualObj?.nome}`}
-                </h2>
-              </div>
-              <Accordion
-                items={accordionItemsPrioritarias}
-                openIds={openFaqIds}
-                onToggle={handleToggleFaq}
-              />
+          <div className="central-ajuda__faq-group">
+            <div className="central-ajuda__faq-group-header">
+              <h2 className="central-ajuda__faq-group-title">
+                Dúvidas frequentes
+              </h2>
             </div>
-          )}
-
-          {/* Grupo 2: Perguntas Gerais */}
-          {faqsGerais.length > 0 && (
-            <div className="central-ajuda__faq-group">
-              <div className="central-ajuda__faq-group-header">
-                <h2 className="central-ajuda__faq-group-title">
-                  Perguntas Gerais
-                </h2>
-              </div>
-              <Accordion
-                items={accordionItemsGerais}
-                openIds={openFaqIds}
-                onToggle={handleToggleFaq}
-              />
-            </div>
-          )}
+            <Accordion
+              items={accordionItems}
+              openIds={openFaqIds}
+              onToggle={handleToggleFaq}
+            />
+          </div>
         </section>
       )}
 
