@@ -37,7 +37,7 @@ const SUBTITULOS_POR_PERFIL = {
     'Orientações sobre gestão acadêmica, deferimento de matrículas, turmas e ensalamento.',
 }
 
-function obterIconeCategoria(iconeNome, size = 18) {
+function obterIconeCategoria(iconeNome, size = 16) {
   switch (iconeNome) {
     case 'user':
       return <UserIcon size={size} />
@@ -99,46 +99,43 @@ function CentralAjuda() {
     setCategoriaAtiva('todas')
   }, [])
 
-  // Orientações da categoria com prioridade/destaque para o perfil atual,
-  // sem impedir o acesso aos guias gerais
-  const orientacoesFiltradas = useMemo(() => {
-    let lista = ORIENTACOES_AJUDA.filter(
-      (ori) => ori.perfis.includes(perfilAutenticado) || ori.perfis.length >= 2
+  // Categoria atual selecionada (quando não for 'todas')
+  const categoriaAtualObj = useMemo(() => {
+    return CATEGORIAS_AJUDA.find((c) => c.id === categoriaAtiva) || null
+  }, [categoriaAtiva])
+
+  // Guia de Uso: exibido APENAS quando uma categoria específica estiver selecionada
+  const orientacaoAtiva = useMemo(() => {
+    if (categoriaAtiva === 'todas') return null
+
+    const ori = ORIENTACOES_AJUDA.find(
+      (item) =>
+        item.categoriaId === categoriaAtiva &&
+        item.perfis.includes(perfilAutenticado)
     )
 
-    if (categoriaAtiva !== 'todas') {
-      lista = lista.filter((ori) => ori.categoriaId === categoriaAtiva)
-    }
+    if (!ori) return null
 
+    // Se houver busca ativa, só exibe o guia se ele corresponder aos termos
     if (termoBusca.trim()) {
       const termo = normalizarTexto(termoBusca)
-      lista = lista.filter((ori) => {
-        const matchTitulo = normalizarTexto(ori.titulo).includes(termo)
-        const matchResumo = normalizarTexto(ori.resumo).includes(termo)
-        const matchPassos = ori.passos?.some((p) =>
-          normalizarTexto(p).includes(termo)
-        )
-        const matchTags = ori.tags?.some((t) =>
-          normalizarTexto(t).includes(termo)
-        )
-        return matchTitulo || matchResumo || matchPassos || matchTags
-      })
+      const matchTitulo = normalizarTexto(ori.titulo).includes(termo)
+      const matchResumo = normalizarTexto(ori.resumo).includes(termo)
+      const matchPassos = ori.passos?.some((p) =>
+        normalizarTexto(p).includes(termo)
+      )
+      const matchTags = ori.tags?.some((t) =>
+        normalizarTexto(t).includes(termo)
+      )
+      if (!matchTitulo && !matchResumo && !matchPassos && !matchTags) {
+        return null
+      }
     }
 
-    // Ordenação com destaque para orientações pertinentes ao perfil atual
-    return [...lista].sort((a, b) => {
-      const aEspecifico =
-        a.perfis.includes(perfilAutenticado) && a.perfis.length === 1
-      const bEspecifico =
-        b.perfis.includes(perfilAutenticado) && b.perfis.length === 1
-      if (aEspecifico && !bEspecifico) return -1
-      if (!aEspecifico && bEspecifico) return 1
-      return 0
-    })
+    return ori
   }, [categoriaAtiva, perfilAutenticado, termoBusca])
 
-  // FAQs filtradas: informações pertinentes ao perfil atual recebem destaque,
-  // enquanto conteúdos gerais continuam acessíveis
+  // Todas as FAQs filtradas pela categoria e busca (pertinentes ao perfil + gerais)
   const faqsFiltradas = useMemo(() => {
     let lista = FAQS_AJUDA.filter(
       (faq) => faq.perfis.includes(perfilAutenticado) || faq.perfis.length >= 2
@@ -160,18 +157,28 @@ function CentralAjuda() {
       })
     }
 
-    // Ordenação: primeiro os tópicos específicos do perfil autenticado (destaque no topo),
-    // seguidos pelos conteúdos de interesse geral
-    return [...lista].sort((a, b) => {
-      const aEspecifico =
-        a.perfis.includes(perfilAutenticado) && a.perfis.length === 1
-      const bEspecifico =
-        b.perfis.includes(perfilAutenticado) && b.perfis.length === 1
-      if (aEspecifico && !bEspecifico) return -1
-      if (!aEspecifico && bEspecifico) return 1
-      return 0
-    })
+    return lista
   }, [categoriaAtiva, perfilAutenticado, termoBusca])
+
+  // Separação em dois grupos claros: Prioritárias para o perfil e Gerais
+  const { faqsPrioritarias, faqsGerais } = useMemo(() => {
+    const prioritarias = []
+    const gerais = []
+
+    faqsFiltradas.forEach((faq) => {
+      // Pergunta prioritária: explicitamente direcionada ao perfil do usuário
+      const ehEspecificoDoPerfil =
+        faq.perfis.includes(perfilAutenticado) && faq.perfis.length < 3
+
+      if (ehEspecificoDoPerfil) {
+        prioritarias.push(faq)
+      } else {
+        gerais.push(faq)
+      }
+    })
+
+    return { faqsPrioritarias: prioritarias, faqsGerais: gerais }
+  }, [faqsFiltradas, perfilAutenticado])
 
   // Ações de expandir e recolher todos os FAQs
   const handleExpandirTodos = useCallback(() => {
@@ -182,23 +189,15 @@ function CentralAjuda() {
     setOpenFaqIds([])
   }, [])
 
-  // Categoria ativa
-  const categoriaAtualObj = useMemo(() => {
-    return CATEGORIAS_AJUDA.find((c) => c.id === categoriaAtiva) || null
-  }, [categoriaAtiva])
-
-  // Itens do acordeão com destaque explícito para o perfil atual e indicação de tópicos gerais
-  const accordionItems = useMemo(() => {
-    return faqsFiltradas.map((faq) => {
+  // Helper para criar itens de acordeão para cada grupo
+  const mapearFaqParaAcordeao = useCallback(
+    (faq, ehPrioritaria) => {
       const categoria = CATEGORIAS_AJUDA.find((c) => c.id === faq.categoriaId)
-      const ehEspecificoDoPerfil =
-        faq.perfis.includes(perfilAutenticado) && faq.perfis.length === 1
-      const ehGeral = faq.perfis.length > 1
 
       return {
         id: faq.id,
         title: faq.pergunta,
-        highlighted: ehEspecificoDoPerfil,
+        highlighted: ehPrioritaria,
         badge: (
           <span className="central-ajuda__faq-badges">
             {categoriaAtiva === 'todas' && categoria && (
@@ -206,50 +205,66 @@ function CentralAjuda() {
                 {categoria.nome}
               </Badge>
             )}
-            {ehEspecificoDoPerfil ? (
+            {ehPrioritaria ? (
               <Badge variant="primary" size="sm">
                 Destaque {PERFIS_LABELS[perfilAutenticado]}
               </Badge>
-            ) : ehGeral ? (
+            ) : (
               <Badge variant="soft" size="sm">
                 Geral
               </Badge>
-            ) : null}
+            )}
           </span>
         ),
         content: (
           <div className="central-ajuda__faq-resposta">
-            <p>{faq.resposta}</p>
+            <p className="central-ajuda__faq-texto">{faq.resposta}</p>
             {faq.tags && faq.tags.length > 0 && (
               <div className="central-ajuda__faq-tags">
-                <span className="central-ajuda__faq-tags-label">Tags:</span>
-                {faq.tags.map((tag) => (
-                  <button
-                    key={tag}
-                    type="button"
-                    className="central-ajuda__tag-btn"
-                    onClick={() => setTermoBusca(tag)}
-                    title={`Buscar por ${tag}`}
-                  >
-                    #{tag}
-                  </button>
-                ))}
+                <span className="central-ajuda__faq-tags-label">
+                  Palavras-chave:
+                </span>
+                <div className="central-ajuda__faq-tags-list">
+                  {faq.tags.map((tag) => (
+                    <button
+                      key={tag}
+                      type="button"
+                      className="central-ajuda__tag-btn"
+                      onClick={() => setTermoBusca(tag)}
+                      title={`Buscar por "${tag}"`}
+                    >
+                      #{tag}
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
           </div>
         ),
       }
-    })
-  }, [faqsFiltradas, categoriaAtiva, perfilAutenticado])
+    },
+    [categoriaAtiva, perfilAutenticado]
+  )
 
-  const totalResultados = faqsFiltradas.length + orientacoesFiltradas.length
+  const accordionItemsPrioritarias = useMemo(() => {
+    return faqsPrioritarias.map((faq) => mapearFaqParaAcordeao(faq, true))
+  }, [faqsPrioritarias, mapearFaqParaAcordeao])
+
+  const accordionItemsGerais = useMemo(() => {
+    return faqsGerais.map((faq) => mapearFaqParaAcordeao(faq, false))
+  }, [faqsGerais, mapearFaqParaAcordeao])
+
+  const totalFaqs = faqsFiltradas.length
+  const totalResultados = totalFaqs + (orientacaoAtiva ? 1 : 0)
 
   return (
     <div className="central-ajuda">
-      {/* 1. Header Card com Título, Identificação do Perfil e Campo de Busca */}
+      {/* ====================================================================
+          A. Cabeçalho (Breadcrumb, Título + Perfil, Subtítulo e Busca)
+          ==================================================================== */}
       <header className="central-ajuda__header-card">
         <nav
-          className="central-ajuda__breadcrumbs"
+          className="central-ajuda__breadcrumb"
           aria-label="Navegação estrutural"
         >
           <Link
@@ -259,10 +274,7 @@ function CentralAjuda() {
           >
             Portal Acadêmico
           </Link>
-          <span
-            className="central-ajuda__breadcrumb-separator"
-            aria-hidden="true"
-          >
+          <span className="central-ajuda__breadcrumb-sep" aria-hidden="true">
             <ChevronRightSmallIcon size={14} />
           </span>
           <span
@@ -275,9 +287,13 @@ function CentralAjuda() {
 
         <div className="central-ajuda__header-body">
           <div className="central-ajuda__header-title-area">
-            <div className="central-ajuda__title-row">
+            <div className="central-ajuda__title-group">
               <h1 className="central-ajuda__title">Central de Ajuda</h1>
-              <Badge variant="primary" size="sm">
+              <Badge
+                variant="primary"
+                size="sm"
+                className="central-ajuda__role-badge"
+              >
                 {PERFIS_LABELS[perfilAutenticado]}
               </Badge>
             </div>
@@ -287,16 +303,16 @@ function CentralAjuda() {
             </p>
           </div>
 
-          {/* Campo de Busca Unificado (sem duplo 'x') */}
-          <div className="central-ajuda__search-wrapper">
+          {/* Campo de Busca (Unificado, sem duplo 'x') */}
+          <div className="central-ajuda__search-container">
             <form
-              className="central-ajuda__search-box"
+              className="central-ajuda__search-form"
               onSubmit={(e) => e.preventDefault()}
               role="search"
             >
               <label
                 htmlFor="input-busca-ajuda"
-                className="central-ajuda__visually-hidden"
+                className="central-ajuda__sr-only"
               >
                 Pesquisar na central de ajuda
               </label>
@@ -332,11 +348,13 @@ function CentralAjuda() {
         </div>
       </header>
 
-      {/* 2. Barra de Navegação por Categorias (Abas Horizontais Limpas) */}
+      {/* ====================================================================
+          B. Navegação por Categorias (Barra Horizontal Limpa)
+          ==================================================================== */}
       <nav
         className="central-ajuda__nav-tabs"
         role="tablist"
-        aria-label="Categorias de ajuda"
+        aria-label="Navegação por categorias de ajuda"
       >
         <button
           type="button"
@@ -348,8 +366,8 @@ function CentralAjuda() {
           }`}
           onClick={() => setCategoriaAtiva('todas')}
         >
-          <HelpCircleIcon size={16} />
-          <span>Todas as Categorias</span>
+          <HelpCircleIcon size={15} />
+          <span>Todas</span>
         </button>
 
         {CATEGORIAS_AJUDA.map((cat) => {
@@ -366,52 +384,49 @@ function CentralAjuda() {
               }`}
               onClick={() => setCategoriaAtiva(cat.id)}
             >
-              {obterIconeCategoria(cat.icone, 16)}
+              {obterIconeCategoria(cat.icone, 15)}
               <span>{cat.nome}</span>
             </button>
           )
         })}
       </nav>
 
-      {/* 3. Barra de Ações Rápidas com Indicador de Destaque */}
+      {/* ====================================================================
+          C. Barra de Ações e Informações (Resultados, Destaque e Ações Rápidas)
+          ==================================================================== */}
       <section
         className="central-ajuda__toolbar"
-        aria-label="Controle de visualização"
+        aria-label="Ações e informações dos resultados"
       >
-        <div className="central-ajuda__toolbar-info">
-          <span className="central-ajuda__toolbar-text">
-            {categoriaAtualObj ? (
-              <strong>{categoriaAtualObj.nome}</strong>
-            ) : (
-              <span>Todas as Categorias</span>
-            )}
-            &nbsp;&bull; {faqsFiltradas.length}{' '}
-            {faqsFiltradas.length === 1 ? 'pergunta' : 'perguntas'}
+        <div className="central-ajuda__toolbar-meta">
+          <span className="central-ajuda__toolbar-count">
+            {totalFaqs}{' '}
+            {totalFaqs === 1 ? 'dúvida disponível' : 'dúvidas disponíveis'}
           </span>
-          <span className="central-ajuda__toolbar-destaque-tag">
-            (Itens prioritários de {PERFIS_LABELS[perfilAutenticado]} em
-            destaque)
+          <span className="central-ajuda__toolbar-sep" aria-hidden="true">
+            &bull;
+          </span>
+          <span className="central-ajuda__toolbar-priority-hint">
+            Dúvidas relevantes para{' '}
+            <strong>{PERFIS_LABELS[perfilAutenticado]}</strong> priorizadas
           </span>
         </div>
 
-        {faqsFiltradas.length > 0 && (
+        {totalFaqs > 0 && (
           <div className="central-ajuda__toolbar-actions">
             <button
               type="button"
-              className="central-ajuda__text-action-btn"
+              className="central-ajuda__action-link"
               onClick={handleExpandirTodos}
             >
               Expandir todos
             </button>
-            <span
-              className="central-ajuda__text-action-divider"
-              aria-hidden="true"
-            >
-              &bull;
+            <span className="central-ajuda__action-sep" aria-hidden="true">
+              |
             </span>
             <button
               type="button"
-              className="central-ajuda__text-action-btn"
+              className="central-ajuda__action-link"
               onClick={handleRecolherTodos}
             >
               Recolher todos
@@ -420,13 +435,13 @@ function CentralAjuda() {
         )}
       </section>
 
-      {/* 4. Feedback de busca ativo */}
+      {/* Feedback de busca ativa */}
       {termoBusca && (
         <div className="central-ajuda__search-feedback" role="status">
           <span>
-            Buscando por: <strong>&ldquo;{termoBusca}&rdquo;</strong> &mdash;{' '}
-            {totalResultados}{' '}
-            {totalResultados === 1 ? 'resultado' : 'resultados'}
+            Exibindo resultados para:{' '}
+            <strong>&ldquo;{termoBusca}&rdquo;</strong> ({totalResultados}{' '}
+            {totalResultados === 1 ? 'item' : 'itens'})
           </span>
           <button
             type="button"
@@ -438,7 +453,7 @@ function CentralAjuda() {
         </div>
       )}
 
-      {/* 5. Estado Vazio (Sem resultados) */}
+      {/* Estado Vazio (Sem resultados encontrados) */}
       {totalResultados === 0 && (
         <section
           className="central-ajuda__empty-state"
@@ -454,101 +469,132 @@ function CentralAjuda() {
             Nenhum conteúdo encontrado
           </h2>
           <p className="central-ajuda__empty-desc">
-            Não encontramos resultados para a busca atual. Tente palavras-chave
-            mais gerais ou redefina os filtros.
+            Não encontramos dúvidas ou orientações para &ldquo;{termoBusca}
+            &rdquo;. Verifique a ortografia ou redefina os filtros para ver
+            todas as opções.
           </p>
           <Button variant="primary" size="md" onClick={handleResetFiltros}>
-            Redefinir filtros
+            Redefinir busca e filtros
           </Button>
         </section>
       )}
 
-      {/* 6. Orientações de Uso da Categoria Ativa */}
-      {orientacoesFiltradas.length > 0 && (
+      {/* ====================================================================
+          D. Guia de Uso (Exibido SOMENTE quando uma categoria específica estiver ativa)
+          ==================================================================== */}
+      {orientacaoAtiva && (
         <section
-          className="central-ajuda__orientacoes-block"
-          aria-label="Orientações de Uso"
+          className="central-ajuda__guide-section"
+          aria-label="Orientações e Guia de Uso da Categoria"
         >
-          {orientacoesFiltradas.map((ori) => {
-            const cat = CATEGORIAS_AJUDA.find((c) => c.id === ori.categoriaId)
-            const ehEspecifico =
-              ori.perfis.includes(perfilAutenticado) && ori.perfis.length === 1
+          <div className="central-ajuda__guide-card">
+            <div className="central-ajuda__guide-header">
+              <span className="central-ajuda__guide-kicker">
+                Guia de Uso &bull; {categoriaAtualObj?.nome} &bull;{' '}
+                {PERFIS_LABELS[perfilAutenticado]}
+              </span>
+              <h2 className="central-ajuda__guide-title">
+                {orientacaoAtiva.titulo}
+              </h2>
+              <p className="central-ajuda__guide-summary">
+                {orientacaoAtiva.resumo}
+              </p>
+            </div>
 
-            return (
-              <div
-                key={ori.id}
-                className={`central-ajuda__guia-card ${
-                  ehEspecifico ? 'central-ajuda__guia-card--destaque' : ''
-                }`}
-              >
-                <div className="central-ajuda__guia-header">
-                  <div className="central-ajuda__guia-title-box">
-                    <span className="central-ajuda__guia-badge">
-                      {ehEspecifico
-                        ? `Destaque para seu perfil • ${cat?.nome || 'Geral'}`
-                        : `Orientações Gerais • ${cat?.nome || 'Geral'}`}
+            <div className="central-ajuda__guide-steps-wrapper">
+              <h3 className="central-ajuda__guide-steps-heading">
+                Procedimento passo a passo:
+              </h3>
+              <ol className="central-ajuda__guide-steps">
+                {orientacaoAtiva.passos.map((passo, idx) => (
+                  <li key={idx} className="central-ajuda__guide-step">
+                    <span
+                      className="central-ajuda__step-number"
+                      aria-hidden="true"
+                    >
+                      {idx + 1}
                     </span>
-                    <h2 className="central-ajuda__guia-titulo">{ori.titulo}</h2>
-                  </div>
-                </div>
-
-                <p className="central-ajuda__guia-resumo">{ori.resumo}</p>
-
-                <div className="central-ajuda__guia-passos">
-                  <h3 className="central-ajuda__guia-passos-title">
-                    Passo a passo:
-                  </h3>
-                  <ol className="central-ajuda__guia-lista">
-                    {ori.passos.map((passo, idx) => (
-                      <li key={idx} className="central-ajuda__guia-item">
-                        {passo}
-                      </li>
-                    ))}
-                  </ol>
-                </div>
-              </div>
-            )
-          })}
+                    <span className="central-ajuda__step-text">{passo}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </div>
         </section>
       )}
 
-      {/* 7. Perguntas Frequentes (FAQ) */}
-      {faqsFiltradas.length > 0 && (
+      {/* ====================================================================
+          E. Perguntas Frequentes (Separadas em Grupos: Prioritárias e Gerais)
+          ==================================================================== */}
+      {totalFaqs > 0 && (
         <section
-          className="central-ajuda__faq-block"
+          className="central-ajuda__faq-section"
           aria-label="Perguntas Frequentes"
         >
-          <div className="central-ajuda__faq-header">
-            <h2 className="central-ajuda__faq-title">
-              {categoriaAtualObj
-                ? `Dúvidas Frequentes sobre ${categoriaAtualObj.nome}`
-                : 'Dúvidas Frequentes'}
-            </h2>
-            <span className="central-ajuda__faq-count">
-              {faqsFiltradas.length}{' '}
-              {faqsFiltradas.length === 1 ? 'pergunta' : 'perguntas'}
-            </span>
-          </div>
+          {/* Grupo 1: Perguntas Prioritárias para o Perfil */}
+          {faqsPrioritarias.length > 0 && (
+            <div className="central-ajuda__faq-group">
+              <div className="central-ajuda__faq-group-header">
+                <h2 className="central-ajuda__faq-group-title">
+                  Perguntas Prioritárias para {PERFIS_LABELS[perfilAutenticado]}
+                </h2>
+                <span className="central-ajuda__faq-group-count">
+                  {faqsPrioritarias.length}{' '}
+                  {faqsPrioritarias.length === 1 ? 'pergunta' : 'perguntas'}
+                </span>
+              </div>
+              <Accordion
+                items={accordionItemsPrioritarias}
+                openIds={openFaqIds}
+                onToggle={handleToggleFaq}
+              />
+            </div>
+          )}
 
-          <Accordion
-            items={accordionItems}
-            openIds={openFaqIds}
-            onToggle={handleToggleFaq}
-          />
+          {/* Grupo 2: Perguntas Gerais */}
+          {faqsGerais.length > 0 && (
+            <div className="central-ajuda__faq-group">
+              <div className="central-ajuda__faq-group-header">
+                <h2 className="central-ajuda__faq-group-title">
+                  Perguntas Gerais
+                </h2>
+                <span className="central-ajuda__faq-group-count">
+                  {faqsGerais.length}{' '}
+                  {faqsGerais.length === 1 ? 'pergunta' : 'perguntas'}
+                </span>
+              </div>
+              <Accordion
+                items={accordionItemsGerais}
+                openIds={openFaqIds}
+                onToggle={handleToggleFaq}
+              />
+            </div>
+          )}
         </section>
       )}
 
-      {/* 8. Rodapé Compacto de Suporte */}
-      <footer className="central-ajuda__footer-suporte">
-        <p>
-          Ainda com dúvidas? Entre em contato com a secretaria acadêmica:{' '}
-          <a
-            href="mailto:secretaria@episteme.dev"
-            className="central-ajuda__footer-link"
-          >
-            secretaria@episteme.dev
-          </a>
-        </p>
+      {/* ====================================================================
+          F. Rodapé de Apoio (Contato Institucional com a Secretaria)
+          ==================================================================== */}
+      <footer
+        className="central-ajuda__footer"
+        aria-label="Canais de apoio e suporte acadêmico"
+      >
+        <div className="central-ajuda__footer-inner">
+          <p className="central-ajuda__footer-prompt">
+            Não encontrou o que precisava ou tem uma dúvida específica sobre seu
+            vínculo acadêmico?
+          </p>
+          <p className="central-ajuda__footer-contact">
+            Entre em contato com a Secretaria Acadêmica:{' '}
+            <a
+              href="mailto:secretaria@episteme.dev"
+              className="central-ajuda__footer-link"
+            >
+              secretaria@episteme.dev
+            </a>
+          </p>
+        </div>
       </footer>
     </div>
   )
