@@ -28,6 +28,15 @@ import {
 import { identificarPerfilAutenticado } from '../../services/ajudaService'
 import './CentralAjuda.css'
 
+const SUBTITULOS_POR_PERFIL = {
+  [PERFIS.ALUNO]:
+    'Orientações sobre matrícula, turmas virtuais, horários e dúvidas frequentes do estudante.',
+  [PERFIS.PROFESSOR]:
+    'Orientações sobre gerenciamento de turmas, diários eletrônicos, horários e rotinas docentes.',
+  [PERFIS.COORDENACAO]:
+    'Orientações sobre gestão acadêmica, deferimento de matrículas, turmas e ensalamento.',
+}
+
 function obterIconeCategoria(iconeNome, size = 18) {
   switch (iconeNome) {
     case 'user':
@@ -59,7 +68,7 @@ function CentralAjuda() {
   usePageTitle('Central de Ajuda')
   const { aluno, token } = useAuth()
 
-  // Perfil autenticado derivado da sessão
+  // Perfil autenticado exclusivo do usuário logado (cada perfil tem sua própria central)
   const perfilAutenticado = useMemo(
     () => identificarPerfilAutenticado(aluno, token),
     [aluno, token]
@@ -67,7 +76,6 @@ function CentralAjuda() {
 
   // Estados principais
   const [categoriaAtiva, setCategoriaAtiva] = useState('todas')
-  const [perfilFiltro, setPerfilFiltro] = useState(perfilAutenticado)
   const [termoBusca, setTermoBusca] = useState('')
   const [openFaqIds, setOpenFaqIds] = useState([])
 
@@ -85,23 +93,20 @@ function CentralAjuda() {
     setTermoBusca('')
   }, [])
 
-  // Limpa todos os filtros para estado padrão
+  // Redefine busca e categoria
   const handleResetFiltros = useCallback(() => {
     setTermoBusca('')
     setCategoriaAtiva('todas')
-    setPerfilFiltro(perfilAutenticado)
-  }, [perfilAutenticado])
+  }, [])
 
-  // Filtragem de orientações
+  // Orientações estritamente contextualizadas para o perfil do usuário logado
   const orientacoesFiltradas = useMemo(() => {
-    let lista = ORIENTACOES_AJUDA
+    let lista = ORIENTACOES_AJUDA.filter((ori) =>
+      ori.perfis.includes(perfilAutenticado)
+    )
 
     if (categoriaAtiva !== 'todas') {
       lista = lista.filter((ori) => ori.categoriaId === categoriaAtiva)
-    }
-
-    if (perfilFiltro !== 'todos') {
-      lista = lista.filter((ori) => ori.perfis.includes(perfilFiltro))
     }
 
     if (termoBusca.trim()) {
@@ -120,18 +125,16 @@ function CentralAjuda() {
     }
 
     return lista
-  }, [categoriaAtiva, perfilFiltro, termoBusca])
+  }, [categoriaAtiva, perfilAutenticado, termoBusca])
 
-  // Filtragem de FAQs
+  // FAQs estritamente contextualizadas para o perfil do usuário logado
   const faqsFiltradas = useMemo(() => {
-    let lista = FAQS_AJUDA
+    let lista = FAQS_AJUDA.filter((faq) =>
+      faq.perfis.includes(perfilAutenticado)
+    )
 
     if (categoriaAtiva !== 'todas') {
       lista = lista.filter((faq) => faq.categoriaId === categoriaAtiva)
-    }
-
-    if (perfilFiltro !== 'todos') {
-      lista = lista.filter((faq) => faq.perfis.includes(perfilFiltro))
     }
 
     if (termoBusca.trim()) {
@@ -146,15 +149,8 @@ function CentralAjuda() {
       })
     }
 
-    // Ordenação com destaque para itens pertinentes ao perfil autenticado
-    return lista.sort((a, b) => {
-      const aRelevante = a.perfis.includes(perfilAutenticado)
-      const bRelevante = b.perfis.includes(perfilAutenticado)
-      if (aRelevante && !bRelevante) return -1
-      if (!aRelevante && bRelevante) return 1
-      return 0
-    })
-  }, [categoriaAtiva, perfilFiltro, termoBusca, perfilAutenticado])
+    return lista
+  }, [categoriaAtiva, perfilAutenticado, termoBusca])
 
   // Ações de expandir e recolher todos os FAQs
   const handleExpandirTodos = useCallback(() => {
@@ -165,35 +161,28 @@ function CentralAjuda() {
     setOpenFaqIds([])
   }, [])
 
-  // Categoria atual selecionada (quando não for 'todas')
+  // Categoria ativa
   const categoriaAtualObj = useMemo(() => {
     return CATEGORIAS_AJUDA.find((c) => c.id === categoriaAtiva) || null
   }, [categoriaAtiva])
 
-  // Itens do acordeão sem poluição visual
+  // Itens do acordeão limpos e objetivos
   const accordionItems = useMemo(() => {
     return faqsFiltradas.map((faq) => {
       const categoria = CATEGORIAS_AJUDA.find((c) => c.id === faq.categoriaId)
-      const ehDestaquePerfil = faq.perfis.includes(perfilAutenticado)
 
       return {
         id: faq.id,
         title: faq.pergunta,
-        highlighted: ehDestaquePerfil,
-        badge: (
-          <span className="central-ajuda__faq-badges">
-            {categoriaAtiva === 'todas' && categoria && (
+        highlighted: false,
+        badge:
+          categoriaAtiva === 'todas' && categoria ? (
+            <span className="central-ajuda__faq-badges">
               <Badge variant="soft" size="sm">
                 {categoria.nome}
               </Badge>
-            )}
-            {ehDestaquePerfil && perfilFiltro === 'todos' && (
-              <Badge variant="primary" size="sm">
-                Recomendado
-              </Badge>
-            )}
-          </span>
-        ),
+            </span>
+          ) : null,
         content: (
           <div className="central-ajuda__faq-resposta">
             <p>{faq.resposta}</p>
@@ -217,13 +206,13 @@ function CentralAjuda() {
         ),
       }
     })
-  }, [faqsFiltradas, categoriaAtiva, perfilAutenticado, perfilFiltro])
+  }, [faqsFiltradas, categoriaAtiva])
 
   const totalResultados = faqsFiltradas.length + orientacoesFiltradas.length
 
   return (
     <div className="central-ajuda">
-      {/* 1. Header Card Limpo com Título e Campo de Busca */}
+      {/* 1. Header Card Limpo com Título, Perfil e Campo de Busca */}
       <header className="central-ajuda__header-card">
         <nav
           className="central-ajuda__breadcrumbs"
@@ -252,9 +241,15 @@ function CentralAjuda() {
 
         <div className="central-ajuda__header-body">
           <div className="central-ajuda__header-title-area">
-            <h1 className="central-ajuda__title">Central de Ajuda</h1>
+            <div className="central-ajuda__title-row">
+              <h1 className="central-ajuda__title">Central de Ajuda</h1>
+              <Badge variant="primary" size="sm">
+                {PERFIS_LABELS[perfilAutenticado]}
+              </Badge>
+            </div>
             <p className="central-ajuda__subtitle">
-              Orientações de uso e respostas para as principais dúvidas do EPIS.
+              {SUBTITULOS_POR_PERFIL[perfilAutenticado] ||
+                'Orientações e respostas para as principais dúvidas do EPIS.'}
             </p>
           </div>
 
@@ -344,80 +339,21 @@ function CentralAjuda() {
         })}
       </nav>
 
-      {/* 3. Barra de Contexto por Perfil e Ações Rápidas */}
+      {/* 3. Barra de Ações Rápidas do Conteúdo */}
       <section
         className="central-ajuda__toolbar"
-        aria-label="Filtro de perfil e ações"
+        aria-label="Controle de visualização"
       >
-        <div className="central-ajuda__toolbar-perfil">
-          <span className="central-ajuda__toolbar-label">
-            Perfil:&nbsp;
-            <span className="central-ajuda__toolbar-active-indicator">
-              (Seu: <strong>{PERFIS_LABELS[perfilAutenticado]}</strong>)
-            </span>
+        <div className="central-ajuda__toolbar-info">
+          <span className="central-ajuda__toolbar-text">
+            {categoriaAtualObj ? (
+              <strong>{categoriaAtualObj.nome}</strong>
+            ) : (
+              <span>Todas as Categorias</span>
+            )}
+            &nbsp;&bull; {faqsFiltradas.length}{' '}
+            {faqsFiltradas.length === 1 ? 'pergunta' : 'perguntas'}
           </span>
-
-          <div
-            className="central-ajuda__perfil-pills"
-            role="group"
-            aria-label="Alternar perfil"
-          >
-            <button
-              type="button"
-              className={`central-ajuda__pill-btn ${
-                perfilFiltro === perfilAutenticado
-                  ? 'central-ajuda__pill-btn--active'
-                  : ''
-              }`}
-              onClick={() => setPerfilFiltro(perfilAutenticado)}
-            >
-              Meu Perfil ({PERFIS_LABELS[perfilAutenticado]})
-            </button>
-            <button
-              type="button"
-              className={`central-ajuda__pill-btn ${
-                perfilFiltro === PERFIS.ALUNO
-                  ? 'central-ajuda__pill-btn--active'
-                  : ''
-              }`}
-              onClick={() => setPerfilFiltro(PERFIS.ALUNO)}
-            >
-              Aluno
-            </button>
-            <button
-              type="button"
-              className={`central-ajuda__pill-btn ${
-                perfilFiltro === PERFIS.PROFESSOR
-                  ? 'central-ajuda__pill-btn--active'
-                  : ''
-              }`}
-              onClick={() => setPerfilFiltro(PERFIS.PROFESSOR)}
-            >
-              Professor
-            </button>
-            <button
-              type="button"
-              className={`central-ajuda__pill-btn ${
-                perfilFiltro === PERFIS.COORDENACAO
-                  ? 'central-ajuda__pill-btn--active'
-                  : ''
-              }`}
-              onClick={() => setPerfilFiltro(PERFIS.COORDENACAO)}
-            >
-              Coordenação
-            </button>
-            <button
-              type="button"
-              className={`central-ajuda__pill-btn ${
-                perfilFiltro === 'todos'
-                  ? 'central-ajuda__pill-btn--active'
-                  : ''
-              }`}
-              onClick={() => setPerfilFiltro('todos')}
-            >
-              Todos
-            </button>
-          </div>
         </div>
 
         {faqsFiltradas.length > 0 && (
@@ -480,8 +416,8 @@ function CentralAjuda() {
             Nenhum conteúdo encontrado
           </h2>
           <p className="central-ajuda__empty-desc">
-            Não encontramos resultados para a busca atual. Tente palavras-chave
-            mais gerais ou redefina os filtros.
+            Não encontramos resultados para a busca atual no seu perfil. Tente
+            palavras-chave mais gerais ou redefina os filtros.
           </p>
           <Button variant="primary" size="md" onClick={handleResetFiltros}>
             Redefinir filtros
@@ -489,11 +425,11 @@ function CentralAjuda() {
         </section>
       )}
 
-      {/* 6. Orientações de Uso da Categoria Ativa (Guia Objetivo e Limpo) */}
+      {/* 6. Orientações de Uso da Categoria Ativa */}
       {orientacoesFiltradas.length > 0 && (
         <section
           className="central-ajuda__orientacoes-block"
-          aria-label="Orientações e Guia de Uso"
+          aria-label="Orientações de Uso"
         >
           {orientacoesFiltradas.map((ori) => {
             const cat = CATEGORIAS_AJUDA.find((c) => c.id === ori.categoriaId)
@@ -502,13 +438,10 @@ function CentralAjuda() {
                 <div className="central-ajuda__guia-header">
                   <div className="central-ajuda__guia-title-box">
                     <span className="central-ajuda__guia-badge">
-                      Guia de Uso &bull; {cat?.nome || 'Geral'}
+                      Orientações &bull; {cat?.nome || 'Geral'}
                     </span>
                     <h2 className="central-ajuda__guia-titulo">{ori.titulo}</h2>
                   </div>
-                  <span className="central-ajuda__guia-perfis-tag">
-                    {ori.perfis.map((p) => PERFIS_LABELS[p]).join(', ')}
-                  </span>
                 </div>
 
                 <p className="central-ajuda__guia-resumo">{ori.resumo}</p>
@@ -540,8 +473,8 @@ function CentralAjuda() {
           <div className="central-ajuda__faq-header">
             <h2 className="central-ajuda__faq-title">
               {categoriaAtualObj
-                ? `Perguntas Frequentes — ${categoriaAtualObj.nome}`
-                : 'Perguntas Frequentes'}
+                ? `Dúvidas Frequentes sobre ${categoriaAtualObj.nome}`
+                : 'Dúvidas Frequentes'}
             </h2>
             <span className="central-ajuda__faq-count">
               {faqsFiltradas.length}{' '}

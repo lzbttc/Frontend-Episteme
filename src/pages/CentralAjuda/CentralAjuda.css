@@ -89,8 +89,16 @@
   min-width: 260px;
 }
 
+.central-ajuda__title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
 .central-ajuda__title {
-  margin: 0 0 4px 0;
+  margin: 0;
   font-size: 1.625rem;
   font-weight: 800;
   letter-spacing: -0.02em;
@@ -245,7 +253,7 @@
 }
 
 /* ==========================================================================
-   3. Toolbar: Profile Context & Actions
+   3. Toolbar: Category Info & Expand/Collapse Actions
    ========================================================================== */
 .central-ajuda__toolbar {
   display: flex;
@@ -256,66 +264,13 @@
   padding: 4px 0;
 }
 
-.central-ajuda__toolbar-perfil {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.central-ajuda__toolbar-label {
+.central-ajuda__toolbar-info {
   font-size: 0.8125rem;
   color: var(--color-text-secondary);
-  font-weight: 500;
 }
 
-.central-ajuda__toolbar-active-indicator strong {
+.central-ajuda__toolbar-info strong {
   color: var(--color-text);
-}
-
-.central-ajuda__perfil-pills {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.central-ajuda__pill-btn {
-  padding: 4px 12px;
-  border-radius: var(--radius-full);
-  font-size: 0.75rem;
-  font-weight: 600;
-  font-family: inherit;
-  border: 1px solid var(--color-border);
-  background-color: var(--color-surface);
-  color: var(--color-text-secondary);
-  cursor: pointer;
-  transition:
-    background-color var(--duration-fast) var(--ease-standard),
-    color var(--duration-fast) var(--ease-standard),
-    border-color var(--duration-fast) var(--ease-standard);
-}
-
-.central-ajuda__pill-btn:hover {
-  border-color: #cbd5e1;
-  color: var(--color-text);
-}
-
-.central-ajuda__pill-btn--active {
-  background-color: var(--color-primary);
-  border-color: var(--color-primary);
-  color: #ffffff;
-}
-
-.central-ajuda__pill-btn--active:hover {
-  background-color: var(--color-primary-dark);
-  border-color: var(--color-primary-dark);
-  color: #ffffff;
-}
-
-.central-ajuda__pill-btn:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 1px;
 }
 
 .central-ajuda__toolbar-actions {
@@ -463,15 +418,6 @@
   font-size: 1.0625rem;
   font-weight: 700;
   color: var(--color-text);
-}
-
-.central-ajuda__guia-perfis-tag {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--color-text-secondary);
-  background-color: var(--color-surface-soft);
-  padding: 2px 8px;
-  border-radius: var(--radius-full);
 }
 
 .central-ajuda__guia-resumo {
