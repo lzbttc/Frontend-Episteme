@@ -6,11 +6,17 @@ import QuickActionCard from '../../components/QuickActionCard/QuickActionCard'
 import NewsCard from '../../components/NewsCard/NewsCard'
 import Button from '../../components/Button/Button'
 import SectionHeading from '../../components/SectionHeading/SectionHeading'
-import { ArrowRightIcon, CalendarIcon, ZapIcon } from '../../components/icons'
+import {
+  ArrowRightIcon,
+  CalendarIcon,
+  ZapIcon,
+  MegaphoneIcon,
+} from '../../components/icons'
 import { PATHS } from '../../routes/paths'
 import { getGreeting } from '../../utils/greeting'
 import { usePageTitle } from '../../hooks/usePageTitle'
 import { useAsyncData } from '../../hooks/useAsyncData'
+import { useAuth } from '../../hooks/useAuth'
 import {
   obterAluno,
   obterProximoCompromisso,
@@ -21,6 +27,7 @@ import './PaginaInicial.css'
 
 function PaginaInicial() {
   usePageTitle('Portal Acadêmico')
+  const { eAdmin } = useAuth()
 
   const carregarHome = useCallback(async () => {
     const [alunoData, event, actions, news] = await Promise.all([
@@ -105,36 +112,50 @@ function PaginaInicial() {
           }
           className="pagina-inicial__disciplines-header"
         />
+
+        <div className="pagina-inicial__disciplines-grid">
+          <article className="pagina-inicial__discipline-slot pagina-inicial__discipline-slot--empty">
+            <p className="pagina-inicial__empty-text">
+              Nenhuma disciplina em andamento encontrada.
+            </p>
+            <Button
+              variant="outline"
+              size="sm"
+              to={PATHS.minhasDisciplinas}
+              className="pagina-inicial__browse-btn"
+            >
+              Explorar Minhas Disciplinas
+            </Button>
+          </article>
+        </div>
       </section>
 
-      {/* 3. Compromissos & Acesso Rápido (2-Column Grid) */}
+      {/* 3. Middle Section: Next Event + Quick Actions */}
       <div className="pagina-inicial__two-col">
-        {/* Left Column: Próximos compromissos (7 cols) */}
-        <section className="pagina-inicial__section pagina-inicial__col-left pagina-inicial__compromissos-card">
+        {/* Next Event Card */}
+        <section className="pagina-inicial__event-card">
           <SectionHeading
             icon={
-              <div className="pagina-inicial__compromissos-icon-tile">
+              <div className="pagina-inicial__event-icon-tile">
                 <CalendarIcon size={20} />
               </div>
             }
-            title="Próximos compromissos"
-            subtitle="Atividades avaliativas e sessões presenciais"
-            action={
-              <Button variant="ghost-light" size="sm" to={PATHS.emBreve}>
-                <span>Ver agenda</span>
-                <ArrowRightIcon size={12} className="arrow-shift" />
-              </Button>
-            }
-            className="pagina-inicial__compromissos-header"
+            title="Próximo evento"
+            subtitle="Aulas, provas e entregas de trabalhos"
+            className="pagina-inicial__event-header"
           />
 
-          <div className="pagina-inicial__events-list">
-            {event && <EventCard event={event} />}
-          </div>
+          {event ? (
+            <EventCard event={event} />
+          ) : (
+            <div className="pagina-inicial__empty-event">
+              <p>Nenhum compromisso agendado para os próximos dias.</p>
+            </div>
+          )}
         </section>
 
-        {/* Right Column: Acesso rápido (5 cols) */}
-        <section className="pagina-inicial__section pagina-inicial__col-right pagina-inicial__acesso-rapido-card">
+        {/* Quick Actions Card */}
+        <section className="pagina-inicial__quick-actions-card">
           <SectionHeading
             icon={
               <div className="pagina-inicial__acesso-rapido-icon-tile">
@@ -160,10 +181,24 @@ function PaginaInicial() {
           title="Últimas notícias"
           subtitle="Comunicados da coordenação e pró-reitoria"
           action={
-            <Link to={PATHS.emBreve} className="pagina-inicial__ver-todos-link">
-              <span>Ver todos</span>
-              <ArrowRightIcon size={11} />
-            </Link>
+            <div className="pagina-inicial__noticias-actions-group">
+              {eAdmin && (
+                <Link
+                  to={PATHS.gerenciamentoNoticias}
+                  className="pagina-inicial__admin-gerenciar-link"
+                >
+                  <MegaphoneIcon size={12} />
+                  <span>Gerenciar comunicados</span>
+                </Link>
+              )}
+              <Link
+                to={PATHS.emBreve}
+                className="pagina-inicial__ver-todos-link"
+              >
+                <span>Ver todos</span>
+                <ArrowRightIcon size={11} />
+              </Link>
+            </div>
           }
           className="pagina-inicial__noticias-header"
         />

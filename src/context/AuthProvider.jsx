@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useMemo } from 'react'
 import { AuthContext } from './AuthContext'
 import { login as apiLogin } from '../services/authService'
 import { obterAluno } from '../services/alunoService'
@@ -10,7 +10,7 @@ import {
   removerToken,
   salvarToken,
 } from '../services/apiClient'
-import { expiracaoDoToken } from '../utils/jwt'
+import { expiracaoDoToken, usuarioEhAdmin } from '../utils/jwt'
 
 const SESSION_STORAGE_KEY = 'episteme_aluno_sessao'
 const MAXIMO_TIMEOUT_MS = 2147483647
@@ -29,7 +29,7 @@ function removerAlunoSalvo() {
 }
 
 /**
- * Provedor de contexto de autenticação do aluno.
+ * Provedor de contexto de autenticação do aluno/coordenação.
  *
  * NOTA DE SEGURANÇA:
  * O token JWT fica em sessionStorage. Ele some ao fechar a aba, mas qualquer script
@@ -46,6 +46,8 @@ export function AuthProvider({ children }) {
     }
     return lerAlunoSalvo()
   })
+
+  const eAdmin = useMemo(() => usuarioEhAdmin(token), [token])
 
   const encerrarSessaoLocal = useCallback(() => {
     removerAlunoSalvo()
@@ -103,7 +105,7 @@ export function AuthProvider({ children }) {
   }, [])
 
   return (
-    <AuthContext.Provider value={{ token, aluno, login, logout }}>
+    <AuthContext.Provider value={{ token, aluno, eAdmin, login, logout }}>
       {children}
     </AuthContext.Provider>
   )

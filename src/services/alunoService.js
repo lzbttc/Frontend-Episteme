@@ -77,7 +77,11 @@ export async function obterAluno() {
 
   if (!aluno) {
     return {
-      student: { name: usuario.nome, matricula: '', course: '' },
+      student: {
+        name: usuario.nome,
+        matricula: usuario.matricula || '',
+        course: usuario.e_admin ? 'Coordenação Acadêmica' : '',
+      },
       metrics,
     }
   }

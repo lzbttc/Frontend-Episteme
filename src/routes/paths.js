@@ -6,6 +6,7 @@ export const PATHS = {
   inicio: '/inicio',
   minhasDisciplinas: '/minhas-disciplinas',
   emBreve: '/em-breve',
+  gerenciamentoNoticias: '/gerenciamento-noticias',
 }
 
 /**
