@@ -1,10 +1,11 @@
-import { useCallback } from 'react'
+import { useState, useCallback, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import GaugeCard from '../../components/GaugeCard/GaugeCard'
 import EventCard from '../../components/EventCard/EventCard'
 import QuickActionCard from '../../components/QuickActionCard/QuickActionCard'
 import NewsCard from '../../components/NewsCard/NewsCard'
 import Button from '../../components/Button/Button'
+import ModalDetalhesComunicado from '../../components/ModalDetalhesComunicado/ModalDetalhesComunicado'
 import SectionHeading from '../../components/SectionHeading/SectionHeading'
 import {
   ArrowRightIcon,
@@ -17,6 +18,7 @@ import { getGreeting } from '../../utils/greeting'
 import { usePageTitle } from '../../hooks/usePageTitle'
 import { useAsyncData } from '../../hooks/useAsyncData'
 import { useAuth } from '../../hooks/useAuth'
+import { estaAtivoParaEstudante } from '../../services/comunicadoService'
 import {
   obterAluno,
   obterProximoCompromisso,
@@ -28,6 +30,29 @@ import './PaginaInicial.css'
 function PaginaInicial() {
   usePageTitle('Portal Acadêmico')
   const { eAdmin } = useAuth()
+  const [noticiaSelecionada, setNoticiaSelecionada] = useState(null)
+  const [agoraTimestamp, setAgoraTimestamp] = useState(() => Date.now())
+
+  // Ticker de tempo real para expiração e vigência automática sem recarregar a tela
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setAgoraTimestamp(Date.now())
+    }, 5000)
+
+    const handleVisibility = () => {
+      if (!document.hidden) {
+        setAgoraTimestamp(Date.now())
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibility)
+    window.addEventListener('focus', handleVisibility)
+
+    return () => {
+      clearInterval(interval)
+      document.removeEventListener('visibilitychange', handleVisibility)
+      window.removeEventListener('focus', handleVisibility)
+    }
+  }, [])
 
   const carregarHome = useCallback(async () => {
     const [alunoData, event, actions, news] = await Promise.all([
@@ -48,6 +73,11 @@ function PaginaInicial() {
 
   const { data, loading, error } = useAsyncData(carregarHome)
 
+  const noticiasVigentes = useMemo(() => {
+    const lista = Array.isArray(data?.news) ? data.news : []
+    return lista.filter((item) => estaAtivoParaEstudante(item, agoraTimestamp))
+  }, [data, agoraTimestamp])
+
   if (loading) {
     return (
       <div className="pagina-inicial">
@@ -64,7 +94,7 @@ function PaginaInicial() {
     )
   }
 
-  const { student, metrics, event, actions, news } = data
+  const { student, metrics, event, actions } = data
 
   return (
     <div className="pagina-inicial">
@@ -192,7 +222,7 @@ function PaginaInicial() {
                 </Link>
               )}
               <Link
-                to={PATHS.emBreve}
+                to={PATHS.noticias}
                 className="pagina-inicial__ver-todos-link"
               >
                 <span>Ver todos</span>
@@ -204,11 +234,29 @@ function PaginaInicial() {
         />
 
         <div className="pagina-inicial__news-list">
-          {news.map((item) => (
-            <NewsCard key={item.id} news={item} />
-          ))}
+          {noticiasVigentes.length === 0 ? (
+            <p className="pagina-inicial__empty-news">
+              Nenhum comunicado oficial ativo no momento.
+            </p>
+          ) : (
+            noticiasVigentes.map((item) => (
+              <NewsCard
+                key={item.id}
+                news={item}
+                onVisualizar={setNoticiaSelecionada}
+              />
+            ))
+          )}
         </div>
       </section>
+
+      {/* Modal Padronizada de Visualização */}
+      <ModalDetalhesComunicado
+        comunicado={noticiaSelecionada}
+        isOpen={Boolean(noticiaSelecionada)}
+        onClose={() => setNoticiaSelecionada(null)}
+        ehAdmin={false}
+      />
     </div>
   )
 }

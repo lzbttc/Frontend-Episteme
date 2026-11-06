@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import logo from '../../assets/logo.svg'
 import {
   BellIcon,
@@ -14,13 +14,16 @@ import './Header.css'
 /**
  * Cabeçalho principal da aplicação para as páginas internas autenticadas.
  * Exibe logo, ações de ícone (notificações, ajuda) e perfil do aluno logado.
- * Quando o usuário é administrador (Coordenação), exibe atalho de Gerenciar Notícias.
+ * Quando o usuário é administrador (Coordenação), exibe atalho institucional discreto para Gerenciar Notícias.
  */
 function Header() {
   const { aluno, eAdmin, logout } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
 
   const student = aluno || { name: 'Usuário', matricula: '' }
+  const isGerenciamentoAtivo =
+    location.pathname === PATHS.gerenciamentoNoticias
 
   function handleLogout() {
     logout()
@@ -43,14 +46,17 @@ function Header() {
         </Link>
 
         <div className="header__actions">
-          {/* Ação administrativa exclusiva para a Coordenação */}
+          {/* Navegação administrativa discreta exclusiva para a Coordenação */}
           {eAdmin && (
             <Link
               to={PATHS.gerenciamentoNoticias}
-              className="header__admin-link"
+              className={`header__admin-link ${
+                isGerenciamentoAtivo ? 'header__admin-link--active' : ''
+              }`}
               title="Gerenciamento de Notícias da Coordenação"
+              aria-current={isGerenciamentoAtivo ? 'page' : undefined}
             >
-              <MegaphoneIcon size={16} />
+              <MegaphoneIcon size={16} aria-hidden="true" />
               <span>Gerenciar Notícias</span>
             </Link>
           )}

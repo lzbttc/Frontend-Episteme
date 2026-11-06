@@ -1,0 +1,206 @@
+/* ==========================================================================
+   Página de Notícias e Comunicados do Estudante
+   ========================================================================== */
+
+.noticias-estudante {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px 40px;
+}
+
+/* Cabeçalho */
+.noticias-estudante__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 8px;
+}
+
+.noticias-estudante__title-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.noticias-estudante__icon-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background-color: #eff6ff;
+  color: var(--color-primary, #2563eb);
+  flex-shrink: 0;
+}
+
+.noticias-estudante__title {
+  margin: 0;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text, #0f172a);
+  letter-spacing: -0.02em;
+}
+
+.noticias-estudante__subtitle {
+  margin: 4px 0 0 0;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary, #64748b);
+  line-height: 1.4;
+}
+
+/* Toolbar de Pesquisa */
+.noticias-estudante__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background-color: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: 12px;
+  padding: 12px 18px;
+}
+
+.noticias-estudante__search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  max-width: 480px;
+}
+
+.noticias-estudante__search-icon {
+  position: absolute;
+  left: 12px;
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.noticias-estudante__search-input {
+  width: 100%;
+  padding-left: 36px !important;
+  padding-right: 32px !important;
+  height: 38px;
+}
+
+.noticias-estudante__search-clear {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+}
+
+.noticias-estudante__search-clear:hover {
+  color: #0f172a;
+}
+
+.noticias-estudante__count {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+/* Conteúdo Principal */
+.noticias-estudante__content {
+  background-color: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: 16px;
+  padding: 20px 24px;
+  min-height: 240px;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.noticias-estudante__list {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
+}
+
+/* Estados de Carregamento e Vazio */
+.noticias-estudante__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: var(--color-text-secondary, #64748b);
+  font-size: 0.9375rem;
+}
+
+.noticias-estudante__error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 200px;
+  color: var(--color-danger, #ef4444);
+}
+
+.noticias-estudante__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 16px;
+  text-align: center;
+  gap: 8px;
+}
+
+.noticias-estudante__empty-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background-color: #f1f5f9;
+  color: #94a3b8;
+  margin-bottom: 8px;
+}
+
+.noticias-estudante__empty-title {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--color-text, #0f172a);
+}
+
+.noticias-estudante__empty-desc {
+  margin: 0 0 12px 0;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary, #64748b);
+  max-width: 420px;
+  line-height: 1.45;
+}
+
+@media (max-width: 640px) {
+  .noticias-estudante__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .noticias-estudante__toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .noticias-estudante__search-wrapper {
+    max-width: 100%;
+  }
+}

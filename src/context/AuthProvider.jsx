@@ -11,6 +11,7 @@ import {
   salvarToken,
 } from '../services/apiClient'
 import { expiracaoDoToken, usuarioEhAdmin } from '../utils/jwt'
+import { limparRascunhosLocais } from '../services/comunicadoService'
 
 const SESSION_STORAGE_KEY = 'episteme_aluno_sessao'
 const MAXIMO_TIMEOUT_MS = 2147483647
@@ -50,6 +51,7 @@ export function AuthProvider({ children }) {
   const eAdmin = useMemo(() => usuarioEhAdmin(token), [token])
 
   const encerrarSessaoLocal = useCallback(() => {
+    limparRascunhosLocais()
     removerAlunoSalvo()
     setToken(null)
     setAluno(null)
@@ -97,6 +99,8 @@ export function AuthProvider({ children }) {
   }, [])
 
   const logout = useCallback(() => {
+    // Limpeza de segurança: remove rascunhos do administrador antes de invalidar a sessão
+    limparRascunhosLocais()
     removerToken()
     removerAlunoSalvo()
     limparAvisoSessaoExpirada()

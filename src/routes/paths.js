@@ -4,6 +4,7 @@
 export const PATHS = {
   login: '/login',
   inicio: '/inicio',
+  noticias: '/noticias',
   minhasDisciplinas: '/minhas-disciplinas',
   emBreve: '/em-breve',
   gerenciamentoNoticias: '/gerenciamento-noticias',
