@@ -1,12 +1,22 @@
-import { expiracaoDoToken } from '../utils/jwt'
+import { expiracaoDoToken } from '../utils/jwt.js'
 
 const BASES_DOS_SERVICOS = {
   identidade:
-    import.meta.env.VITE_IDENTIDADE_API_URL || 'http://localhost:8000',
-  turma: import.meta.env.VITE_TURMA_API_URL || 'http://localhost:8001',
-  academico: import.meta.env.VITE_ACADEMICO_API_URL || 'http://localhost:8002',
+    (typeof import.meta !== 'undefined' && import.meta.env?.VITE_IDENTIDADE_API_URL) ||
+    (typeof globalThis !== 'undefined' && globalThis.process?.env?.VITE_IDENTIDADE_API_URL) ||
+    'http://localhost:9000',
+  turma:
+    (typeof import.meta !== 'undefined' && import.meta.env?.VITE_TURMA_API_URL) ||
+    (typeof globalThis !== 'undefined' && globalThis.process?.env?.VITE_TURMA_API_URL) ||
+    'http://localhost:9001',
+  academico:
+    (typeof import.meta !== 'undefined' && import.meta.env?.VITE_ACADEMICO_API_URL) ||
+    (typeof globalThis !== 'undefined' && globalThis.process?.env?.VITE_ACADEMICO_API_URL) ||
+    'http://localhost:9002',
   comunicacao:
-    import.meta.env.VITE_COMUNICACAO_API_URL || 'http://localhost:8003',
+    (typeof import.meta !== 'undefined' && import.meta.env?.VITE_COMUNICACAO_API_URL) ||
+    (typeof globalThis !== 'undefined' && globalThis.process?.env?.VITE_COMUNICACAO_API_URL) ||
+    'http://localhost:9003',
 }
 
 const CHAVE_TOKEN = 'episteme_token'

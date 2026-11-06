@@ -7,12 +7,25 @@ import './NewsCard.css'
  *
  * @param {Object} props
  * @param {Object} props.news - Dados da notícia
+ * @param {Function} [props.onVisualizar] - Callback ao clicar para ler a notícia
  */
-function NewsCard({ news }) {
+function NewsCard({ news, onVisualizar }) {
   const { dateDay, dateMonth, title, summary } = news
 
   return (
-    <article className="news-card">
+    <article
+      className="news-card"
+      onClick={() => onVisualizar?.(news)}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          onVisualizar?.(news)
+        }
+      }}
+      aria-label={`Ler notícia completa: ${title}`}
+    >
       <DateTile day={dateDay} month={dateMonth} variant="soft" size="sm" />
 
       <div className="news-card__content">
@@ -21,8 +34,13 @@ function NewsCard({ news }) {
       </div>
 
       <button
+        type="button"
         className="news-card__arrow-btn"
-        aria-label="Ler notícia completa"
+        onClick={(e) => {
+          e.stopPropagation()
+          onVisualizar?.(news)
+        }}
+        aria-label={`Ler notícia completa: ${title}`}
       >
         <ChevronRightIcon size={16} />
       </button>

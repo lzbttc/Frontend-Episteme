@@ -1,16 +1,24 @@
-import { useCallback } from 'react'
+import { useState, useCallback, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import GaugeCard from '../../components/GaugeCard/GaugeCard'
 import EventCard from '../../components/EventCard/EventCard'
 import QuickActionCard from '../../components/QuickActionCard/QuickActionCard'
 import NewsCard from '../../components/NewsCard/NewsCard'
 import Button from '../../components/Button/Button'
+import ModalDetalhesComunicado from '../../components/ModalDetalhesComunicado/ModalDetalhesComunicado'
 import SectionHeading from '../../components/SectionHeading/SectionHeading'
-import { ArrowRightIcon, CalendarIcon, ZapIcon } from '../../components/icons'
+import {
+  ArrowRightIcon,
+  CalendarIcon,
+  ZapIcon,
+  MegaphoneIcon,
+} from '../../components/icons'
 import { PATHS } from '../../routes/paths'
 import { getGreeting } from '../../utils/greeting'
 import { usePageTitle } from '../../hooks/usePageTitle'
 import { useAsyncData } from '../../hooks/useAsyncData'
+import { useAuth } from '../../hooks/useAuth'
+import { estaAtivoParaEstudante } from '../../services/comunicadoService'
 import {
   obterAluno,
   obterProximoCompromisso,
@@ -21,6 +29,30 @@ import './PaginaInicial.css'
 
 function PaginaInicial() {
   usePageTitle('Portal Acadêmico')
+  const { eAdmin } = useAuth()
+  const [noticiaSelecionada, setNoticiaSelecionada] = useState(null)
+  const [agoraTimestamp, setAgoraTimestamp] = useState(() => Date.now())
+
+  // Ticker de tempo real para expiração e vigência automática sem recarregar a tela
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setAgoraTimestamp(Date.now())
+    }, 5000)
+
+    const handleVisibility = () => {
+      if (!document.hidden) {
+        setAgoraTimestamp(Date.now())
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibility)
+    window.addEventListener('focus', handleVisibility)
+
+    return () => {
+      clearInterval(interval)
+      document.removeEventListener('visibilitychange', handleVisibility)
+      window.removeEventListener('focus', handleVisibility)
+    }
+  }, [])
 
   const carregarHome = useCallback(async () => {
     const [alunoData, event, actions, news] = await Promise.all([
@@ -41,6 +73,11 @@ function PaginaInicial() {
 
   const { data, loading, error } = useAsyncData(carregarHome)
 
+  const noticiasVigentes = useMemo(() => {
+    const lista = Array.isArray(data?.news) ? data.news : []
+    return lista.filter((item) => estaAtivoParaEstudante(item, agoraTimestamp))
+  }, [data, agoraTimestamp])
+
   if (loading) {
     return (
       <div className="pagina-inicial">
@@ -57,7 +94,7 @@ function PaginaInicial() {
     )
   }
 
-  const { student, metrics, event, actions, news } = data
+  const { student, metrics, event, actions } = data
 
   return (
     <div className="pagina-inicial">
@@ -105,36 +142,50 @@ function PaginaInicial() {
           }
           className="pagina-inicial__disciplines-header"
         />
+
+        <div className="pagina-inicial__disciplines-grid">
+          <article className="pagina-inicial__discipline-slot pagina-inicial__discipline-slot--empty">
+            <p className="pagina-inicial__empty-text">
+              Nenhuma disciplina em andamento encontrada.
+            </p>
+            <Button
+              variant="outline"
+              size="sm"
+              to={PATHS.minhasDisciplinas}
+              className="pagina-inicial__browse-btn"
+            >
+              Explorar Minhas Disciplinas
+            </Button>
+          </article>
+        </div>
       </section>
 
-      {/* 3. Compromissos & Acesso Rápido (2-Column Grid) */}
+      {/* 3. Middle Section: Next Event + Quick Actions */}
       <div className="pagina-inicial__two-col">
-        {/* Left Column: Próximos compromissos (7 cols) */}
-        <section className="pagina-inicial__section pagina-inicial__col-left pagina-inicial__compromissos-card">
+        {/* Next Event Card */}
+        <section className="pagina-inicial__event-card">
           <SectionHeading
             icon={
-              <div className="pagina-inicial__compromissos-icon-tile">
+              <div className="pagina-inicial__event-icon-tile">
                 <CalendarIcon size={20} />
               </div>
             }
-            title="Próximos compromissos"
-            subtitle="Atividades avaliativas e sessões presenciais"
-            action={
-              <Button variant="ghost-light" size="sm" to={PATHS.emBreve}>
-                <span>Ver agenda</span>
-                <ArrowRightIcon size={12} className="arrow-shift" />
-              </Button>
-            }
-            className="pagina-inicial__compromissos-header"
+            title="Próximo evento"
+            subtitle="Aulas, provas e entregas de trabalhos"
+            className="pagina-inicial__event-header"
           />
 
-          <div className="pagina-inicial__events-list">
-            {event && <EventCard event={event} />}
-          </div>
+          {event ? (
+            <EventCard event={event} />
+          ) : (
+            <div className="pagina-inicial__empty-event">
+              <p>Nenhum compromisso agendado para os próximos dias.</p>
+            </div>
+          )}
         </section>
 
-        {/* Right Column: Acesso rápido (5 cols) */}
-        <section className="pagina-inicial__section pagina-inicial__col-right pagina-inicial__acesso-rapido-card">
+        {/* Quick Actions Card */}
+        <section className="pagina-inicial__quick-actions-card">
           <SectionHeading
             icon={
               <div className="pagina-inicial__acesso-rapido-icon-tile">
@@ -160,20 +211,52 @@ function PaginaInicial() {
           title="Últimas notícias"
           subtitle="Comunicados da coordenação e pró-reitoria"
           action={
-            <Link to={PATHS.emBreve} className="pagina-inicial__ver-todos-link">
-              <span>Ver todos</span>
-              <ArrowRightIcon size={11} />
-            </Link>
+            <div className="pagina-inicial__noticias-actions-group">
+              {eAdmin && (
+                <Link
+                  to={PATHS.gerenciamentoNoticias}
+                  className="pagina-inicial__admin-gerenciar-link"
+                >
+                  <MegaphoneIcon size={12} />
+                  <span>Gerenciar comunicados</span>
+                </Link>
+              )}
+              <Link
+                to={PATHS.noticias}
+                className="pagina-inicial__ver-todos-link"
+              >
+                <span>Ver todos</span>
+                <ArrowRightIcon size={11} />
+              </Link>
+            </div>
           }
           className="pagina-inicial__noticias-header"
         />
 
         <div className="pagina-inicial__news-list">
-          {news.map((item) => (
-            <NewsCard key={item.id} news={item} />
-          ))}
+          {noticiasVigentes.length === 0 ? (
+            <p className="pagina-inicial__empty-news">
+              Nenhum comunicado oficial ativo no momento.
+            </p>
+          ) : (
+            noticiasVigentes.map((item) => (
+              <NewsCard
+                key={item.id}
+                news={item}
+                onVisualizar={setNoticiaSelecionada}
+              />
+            ))
+          )}
         </div>
       </section>
+
+      {/* Modal Padronizada de Visualização */}
+      <ModalDetalhesComunicado
+        comunicado={noticiaSelecionada}
+        isOpen={Boolean(noticiaSelecionada)}
+        onClose={() => setNoticiaSelecionada(null)}
+        ehAdmin={false}
+      />
     </div>
   )
 }

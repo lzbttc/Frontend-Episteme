@@ -1,6 +1,12 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import logo from '../../assets/logo.svg'
-import { BellIcon, ChevronDownIcon, HelpCircleIcon, UserIcon } from '../icons'
+import {
+  BellIcon,
+  ChevronDownIcon,
+  HelpCircleIcon,
+  UserIcon,
+  MegaphoneIcon,
+} from '../icons'
 import { PATHS } from '../../routes/paths'
 import { useAuth } from '../../hooks/useAuth'
 import './Header.css'
@@ -8,13 +14,16 @@ import './Header.css'
 /**
  * Cabeçalho principal da aplicação para as páginas internas autenticadas.
  * Exibe logo, ações de ícone (notificações, ajuda) e perfil do aluno logado.
- * O nome do aluno é lido diretamente do contexto de autenticação, sem nova requisição.
+ * Quando o usuário é administrador (Coordenação), exibe atalho institucional discreto para Gerenciar Notícias.
  */
 function Header() {
-  const { aluno, logout } = useAuth()
+  const { aluno, eAdmin, logout } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
 
-  const student = aluno || { name: 'Aluno', matricula: '' }
+  const student = aluno || { name: 'Usuário', matricula: '' }
+  const isGerenciamentoAtivo =
+    location.pathname === PATHS.gerenciamentoNoticias
 
   function handleLogout() {
     logout()
@@ -37,6 +46,21 @@ function Header() {
         </Link>
 
         <div className="header__actions">
+          {/* Navegação administrativa discreta exclusiva para a Coordenação */}
+          {eAdmin && (
+            <Link
+              to={PATHS.gerenciamentoNoticias}
+              className={`header__admin-link ${
+                isGerenciamentoAtivo ? 'header__admin-link--active' : ''
+              }`}
+              title="Gerenciamento de Notícias da Coordenação"
+              aria-current={isGerenciamentoAtivo ? 'page' : undefined}
+            >
+              <MegaphoneIcon size={16} aria-hidden="true" />
+              <span>Gerenciar Notícias</span>
+            </Link>
+          )}
+
           <button
             className="header__icon-btn"
             title="Notificações"
@@ -67,7 +91,9 @@ function Header() {
 
             <div className="header__user-info">
               <span className="header__user-name">{student.name}</span>
-              <span className="header__user-sub">{student.matricula}</span>
+              <span className="header__user-sub">
+                {student.matricula || (eAdmin ? 'Coordenação' : '')}
+              </span>
             </div>
 
             <button

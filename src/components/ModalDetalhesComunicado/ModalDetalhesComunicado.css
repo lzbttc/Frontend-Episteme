@@ -1,0 +1,229 @@
+/* ==========================================================================
+   Modal de Detalhes do Comunicado Institucional (Público & Coordenação)
+   ========================================================================== */
+
+.modal-detalhes-comunicado-root {
+  max-width: 640px !important;
+  width: 100%;
+}
+
+.modal-detalhes-comunicado {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* 1. Header de Metadados */
+.modal-detalhes-comunicado__meta-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-bottom: 4px;
+}
+
+.modal-detalhes-comunicado__date-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary, #64748b);
+  font-weight: 500;
+}
+
+.modal-detalhes-comunicado__badge-wrap {
+  display: flex;
+  align-items: center;
+}
+
+/* 2. Título Principal */
+.modal-detalhes-comunicado__title {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--color-text, #0f172a);
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+  margin: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* 3. Card de Validade e Vigência */
+.modal-detalhes-comunicado__validity-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background-color: #f0f7ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 0.8125rem;
+  color: #1e40af;
+  line-height: 1.45;
+}
+
+.modal-detalhes-comunicado__clock-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: #2563eb;
+}
+
+.modal-detalhes-comunicado__validity-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.modal-detalhes-comunicado__validity-text strong {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #1d4ed8;
+}
+
+/* 4. Resumo */
+.modal-detalhes-comunicado__summary-section {
+  background-color: var(--color-background, #f8fafc);
+  border-left: 3px solid var(--color-primary, #3b82f6);
+  border-radius: 0 8px 8px 0;
+  padding: 12px 16px;
+  min-width: 0;
+}
+
+.modal-detalhes-comunicado__section-label {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary, #64748b);
+  margin-bottom: 4px;
+}
+
+.modal-detalhes-comunicado__summary-text {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--color-text, #1e293b);
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* 5. Conteúdo Completo (Corpo) */
+.modal-detalhes-comunicado__body-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.modal-detalhes-comunicado__paragraphs {
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--color-text, #334155);
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.modal-detalhes-comunicado__paragraphs p {
+  margin: 0 0 12px 0;
+  white-space: pre-wrap;
+}
+
+.modal-detalhes-comunicado__paragraphs p:last-child {
+  margin-bottom: 0;
+}
+
+.modal-detalhes-comunicado__link {
+  color: var(--color-primary, #2563eb);
+  text-decoration: underline;
+  word-break: break-all;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.modal-detalhes-comunicado__link:hover {
+  color: var(--color-primary-dark, #1d4ed8);
+}
+
+/* 5.1 Aviso de Rascunho */
+.modal-detalhes-comunicado__draft-notice {
+  background-color: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-left: 4px solid #64748b;
+  border-radius: var(--radius-sm, 6px);
+  padding: 12px 14px;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--color-text, #1e293b);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.modal-detalhes-comunicado__draft-notice-title {
+  display: block;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.6875rem;
+  letter-spacing: 0.05em;
+  color: #475569;
+}
+
+.modal-detalhes-comunicado__draft-notice p {
+  margin: 0;
+}
+
+/* 6. Rodapé e Ações */
+.modal-detalhes-comunicado__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border, #e2e8f0);
+  flex-wrap: wrap;
+}
+
+.modal-detalhes-comunicado__footer-main {
+  display: flex;
+  align-items: center;
+}
+
+.modal-detalhes-comunicado__footer-admin-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-detalhes-comunicado__btn-delete {
+  color: var(--color-danger, #ef4444) !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+}
+
+.modal-detalhes-comunicado__btn-delete:hover {
+  background-color: rgba(239, 68, 68, 0.08) !important;
+  border-color: var(--color-danger, #ef4444) !important;
+}
+
+@media (max-width: 600px) {
+  .modal-detalhes-comunicado__footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .modal-detalhes-comunicado__footer-main,
+  .modal-detalhes-comunicado__footer-admin-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .modal-detalhes-comunicado__footer-main > button,
+  .modal-detalhes-comunicado__footer-admin-actions > button {
+    flex: 1;
+  }
+}
