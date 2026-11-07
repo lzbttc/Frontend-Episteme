@@ -12,26 +12,39 @@ function Modal({
 }) {
   const modalRef = useRef(null)
 
+  // Efeito 1: Gerencia o scroll do body e o foco inicial exclusivamente ao abrir/fechar a modal
   useEffect(() => {
     if (!isOpen) return
 
-    // Save previous overflow style and lock body scroll
     const previousOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
 
-    // Focus into modal
+    // Foco inicial no primeiro elemento interativo apenas ao abrir
     const focusableElements = modalRef.current?.querySelectorAll(
       'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
     )
     const firstFocusable = focusableElements?.[0]
     firstFocusable?.focus()
 
+    const triggerElement = triggerRef?.current
+    return () => {
+      document.body.style.overflow = previousOverflow
+      triggerElement?.focus()
+    }
+  }, [isOpen, triggerRef])
+
+  // Efeito 2: Gerencia atalhos de teclado (Escape e Tab trap) sem redefinir foco de inputs
+  useEffect(() => {
+    if (!isOpen) return
+
     function handleKeyDown(event) {
       if (event.key === 'Escape') {
         event.stopPropagation()
         onClose?.()
       } else if (event.key === 'Tab') {
-        // Trap focus inside modal
+        const focusableElements = modalRef.current?.querySelectorAll(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )
         if (!focusableElements || focusableElements.length === 0) return
         const first = focusableElements[0]
         const last = focusableElements[focusableElements.length - 1]
@@ -51,15 +64,10 @@ function Modal({
     }
 
     document.addEventListener('keydown', handleKeyDown)
-
-    const triggerElement = triggerRef?.current
     return () => {
-      document.body.style.overflow = previousOverflow
       document.removeEventListener('keydown', handleKeyDown)
-      // Return focus to trigger button
-      triggerElement?.focus()
     }
-  }, [isOpen, onClose, triggerRef])
+  }, [isOpen, onClose])
 
   if (!isOpen) return null
 

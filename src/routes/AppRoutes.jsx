@@ -38,17 +38,8 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         >
-          <Route
-            path={PATHS.inicio}
-            element={<PaginaInicial />}
-          />
-
-          {/* Notícias do estudante */}
-          <Route
-            path={PATHS.noticias}
-            element={<NoticiasEstudante />}
-          />
-
+          <Route path={PATHS.inicio} element={<PaginaInicial />} />
+          <Route path={PATHS.noticias} element={<NoticiasEstudante />} />
           <Route
             path={PATHS.minhasDisciplinas}
             element={<MinhasDisciplinas />}

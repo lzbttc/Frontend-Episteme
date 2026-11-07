@@ -1,5 +1,5 @@
-import { requisitar } from './apiClient'
-import { decodificarPayloadJwt } from '../utils/jwt'
+import { requisitar } from './apiClient.js'
+import { decodificarPayloadJwt } from '../utils/jwt.js'
 
 /**
  * Realiza autenticação do usuário.

@@ -1,6 +1,11 @@
-import { ErroApi, requisitar, obterToken } from './apiClient'
-import { lerUsuarioId } from './authService'
-import { ACESSO_RAPIDO_INICIO } from '../constants/acessoRapido'
+import { ErroApi, requisitar, obterToken } from './apiClient.js'
+import { lerUsuarioId } from './authService.js'
+import { ACESSO_RAPIDO_INICIO } from '../constants/acessoRapido.js'
+import {
+  listarComunicados,
+  estaAtivoParaEstudante,
+  parseParaTimestamp,
+} from './comunicadoService.js'
 
 const MESES_ABREVIADOS = [
   'JAN',
@@ -18,14 +23,36 @@ const MESES_ABREVIADOS = [
 ]
 
 function partesDaData(valor) {
-  const data = new Date(valor.includes('T') ? valor : `${valor}T00:00:00`)
+  if (!valor) {
+    const hoje = new Date()
+    return {
+      dia: String(hoje.getDate()).padStart(2, '0'),
+      mes: MESES_ABREVIADOS[hoje.getMonth()],
+      hora: '00:00',
+      temHorario: false,
+      instante: hoje,
+    }
+  }
+  const str = String(valor)
+  const t = parseParaTimestamp(valor)
+  const data = t ? new Date(t) : new Date(valor)
+  if (Number.isNaN(data.getTime())) {
+    const hoje = new Date()
+    return {
+      dia: String(hoje.getDate()).padStart(2, '0'),
+      mes: MESES_ABREVIADOS[hoje.getMonth()],
+      hora: '00:00',
+      temHorario: false,
+      instante: hoje,
+    }
+  }
   return {
     dia: String(data.getDate()).padStart(2, '0'),
     mes: MESES_ABREVIADOS[data.getMonth()],
     hora: `${String(data.getHours()).padStart(2, '0')}:${String(
       data.getMinutes()
     ).padStart(2, '0')}`,
-    temHorario: valor.includes('T'),
+    temHorario: str.includes('T'),
     instante: data,
   }
 }
@@ -77,7 +104,11 @@ export async function obterAluno() {
 
   if (!aluno) {
     return {
-      student: { name: usuario.nome, matricula: '', course: '' },
+      student: {
+        name: usuario.nome,
+        matricula: usuario.matricula || '',
+        course: usuario.e_admin ? 'Coordenação Acadêmica' : '',
+      },
       metrics,
     }
   }
@@ -139,26 +170,55 @@ export async function listarAcessoRapidoDestaque() {
 }
 
 function mapearNoticia(comunicado) {
-  const { dia, mes } = partesDaData(comunicado.publicado_em)
+  const dataReferencia =
+    comunicado.publicado_em || comunicado.inicio_em || new Date().toISOString()
+  const { dia, mes } = partesDaData(dataReferencia)
   return {
     id: comunicado.id,
     dateDay: dia,
     dateMonth: mes,
     title: comunicado.titulo,
     summary: comunicado.resumo,
+    corpo: comunicado.corpo || '',
+    publicado: Boolean(comunicado.publicado),
+    publicado_em: comunicado.publicado_em,
+    inicio_em: comunicado.inicio_em,
+    expira_em: comunicado.expira_em,
   }
 }
 
 export async function listarNoticiasRecentes() {
-  let resposta
   try {
-    resposta = await requisitar('comunicacao', '/comunicados?limite=3')
+    const lista = await listarComunicados({
+      limite: 50,
+      somenteVigentes: true,
+      incluirRascunhos: false,
+    })
+    const agora = Date.now()
+    const ativas = (lista || []).filter((item) => estaAtivoParaEstudante(item, agora))
+    return ativas.slice(0, 3).map(mapearNoticia)
   } catch (err) {
     if (err instanceof ErroApi && err.status === 404) {
       return []
     }
     throw err
   }
+}
 
-  return (resposta.comunicados || []).map(mapearNoticia)
+export async function listarTodasNoticiasEstudante() {
+  try {
+    const lista = await listarComunicados({
+      limite: 50,
+      somenteVigentes: true,
+      incluirRascunhos: false,
+    })
+    const agora = Date.now()
+    const ativas = (lista || []).filter((item) => estaAtivoParaEstudante(item, agora))
+    return ativas.map(mapearNoticia)
+  } catch (err) {
+    if (err instanceof ErroApi && err.status === 404) {
+      return []
+    }
+    throw err
+  }
 }

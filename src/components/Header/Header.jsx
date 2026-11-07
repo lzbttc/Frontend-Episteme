@@ -1,4 +1,3 @@
-
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import logo from '../../assets/logo.svg'
 import {
@@ -47,6 +46,7 @@ function Header() {
         </Link>
 
         <div className="header__actions">
+          {/* Navegação administrativa discreta exclusiva para a Coordenação */}
           {eAdmin && (
             <Link
               to={PATHS.gerenciamentoNoticias}
