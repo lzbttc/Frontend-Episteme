@@ -1,0 +1,142 @@
+/* ==========================================================================
+   Accordion Component — EPIS Design System
+   Accessible, keyboard navigable, responsive accordion
+   ========================================================================== */
+
+.accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.accordion__item {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition:
+    border-color var(--duration-base) var(--ease-standard),
+    box-shadow var(--duration-base) var(--ease-standard);
+  overflow: hidden;
+}
+
+.accordion__item:hover {
+  border-color: #cbd5e1;
+  box-shadow: var(--shadow-card);
+}
+
+.accordion__item--highlighted {
+  border-left: 4px solid var(--color-primary);
+}
+
+.accordion__item--open {
+  border-color: #cbd5e1;
+  box-shadow: var(--shadow-card-hover);
+}
+
+.accordion__heading {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.accordion__trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 24px;
+  background: transparent;
+  border: none;
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.45;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+}
+
+.accordion__trigger:hover {
+  background-color: var(--color-surface-warm);
+}
+
+.accordion__trigger:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+  background-color: var(--color-surface-warm);
+}
+
+.accordion__title-wrapper {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  flex: 1;
+}
+
+.accordion__title {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.accordion__badges {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.accordion__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--color-text-secondary);
+  transition: transform var(--duration-base) var(--ease-emphasized);
+}
+
+.accordion__icon--rotated {
+  transform: rotate(180deg);
+  color: var(--color-primary);
+}
+
+.accordion__panel {
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  animation: accordionExpand var(--duration-base) var(--ease-standard);
+}
+
+.accordion__content {
+  padding: 18px 24px 22px 24px;
+  color: var(--color-text);
+  font-size: 0.9375rem;
+  line-height: 1.65;
+}
+
+@keyframes accordionExpand {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 640px) {
+  .accordion__trigger {
+    padding: 14px 16px;
+    font-size: 0.9375rem;
+  }
+
+  .accordion__content {
+    padding: 14px 16px 18px 16px;
+    font-size: 0.875rem;
+  }
+}

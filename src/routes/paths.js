@@ -1,3 +1,4 @@
+
 /**
  * Constantes centralizadas de rotas da aplicação.
  */
@@ -6,6 +7,7 @@ export const PATHS = {
   inicio: '/inicio',
   noticias: '/noticias',
   minhasDisciplinas: '/minhas-disciplinas',
+  ajuda: '/ajuda',
   emBreve: '/em-breve',
   gerenciamentoNoticias: '/gerenciamento-noticias',
 }

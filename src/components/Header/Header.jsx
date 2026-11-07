@@ -13,7 +13,7 @@ import './Header.css'
 
 /**
  * Cabeçalho principal da aplicação para as páginas internas autenticadas.
- * Exibe logo, ações de ícone (notificações, ajuda) e perfil do aluno logado.
+ * Exibe logo, ações de ícone (notificações, ajuda) e perfil do usuário logado.
  * Quando o usuário é administrador (Coordenação), exibe atalho institucional discreto para Gerenciar Notícias.
  */
 function Header() {
@@ -72,10 +72,10 @@ function Header() {
           </button>
 
           <Link
-            to={PATHS.emBreve}
+            to={PATHS.ajuda}
             className="header__icon-btn"
-            title="Ajuda"
-            aria-label="Ajuda"
+            title="Central de Ajuda"
+            aria-label="Central de Ajuda"
           >
             <HelpCircleIcon size={20} />
           </Link>
