@@ -66,6 +66,7 @@ function Header() {
             title="Notificações"
             aria-label="Notificações"
             type="button"
+			onClick={() => navigate('/notificacoes')}
           >
             <BellIcon size={20} />
             <span className="header__badge-dot" />
