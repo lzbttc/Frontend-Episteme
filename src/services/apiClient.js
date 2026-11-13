@@ -94,7 +94,26 @@ function marcarSessaoExpirada() {
 async function extrairMensagemDeErro(resposta) {
   try {
     const corpo = await resposta.json()
-    return typeof corpo.detail === 'string' ? corpo.detail : MSG_FALHA_GENERICA
+    if (typeof corpo.detail === 'string') {
+      return corpo.detail
+    }
+    if (Array.isArray(corpo.detail)) {
+      const mensagens = corpo.detail
+        .map((item) => {
+          if (typeof item === 'string') return item
+          const campo = Array.isArray(item?.loc)
+            ? item.loc.filter((p) => p !== 'body').join('.')
+            : ''
+          const msg = item?.msg || JSON.stringify(item)
+          return campo ? `${campo}: ${msg}` : msg
+        })
+        .filter(Boolean)
+      if (mensagens.length > 0) return mensagens.join(' | ')
+    }
+    if (typeof corpo.message === 'string') {
+      return corpo.message
+    }
+    return MSG_FALHA_GENERICA
   } catch {
     return MSG_FALHA_GENERICA
   }

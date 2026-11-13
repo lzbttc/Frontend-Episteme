@@ -9,8 +9,8 @@
  * @param {string} valor - Apenas dígitos ou texto com máscara
  * @returns {string}
  */
-export function mascaraCpf(valor) {
-  const digits = valor.replace(/\D/g, '').slice(0, 11)
+export function mascaraCpf(valor = '') {
+  const digits = String(valor || '').replace(/\D/g, '').slice(0, 11)
   if (digits.length <= 3) return digits
   if (digits.length <= 6) return `${digits.slice(0, 3)}.${digits.slice(3)}`
   if (digits.length <= 9)
@@ -23,8 +23,8 @@ export function mascaraCpf(valor) {
  * @param {string} cpf - Com ou sem máscara
  * @returns {boolean}
  */
-export function validarCpf(cpf) {
-  const digits = cpf.replace(/\D/g, '')
+export function validarCpf(cpf = '') {
+  const digits = String(cpf || '').replace(/\D/g, '')
   if (digits.length !== 11) return false
   if (/^(\d)\1{10}$/.test(digits)) return false
 
@@ -44,31 +44,57 @@ export function validarCpf(cpf) {
 // ─── Telefone ──────────────────────────────────────────────────────────────
 
 /**
- * Aplica máscara de telefone no padrão brasileiro:
- * +55 (DD) NNNNN-NNNN  (celular)
- * +55 (DD) NNNN-NNNN   (fixo)
- *
- * Aceita entrada já com ou sem código de país.
+ * Extrai apenas os dígitos nacionais (DDD + número), removendo DDI +55 se presente.
  * @param {string} valor
- * @returns {string}
+ * @returns {string} até 11 dígitos
  */
-export function mascaraTelefone(valor) {
-  // Remove tudo exceto dígitos
-  let digits = valor.replace(/\D/g, '')
+export function extrairDigitosTelefone(valor = '') {
+  const str = String(valor || '').trim()
 
-  // Remove o "55" do início se já veio normalizado com código do país
-  if (digits.startsWith('55') && digits.length > 11) {
+  // Remove o DDI explícito +55 ou +
+  let limpo = str
+  if (limpo.startsWith('+55')) {
+    limpo = limpo.slice(3)
+  } else if (limpo.startsWith('+')) {
+    limpo = limpo.slice(1)
+  }
+
+  // Pega apenas os dígitos restantes
+  let digits = limpo.replace(/\D/g, '')
+
+  // Se ainda tiver mais de 11 dígitos e começar com 55 (ex.: usuário colou 5511987654321 sem o +)
+  if (digits.length > 11 && digits.startsWith('55')) {
     digits = digits.slice(2)
   }
 
-  digits = digits.slice(0, 11)
+  return digits.slice(0, 11)
+}
 
-  if (digits.length === 0) return ''
-  if (digits.length <= 2) return `+55 (${digits}`
-  if (digits.length <= 6)
+/**
+ * Aplica máscara de telefone no padrão brasileiro com código do país:
+ * +55 (DD) NNNNN-NNNN  (celular - 11 dígitos)
+ * +55 (DD) NNNN-NNNN   (fixo - 10 dígitos)
+ *
+ * @param {string} valor
+ * @returns {string}
+ */
+export function mascaraTelefone(valor = '') {
+  const digits = extrairDigitosTelefone(valor)
+
+  if (!digits) return ''
+
+  if (digits.length <= 2) {
+    return `+55 (${digits}`
+  }
+
+  if (digits.length <= 6) {
     return `+55 (${digits.slice(0, 2)}) ${digits.slice(2)}`
-  if (digits.length <= 10)
+  }
+
+  if (digits.length <= 10) {
     return `+55 (${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`
+  }
+
   return `+55 (${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`
 }
 
@@ -77,18 +103,18 @@ export function mascaraTelefone(valor) {
  * @param {string} valor - Com máscara ou dígitos
  * @returns {string}
  */
-export function normalizarTelefone(valor) {
-  const digits = valor.replace(/\D/g, '')
-  if (digits.startsWith('55')) return `+${digits}`
-  return `+55${digits}`
+export function normalizarTelefone(valor = '') {
+  const digits = extrairDigitosTelefone(valor)
+  return digits ? `+55${digits}` : ''
 }
 
 /**
- * Valida se o telefone tem entre 10 e 11 dígitos (DDD + número).
+ * Valida se o telefone possui 10 (fixo) ou 11 (celular) dígitos nacionais.
  * @param {string} valor - Com ou sem máscara
  * @returns {boolean}
  */
-export function validarTelefone(valor) {
-  const digits = valor.replace(/\D/g, '').replace(/^55/, '')
-  return digits.length >= 10 && digits.length <= 11
+export function validarTelefone(valor = '') {
+  if (!valor) return true
+  const digits = extrairDigitosTelefone(valor)
+  return digits.length === 10 || digits.length === 11
 }

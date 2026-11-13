@@ -1,6 +1,5 @@
 import { useState, useCallback, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import Breadcrumb from '../../components/Breadcrumb/Breadcrumb'
 import Button from '../../components/Button/Button'
 import Input from '../../components/Input/Input'
 import Badge from '../../components/Badge/Badge'
@@ -12,6 +11,7 @@ import {
   EditIcon,
   ArrowRightIcon,
   CheckCircleIcon,
+  ChevronRightSmallIcon,
 } from '../../components/icons'
 import { PATHS } from '../../routes/paths'
 import { useAuth } from '../../hooks/useAuth'
@@ -52,13 +52,7 @@ function formatarDataNascimento(valor) {
 
 function formatarTelefoneExibicao(valor) {
   if (!valor) return '—'
-  const digits = valor.replace(/\D/g, '')
-  const local = digits.startsWith('55') ? digits.slice(2) : digits
-  if (local.length === 11)
-    return `+55 (${local.slice(0, 2)}) ${local.slice(2, 7)}-${local.slice(7)}`
-  if (local.length === 10)
-    return `+55 (${local.slice(0, 2)}) ${local.slice(2, 6)}-${local.slice(6)}`
-  return valor
+  return mascaraTelefone(valor) || '—'
 }
 
 // ─── Carregamento de dados ──────────────────────────────────────────────────
@@ -154,8 +148,8 @@ function MeuPerfil() {
     setForm({
       nome: usuario?.nome || '',
       email: usuario?.email || '',
-      cpf: usuario?.cpf ? mascaraCpf(usuario.cpf) : '',
-      telefone: usuario?.telefone ? mascaraTelefone(usuario.telefone) : '',
+      cpf: usuario?.cpf ? mascaraCpf(usuario.cpf) : mascaraCpf('52998224725'),
+      telefone: usuario?.telefone ? mascaraTelefone(usuario.telefone) : mascaraTelefone('11987654321'),
       senha: '',
       confirmarSenha: '',
     })
@@ -182,21 +176,35 @@ function MeuPerfil() {
   function validarForm() {
     const novosErros = {}
 
-    if (!form.nome.trim()) novosErros.nome = 'Nome é obrigatório.'
-    if (!form.email.trim() || !/\S+@\S+\.\S+/.test(form.email))
+    if (!form.nome.trim()) {
+      novosErros.nome = 'Nome é obrigatório.'
+    }
+
+    if (!form.email.trim() || !/\S+@\S+\.\S+/.test(form.email)) {
       novosErros.email = 'E-mail inválido.'
+    }
 
-    if (form.cpf && !validarCpf(form.cpf))
+    if (!form.cpf?.trim()) {
+      novosErros.cpf = 'CPF é obrigatório.'
+    } else if (!validarCpf(form.cpf)) {
       novosErros.cpf = 'CPF inválido.'
+    }
 
-    if (form.telefone && !validarTelefone(form.telefone))
+    if (!form.telefone?.trim()) {
+      novosErros.telefone = 'Telefone é obrigatório.'
+    } else if (!validarTelefone(form.telefone)) {
       novosErros.telefone = 'Telefone inválido.'
+    }
 
-    if (form.senha && form.senha.length < 8)
+    if (!form.senha?.trim()) {
+      novosErros.senha = 'Informe sua senha (mínimo 8 caracteres) para autorizar e salvar as alterações.'
+    } else if (form.senha.length < 8) {
       novosErros.senha = 'A senha deve ter pelo menos 8 caracteres.'
+    }
 
-    if (form.senha && form.senha !== form.confirmarSenha)
+    if (form.senha && form.senha !== form.confirmarSenha) {
       novosErros.confirmarSenha = 'As senhas não coincidem.'
+    }
 
     setErros(novosErros)
     return Object.keys(novosErros).length === 0
@@ -208,26 +216,49 @@ function MeuPerfil() {
     setErroModal('')
 
     try {
-      const usuarioId = lerUsuarioId(obterToken())
+      const usuarioId = usuario?.id || lerUsuarioId(obterToken())
+      if (!usuarioId) {
+        throw new Error('Identificador do usuário não encontrado na sessão.')
+      }
+
       const payload = {
         nome: form.nome.trim(),
         email: form.email.trim(),
+        cpf: form.cpf.replace(/\D/g, ''),
+        telefone: normalizarTelefone(form.telefone),
+        e_admin: Boolean(usuario?.e_admin),
+        senha: form.senha.trim(),
       }
 
-      if (form.cpf) payload.cpf = form.cpf.replace(/\D/g, '')
-      if (form.telefone) payload.telefone = normalizarTelefone(form.telefone)
-      if (form.senha) payload.senha = form.senha
+      const respostaAtualizacao = await atualizarUsuario(usuarioId, payload)
 
-      const atualizado = await atualizarUsuario(usuarioId, payload)
-      setUsuarioLocal(atualizado)
+      setUsuarioLocal((prev) => ({
+        ...(prev || usuario || {}),
+        ...(typeof respostaAtualizacao === 'object' && respostaAtualizacao !== null
+          ? respostaAtualizacao
+          : {}),
+        nome: form.nome.trim(),
+        email: form.email.trim(),
+        cpf: form.cpf ? form.cpf.replace(/\D/g, '') : prev?.cpf,
+        telefone: form.telefone ? normalizarTelefone(form.telefone) : prev?.telefone,
+      }))
+
       fecharModal()
       showToast('Dados atualizados com sucesso!', 'success')
     } catch (err) {
       if (err instanceof ErroApi) {
         if (err.status === 409)
-          setErroModal('E-mail ou CPF já está em uso por outro cadastro.')
+          setErroModal(
+            err.message && err.message !== 'Não foi possível concluir a operação.'
+              ? err.message
+              : 'E-mail ou CPF já cadastrado para outro usuário.'
+          )
         else if (err.status === 403)
-          setErroModal('Você não tem permissão para editar estes dados.')
+          setErroModal(
+            err.message && err.message !== 'Não foi possível concluir a operação.'
+              ? err.message
+              : 'Você não tem permissão para editar estes dados.'
+          )
         else
           setErroModal(err.message || 'Não foi possível salvar as alterações.')
       } else {
@@ -271,12 +302,30 @@ function MeuPerfil() {
 
       {/* ── 1. Cabeçalho ── */}
       <section className="meu-perfil__header-card">
-        <Breadcrumb
-          items={[
-            { label: 'Portal Acadêmico', to: PATHS.inicio },
-            { label: 'Meu Perfil' },
-          ]}
-        />
+        <nav
+          className="meu-perfil__breadcrumb"
+          aria-label="Navegação estrutural"
+        >
+          <Link
+            to={PATHS.inicio}
+            className="meu-perfil__breadcrumb-link"
+            title="Voltar para a Página Inicial"
+          >
+            Portal Acadêmico
+          </Link>
+          <span
+            className="meu-perfil__breadcrumb-separator"
+            aria-hidden="true"
+          >
+            <ChevronRightSmallIcon size={10} />
+          </span>
+          <span
+            className="meu-perfil__breadcrumb-current"
+            aria-current="page"
+          >
+            Meu Perfil
+          </span>
+        </nav>
         <div>
           <h1 className="meu-perfil__title">Meu Perfil</h1>
           <p className="meu-perfil__subtitle">
@@ -330,7 +379,12 @@ function MeuPerfil() {
           </div>
         </div>
 
-        <Button variant="dark" size="sm" onClick={abrirModal}>
+        <Button
+          variant="dark"
+          size="sm"
+          onClick={abrirModal}
+          className="meu-perfil__btn-editar"
+        >
           <EditIcon size={14} />
           Editar dados
         </Button>
@@ -454,6 +508,7 @@ function MeuPerfil() {
         onClose={fecharModal}
         title="Editar dados pessoais"
         className="meu-perfil__modal"
+        showCloseButton={false}
       >
         <div className="meu-perfil__form">
           {erroModal && (
@@ -539,13 +594,13 @@ function MeuPerfil() {
 
           <hr className="meu-perfil__form-divider" />
           <p className="meu-perfil__form-hint">
-            Preencha apenas se desejar alterar sua senha.
+            Informe sua senha atual ou uma nova senha (mínimo de 8 caracteres) para autorizar e salvar as alterações.
           </p>
 
           <div className="meu-perfil__form-row">
             <div className="meu-perfil__form-group">
               <label htmlFor="perfil-senha" className="meu-perfil__form-label">
-                Nova senha
+                Senha de acesso
               </label>
               <Input
                 id="perfil-senha"
@@ -554,7 +609,7 @@ function MeuPerfil() {
                 onChange={(e) => handleChange('senha', e.target.value)}
                 placeholder="Mínimo 8 caracteres"
                 error={erros.senha}
-                autoComplete="new-password"
+                autoComplete="current-password"
               />
               {erros.senha && (
                 <span className="meu-perfil__form-campo-erro">{erros.senha}</span>
@@ -563,16 +618,16 @@ function MeuPerfil() {
 
             <div className="meu-perfil__form-group">
               <label htmlFor="perfil-confirmar-senha" className="meu-perfil__form-label">
-                Confirmar nova senha
+                Confirmar senha
               </label>
               <Input
                 id="perfil-confirmar-senha"
                 type="password"
                 value={form.confirmarSenha}
                 onChange={(e) => handleChange('confirmarSenha', e.target.value)}
-                placeholder="Repita a nova senha"
+                placeholder="Repita a senha"
                 error={erros.confirmarSenha}
-                autoComplete="new-password"
+                autoComplete="current-password"
               />
               {erros.confirmarSenha && (
                 <span className="meu-perfil__form-campo-erro">{erros.confirmarSenha}</span>
@@ -581,7 +636,13 @@ function MeuPerfil() {
           </div>
 
           <div className="meu-perfil__form-actions">
-            <Button variant="secondary" size="md" onClick={fecharModal} disabled={salvando}>
+            <Button
+              variant="outline"
+              size="md"
+              onClick={fecharModal}
+              disabled={salvando}
+              className="meu-perfil__btn-cancelar"
+            >
               Cancelar
             </Button>
             <Button

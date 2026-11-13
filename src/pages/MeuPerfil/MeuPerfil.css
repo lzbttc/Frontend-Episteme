@@ -34,6 +34,35 @@
   gap: 12px;
 }
 
+.meu-perfil__breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8125rem;
+}
+
+.meu-perfil__breadcrumb-link {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+.meu-perfil__breadcrumb-link:hover {
+  color: var(--color-primary-dark);
+}
+
+.meu-perfil__breadcrumb-separator {
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-text-secondary);
+}
+
+.meu-perfil__breadcrumb-current {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
 .meu-perfil__title {
   font-size: 1.75rem;
   font-weight: 700;
@@ -174,6 +203,11 @@
   margin: 0;
 }
 
+.meu-perfil__btn-editar {
+  align-self: flex-start;
+  width: auto;
+}
+
 /* =============================================================================
    Campos de informação (somente leitura)
    ============================================================================= */
@@ -185,8 +219,8 @@
 }
 
 .perfil__campo {
-  background-color: var(--color-background);
-  border: 1px solid var(--color-border);
+  background-color: var(--color-surface-soft);
+  border: none;
   border-radius: var(--radius-md);
   padding: 14px 16px;
   display: flex;
@@ -233,6 +267,10 @@
    ============================================================================= */
 
 .meu-perfil__integralizacao {
+  background-color: var(--color-surface-soft);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -320,6 +358,10 @@
    Modal de edição
    ============================================================================= */
 
+.meu-perfil__modal .modal__close {
+  display: none;
+}
+
 .meu-perfil__form {
   display: flex;
   flex-direction: column;
@@ -376,6 +418,18 @@
   justify-content: flex-end;
   gap: 10px;
   padding-top: 4px;
+}
+
+.meu-perfil__btn-cancelar {
+  background-color: transparent;
+  color: #e11d48;
+  border: 1px solid var(--color-border);
+}
+
+.meu-perfil__btn-cancelar:hover:not(:disabled) {
+  background-color: rgba(225, 29, 72, 0.06);
+  border-color: #e11d48;
+  color: #e11d48;
 }
 
 /* =============================================================================
