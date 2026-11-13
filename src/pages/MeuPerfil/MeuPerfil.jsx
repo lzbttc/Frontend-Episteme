@@ -10,7 +10,6 @@ import {
   CameraIcon,
   EditIcon,
   ArrowRightIcon,
-  CheckCircleIcon,
   ChevronRightSmallIcon,
 } from '../../components/icons'
 import { PATHS } from '../../routes/paths'
@@ -651,14 +650,7 @@ function MeuPerfil() {
               onClick={handleSalvar}
               disabled={salvando}
             >
-              {salvando ? (
-                'Salvando...'
-              ) : (
-                <>
-                  <CheckCircleIcon size={15} />
-                  Salvar alterações
-                </>
-              )}
+              {salvando ? 'Salvando...' : 'Salvar alterações'}
             </Button>
           </div>
         </div>
