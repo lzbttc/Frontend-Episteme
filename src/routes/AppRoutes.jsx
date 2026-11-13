@@ -13,7 +13,6 @@ import GerenciamentoNoticias from '../pages/GerenciamentoNoticias/GerenciamentoN
 import CentralAjuda from '../pages/CentralAjuda/CentralAjuda'
 import EmBreve from '../pages/EmBreve/EmBreve'
 import NotFound from '../pages/NotFound/NotFound'
-import MeuPerfil from '../pages/MeuPerfil/MeuPerfil'
 
 import { PATHS } from './paths'
 
@@ -71,12 +70,6 @@ function AppRoutes() {
           <Route
             path={PATHS.ajuda}
             element={<CentralAjuda />}
-          />
-
-          {/* Meu Perfil */}
-          <Route
-            path={PATHS.meuPerfil}
-            element={<MeuPerfil />}
           />
 
           {/* Redirecionamento da rota alternativa */}

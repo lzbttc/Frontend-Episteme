@@ -1,4 +1,3 @@
-import { useState, useRef, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import logo from '../../assets/logo.svg'
 import {
@@ -7,7 +6,6 @@ import {
   HelpCircleIcon,
   UserIcon,
   MegaphoneIcon,
-  LogoutIcon,
 } from '../icons'
 import { PATHS } from '../../routes/paths'
 import { useAuth } from '../../hooks/useAuth'
@@ -23,44 +21,14 @@ function Header() {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const [dropdownAberto, setDropdownAberto] = useState(false)
-  const dropdownRef = useRef(null)
-
   const student = aluno || { name: 'Usuário', matricula: '' }
   const isGerenciamentoAtivo =
     location.pathname === PATHS.gerenciamentoNoticias
 
   function handleLogout() {
-    setDropdownAberto(false)
     logout()
     navigate(PATHS.login, { replace: true })
   }
-
-  function handleToggleDropdown() {
-    setDropdownAberto((prev) => !prev)
-  }
-
-  /* Fecha o dropdown ao clicar fora */
-  useEffect(() => {
-    if (!dropdownAberto) return
-
-    function handleClickFora(e) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setDropdownAberto(false)
-      }
-    }
-
-    function handleEsc(e) {
-      if (e.key === 'Escape') setDropdownAberto(false)
-    }
-
-    document.addEventListener('mousedown', handleClickFora)
-    document.addEventListener('keydown', handleEsc)
-    return () => {
-      document.removeEventListener('mousedown', handleClickFora)
-      document.removeEventListener('keydown', handleEsc)
-    }
-  }, [dropdownAberto])
 
   return (
     <header className="header">
@@ -112,10 +80,8 @@ function Header() {
             <HelpCircleIcon size={20} />
           </Link>
 
-          {/* Perfil com dropdown */}
           <div
             className="header__user-profile"
-            ref={dropdownRef}
             role="group"
             aria-label="Menu do usuário"
           >
@@ -131,42 +97,14 @@ function Header() {
             </div>
 
             <button
-              className={`header__profile-shortcut ${dropdownAberto ? 'header__profile-shortcut--open' : ''}`}
+              className="header__profile-shortcut"
               aria-label="Abrir menu do perfil"
-              aria-expanded={dropdownAberto}
-              aria-haspopup="menu"
               type="button"
-              onClick={handleToggleDropdown}
+              onClick={handleLogout}
+              title="Sair do sistema"
             >
               <ChevronDownIcon size={10} />
             </button>
-
-            {/* Dropdown menu */}
-            {dropdownAberto && (
-              <div className="header__dropdown" role="menu">
-                <Link
-                  to={PATHS.meuPerfil}
-                  className="header__dropdown-item"
-                  role="menuitem"
-                  onClick={() => setDropdownAberto(false)}
-                >
-                  <UserIcon size={15} aria-hidden="true" />
-                  Meu Perfil
-                </Link>
-
-                <div className="header__dropdown-divider" aria-hidden="true" />
-
-                <button
-                  className="header__dropdown-item header__dropdown-item--danger"
-                  role="menuitem"
-                  type="button"
-                  onClick={handleLogout}
-                >
-                  <LogoutIcon size={15} aria-hidden="true" />
-                  Sair
-                </button>
-              </div>
-            )}
           </div>
         </div>
       </div>
