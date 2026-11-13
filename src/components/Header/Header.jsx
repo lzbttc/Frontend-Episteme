@@ -13,7 +13,6 @@ import {
 import { PATHS } from '../../routes/paths'
 import { useAuth } from '../../hooks/useAuth'
 import './Header.css'
-
 /**
  * Cabeçalho principal da aplicação para as páginas internas autenticadas.
  * Exibe logo, ações de ícone (notificações, ajuda) e perfil do usuário logado.
@@ -159,7 +158,10 @@ function Header() {
                   className="header__dropdown-item"
                   role="menuitem"
                   type="button"
-                  onClick={() => setDropdownOpen(false)}
+                  onClick={() => {
+                    setDropdownOpen(false)
+                    navigate(PATHS.meuPerfil)
+                  }}
                 >
                   <UserOutlineIcon size={17} className="header__dropdown-item-icon" />
                   <span>Meu perfil</span>
