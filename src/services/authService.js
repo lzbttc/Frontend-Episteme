@@ -29,5 +29,6 @@ export async function login({ email, senha }) {
 }
 
 export function lerUsuarioId(token) {
-  return decodificarPayloadJwt(token)?.id ?? null
+  const payload = decodificarPayloadJwt(token)
+  return payload?.id ?? payload?.sub ?? payload?.usuario_id ?? null
 }

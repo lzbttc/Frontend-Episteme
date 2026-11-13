@@ -89,6 +89,7 @@
   padding-left: 16px;
   border-left: 1px solid var(--color-border);
   user-select: none;
+  position: relative;
 }
 
 .header__avatar {
@@ -142,6 +143,91 @@
 .header__profile-shortcut:hover {
   color: var(--color-text);
   transform: translateY(2px);
+}
+
+.header__profile-shortcut--open {
+  color: var(--color-text);
+  transform: rotate(180deg);
+}
+
+.header__profile-shortcut--open:hover {
+  transform: rotate(180deg);
+}
+
+/* ========================================
+   DROPDOWN DE CONTA
+   ======================================== */
+
+.header__dropdown {
+  position: absolute;
+  top: calc(100% + 14px);
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 200px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.1),
+    0 20px 50px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  z-index: calc(var(--z-header) + 1);
+  padding: 8px;
+  animation: dropdown-in var(--duration-base) var(--ease-standard) both;
+}
+
+@keyframes dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+}
+
+.header__dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-text);
+  cursor: pointer;
+  text-align: left;
+  transition:
+    background-color var(--duration-base) var(--ease-standard),
+    color var(--duration-base) var(--ease-standard);
+}
+
+.header__dropdown-item:hover {
+  background-color: var(--color-surface-soft);
+}
+
+.header__dropdown-item--danger {
+  color: #e11d48;
+}
+
+.header__dropdown-item--danger:hover {
+  background-color: rgba(225, 29, 72, 0.06);
+  color: #e11d48;
+}
+
+.header__dropdown-item-icon {
+  flex-shrink: 0;
+}
+
+.header__dropdown-divider {
+  height: 1px;
+  background-color: var(--color-border);
+  margin: 4px 0;
 }
 
 @media (max-width: 768px) {

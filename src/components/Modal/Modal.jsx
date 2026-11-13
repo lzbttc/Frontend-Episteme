@@ -9,6 +9,7 @@ function Modal({
   triggerRef,
   className = '',
   'aria-describedby': ariaDescribedBy,
+  showCloseButton = true,
 }) {
   const modalRef = useRef(null)
 
@@ -92,14 +93,16 @@ function Modal({
           <h2 id="modal-title" className="modal__title">
             {title}
           </h2>
-          <button
-            type="button"
-            className="modal__close"
-            onClick={onClose}
-            aria-label="Fechar modal"
-          >
-            ×
-          </button>
+          {showCloseButton && (
+            <button
+              type="button"
+              className="modal__close"
+              onClick={onClose}
+              aria-label="Fechar modal"
+            >
+              ×
+            </button>
+          )}
         </div>
         <div className="modal__content">{children}</div>
       </div>

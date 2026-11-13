@@ -14,6 +14,7 @@ import NotificacoesEstudante from '../pages/NotificacoesEstudante/NotificacoesEs
 import CentralAjuda from '../pages/CentralAjuda/CentralAjuda'
 import EmBreve from '../pages/EmBreve/EmBreve'
 import NotFound from '../pages/NotFound/NotFound'
+import MeuPerfil from '../pages/MeuPerfil/MeuPerfil'
 
 import { PATHS } from './paths'
 
@@ -73,10 +74,16 @@ function AppRoutes() {
             element={<CentralAjuda />}
           />
 
-          {/* Menu de Notificacoes */}
+          {/* Menu de Notificações */}
           <Route
             path={PATHS.notificacoes}
             element={<NotificacoesEstudante />}
+          />
+
+          {/* Meu Perfil */}
+          <Route
+            path={PATHS.meuPerfil}
+            element={<MeuPerfil />}
           />
 
           {/* Redirecionamento da rota alternativa */}
