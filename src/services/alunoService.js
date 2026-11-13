@@ -222,3 +222,14 @@ export async function listarTodasNoticiasEstudante() {
     throw err
   }
 }
+
+export async function getPendencias() {
+  try {
+    return await requisitar('academico', '/alunos/me/pendencias')
+  } catch (err) {
+    if (err instanceof ErroApi && err.status === 404) {
+      return []
+    }
+    throw err
+  }
+}

@@ -10,6 +10,7 @@ import TurmaVirtual from '../pages/TurmaVirtual/TurmaVirtual'
 import MinhasDisciplinas from '../pages/MinhasDisciplinas/MinhasDisciplinas'
 import NoticiasEstudante from '../pages/NoticiasEstudante/NoticiasEstudante'
 import GerenciamentoNoticias from '../pages/GerenciamentoNoticias/GerenciamentoNoticias'
+import NotificacoesEstudante from '../pages/NotificacoesEstudante/NotificacoesEstudante'
 import CentralAjuda from '../pages/CentralAjuda/CentralAjuda'
 import EmBreve from '../pages/EmBreve/EmBreve'
 import NotFound from '../pages/NotFound/NotFound'
@@ -70,6 +71,12 @@ function AppRoutes() {
           <Route
             path={PATHS.ajuda}
             element={<CentralAjuda />}
+          />
+
+          {/* Menu de Notificacoes */}
+          <Route
+            path={PATHS.notificacoes}
+            element={<NotificacoesEstudante />}
           />
 
           {/* Redirecionamento da rota alternativa */}
