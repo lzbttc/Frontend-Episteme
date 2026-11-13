@@ -10,6 +10,7 @@ export const PATHS = {
   ajuda: '/ajuda',
   emBreve: '/em-breve',
   gerenciamentoNoticias: '/gerenciamento-noticias',
+  notificacoes: '/notificacoes',
   meuPerfil: '/meu-perfil',
 }
 
