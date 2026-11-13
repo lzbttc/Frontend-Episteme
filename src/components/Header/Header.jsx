@@ -7,6 +7,7 @@ import {
   HelpCircleIcon,
   UserIcon,
   MegaphoneIcon,
+  LogoutIcon,
 } from '../icons'
 import { PATHS } from '../../routes/paths'
 import { useAuth } from '../../hooks/useAuth'
@@ -161,7 +162,8 @@ function Header() {
                   type="button"
                   onClick={handleLogout}
                 >
-                  Sair do sistema
+                  <LogoutIcon size={15} aria-hidden="true" />
+                  Sair
                 </button>
               </div>
             )}

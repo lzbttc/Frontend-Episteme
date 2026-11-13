@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { usePageTitle } from '../../hooks/usePageTitle'
 import { useToast } from '../../hooks/useToast'
@@ -12,7 +13,6 @@ import {
   validarTelefone,
 } from '../../utils/validacoes'
 import Button from '../../components/Button/Button'
-import Input from '../../components/Input/Input'
 import Toast from '../../components/Toast/Toast'
 import {
   UserIcon,
@@ -20,6 +20,7 @@ import {
   EyeIcon,
   EyeOffIcon,
   EditIcon,
+  ChevronRightSmallIcon,
 } from '../../components/icons'
 import './MeuPerfil.css'
 
@@ -55,7 +56,6 @@ function exibirCpf(cpf) {
 
 function exibirTelefone(tel) {
   if (!tel) return ''
-  // Remove prefixo +55 para exibição
   let soDigitos = String(tel).replace(/\D/g, '')
   if (soDigitos.startsWith('55') && soDigitos.length >= 12) {
     soDigitos = soDigitos.slice(2)
@@ -64,6 +64,66 @@ function exibirTelefone(tel) {
     return soDigitos.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3')
   }
   return soDigitos.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3')
+}
+
+/* ─── Campo de formulário estilizado ─────────────────────────── */
+function CampoForm({
+  id,
+  label,
+  name,
+  type = 'text',
+  value,
+  onChange,
+  disabled,
+  placeholder,
+  autoComplete,
+  inputMode,
+  error,
+  hint,
+  locked,
+  children,
+}) {
+  return (
+    <div className={`perfil-campo${error ? ' perfil-campo--erro' : ''}`}>
+      <label htmlFor={id} className="perfil-campo__label">
+        {label}
+        {locked && (
+          <span className="perfil-campo__lock" aria-label="campo bloqueado">
+            <LockIcon size={12} aria-hidden="true" />
+          </span>
+        )}
+      </label>
+      <div className="perfil-campo__input-wrap">
+        <input
+          id={id}
+          name={name}
+          type={type}
+          value={value}
+          onChange={onChange}
+          disabled={disabled}
+          placeholder={placeholder}
+          autoComplete={autoComplete}
+          inputMode={inputMode}
+          aria-describedby={
+            error ? `${id}-error` : hint ? `${id}-hint` : undefined
+          }
+          aria-invalid={error ? 'true' : undefined}
+          className="perfil-campo__input"
+        />
+        {children}
+      </div>
+      {error && (
+        <span id={`${id}-error`} className="perfil-campo__error" role="alert">
+          {error}
+        </span>
+      )}
+      {hint && !error && (
+        <span id={`${id}-hint`} className="perfil-campo__hint">
+          {hint}
+        </span>
+      )}
+    </div>
+  )
 }
 
 function MeuPerfil() {
@@ -278,329 +338,181 @@ function MeuPerfil() {
   const nomeExibido = usuario?.nome || 'Usuário'
   const iniciais = nomeExibido
     .split(' ')
+    .filter(Boolean)
     .slice(0, 2)
     .map((p) => p[0])
     .join('')
     .toUpperCase()
 
+  const papelUsuario = usuario?.e_admin ? 'Coordenação' : 'Aluno'
+
   /* ── Render principal ────────────────────────────── */
   return (
     <div className="meu-perfil">
-      {/* ─── Cabeçalho da página ─── */}
-      <section className="meu-perfil__header-card">
+
+      {/* ─── Card 1: Breadcrumb / Navbar ─── */}
+      <div className="meu-perfil__nav-card">
+        <nav className="meu-perfil__breadcrumb" aria-label="Localização atual">
+          <span className="meu-perfil__breadcrumb-item meu-perfil__breadcrumb-item--dim">
+            Portal Acadêmico
+          </span>
+          <ChevronRightSmallIcon size={14} className="meu-perfil__breadcrumb-sep" aria-hidden="true" />
+          <span className="meu-perfil__breadcrumb-item">Meu Perfil</span>
+        </nav>
+        <h1 className="meu-perfil__page-title">Menu Perfil</h1>
+      </div>
+
+      {/* ─── Card 2: Hero / Avatar ─── */}
+      <div className="meu-perfil__hero-card">
+        {/* Avatar */}
         <div className="meu-perfil__avatar" aria-hidden="true">
-          {iniciais || <UserIcon size={28} />}
+          <span className="meu-perfil__avatar-initials">{iniciais}</span>
+          {/* Botão de editar foto (mockado) */}
+          <button
+            className="meu-perfil__avatar-edit"
+            type="button"
+            aria-label="Alterar foto de perfil"
+            title="Alterar foto (em breve)"
+            tabIndex={-1}
+          >
+            <EditIcon size={12} aria-hidden="true" />
+          </button>
         </div>
 
-        <div className="meu-perfil__header-info">
-          <h1 className="meu-perfil__user-name">{nomeExibido}</h1>
-          <p className="meu-perfil__user-email">{usuario?.email || ''}</p>
+        {/* Info do usuário */}
+        <div className="meu-perfil__hero-info">
+          <p className="meu-perfil__hero-name">{nomeExibido}</p>
+          <p className="meu-perfil__hero-email">{usuario?.email || ''}</p>
+        </div>
 
-          <div className="meu-perfil__tags">
-            {usuario?.matricula && (
-              <span className="meu-perfil__tag">
-                Matrícula: {usuario.matricula}
-              </span>
-            )}
-            <span
-              className={`meu-perfil__tag meu-perfil__tag--role ${
-                usuario?.e_admin ? 'meu-perfil__tag--admin' : ''
-              }`}
-            >
-              {usuario?.e_admin ? 'Coordenação / Admin' : 'Aluno'}
+        {/* Tags / badges */}
+        <div className="meu-perfil__hero-badges">
+          {usuario?.matricula && (
+            <span className="meu-perfil__badge">
+              Matrícula: {usuario.matricula}
             </span>
-          </div>
+          )}
+          <span className={`meu-perfil__badge ${usuario?.e_admin ? 'meu-perfil__badge--admin' : 'meu-perfil__badge--role'}`}>
+            {papelUsuario}
+          </span>
         </div>
 
+        {/* Botão Editar Perfil */}
         {!emEdicao && (
           <Button
             variant="outline"
             size="sm"
-            className="meu-perfil__edit-btn"
+            className="meu-perfil__hero-edit-btn"
             onClick={() => setEmEdicao(true)}
+            type="button"
           >
-            <EditIcon size={15} aria-hidden="true" />
+            <EditIcon size={14} aria-hidden="true" />
             Editar perfil
           </Button>
         )}
-      </section>
+      </div>
 
-      {/* ─── Formulário de dados ─── */}
-      <form
-        className="meu-perfil__form-card"
-        onSubmit={handleSalvar}
-        noValidate
-      >
-        <header className="meu-perfil__form-header">
-          <div className="meu-perfil__form-title-group">
-            <div className="meu-perfil__form-icon-tile" aria-hidden="true">
-              <UserIcon size={18} />
-            </div>
-            <div>
-              <h2 className="meu-perfil__form-title">Dados cadastrais</h2>
-              <p className="meu-perfil__form-subtitle">
-                Informações de contato e acesso ao sistema
-              </p>
-            </div>
+      {/* ─── Card 3: Dados Cadastrais ─── */}
+      <form className="meu-perfil__form-card" onSubmit={handleSalvar} noValidate>
+
+        {/* Cabeçalho da seção */}
+        <div className="meu-perfil__section-header">
+          <div className="meu-perfil__section-icon" aria-hidden="true">
+            <UserIcon size={18} />
           </div>
-        </header>
+          <div>
+            <h2 className="meu-perfil__section-title">Dados cadastrais</h2>
+            <p className="meu-perfil__section-subtitle">
+              Informações de contato e acesso ao sistema
+            </p>
+          </div>
+        </div>
 
         {/* Alerta de erro geral */}
         {erroGeral && (
-          <div className="meu-perfil__alert meu-perfil__alert--error" role="alert">
+          <div className="meu-perfil__alert" role="alert">
             {erroGeral}
           </div>
         )}
 
-        <div className="meu-perfil__fields">
-          {/* Nome */}
-          <div className="meu-perfil__field">
-            <label htmlFor="perfil-nome" className="meu-perfil__label">
-              NOME COMPLETO
-            </label>
-            <Input
-              id="perfil-nome"
-              name="nome"
-              type="text"
-              value={form.nome}
-              onChange={handleChange}
-              disabled={!emEdicao}
-              placeholder="Nome completo"
-              autoComplete="name"
-              error={erros.nome}
-              aria-describedby={erros.nome ? 'perfil-nome-error' : undefined}
-            />
-            {erros.nome && (
-              <span id="perfil-nome-error" className="meu-perfil__field-error" role="alert">
-                {erros.nome}
-              </span>
-            )}
-          </div>
-
-          {/* E-mail */}
-          <div className="meu-perfil__field">
-            <label htmlFor="perfil-email" className="meu-perfil__label">
-              E-MAIL
-            </label>
-            <Input
-              id="perfil-email"
-              name="email"
-              type="email"
-              value={form.email}
-              onChange={handleChange}
-              disabled={!emEdicao}
-              placeholder="email@instituicao.edu.br"
-              autoComplete="email"
-              error={erros.email}
-              aria-describedby={erros.email ? 'perfil-email-error' : undefined}
-            />
-            {erros.email && (
-              <span id="perfil-email-error" className="meu-perfil__field-error" role="alert">
-                {erros.email}
-              </span>
-            )}
-          </div>
-
-          {/* CPF */}
-          <div className="meu-perfil__field">
-            <label htmlFor="perfil-cpf" className="meu-perfil__label">
-              CPF
-            </label>
-            <Input
-              id="perfil-cpf"
-              name="cpf"
-              type="text"
-              value={form.cpf}
-              onChange={handleChange}
-              disabled={!emEdicao}
-              placeholder="000.000.000-00"
-              autoComplete="off"
-              inputMode="numeric"
-              error={erros.cpf}
-              aria-describedby={erros.cpf ? 'perfil-cpf-error' : undefined}
-            />
-            {erros.cpf && (
-              <span id="perfil-cpf-error" className="meu-perfil__field-error" role="alert">
-                {erros.cpf}
-              </span>
-            )}
-          </div>
-
-          {/* Telefone */}
-          <div className="meu-perfil__field">
-            <label htmlFor="perfil-telefone" className="meu-perfil__label">
-              TELEFONE
-            </label>
-            <Input
-              id="perfil-telefone"
-              name="telefone"
-              type="tel"
-              value={form.telefone}
-              onChange={handleChange}
-              disabled={!emEdicao}
-              placeholder="(00) 00000-0000"
-              autoComplete="tel"
-              error={erros.telefone}
-              aria-describedby={erros.telefone ? 'perfil-telefone-error' : undefined}
-            />
-            {erros.telefone && (
-              <span id="perfil-telefone-error" className="meu-perfil__field-error" role="alert">
-                {erros.telefone}
-              </span>
-            )}
-            {emEdicao && (
-              <span className="meu-perfil__field-hint">
-                Será salvo no formato +55DDNNNNNNNNN
-              </span>
-            )}
-          </div>
-
-          {/* Matrícula – somente leitura para não-admin */}
-          {usuario?.matricula !== undefined && (
-            <div className="meu-perfil__field">
-              <label htmlFor="perfil-matricula" className="meu-perfil__label">
-                MATRÍCULA
-                {!eAdmin && (
-                  <span className="meu-perfil__field-locked" aria-label="campo bloqueado">
-                    🔒
-                  </span>
-                )}
-              </label>
-              <Input
-                id="perfil-matricula"
-                name="matricula"
-                type="text"
-                value={usuario?.matricula || ''}
-                disabled
-                placeholder="—"
-                aria-readonly="true"
-              />
-              {!eAdmin && emEdicao && (
-                <span className="meu-perfil__field-hint">
-                  Apenas administradores podem alterar a matrícula.
-                </span>
-              )}
-            </div>
-          )}
-
-          {/* Admin – somente leitura para não-admin */}
-          <div className="meu-perfil__field">
-            <label htmlFor="perfil-admin" className="meu-perfil__label">
-              PERFIL DE ACESSO
-              {!eAdmin && (
-                <span className="meu-perfil__field-locked" aria-label="campo bloqueado">
-                  🔒
-                </span>
-              )}
-            </label>
-            <Input
-              id="perfil-admin"
-              name="e_admin"
-              type="text"
-              value={usuario?.e_admin ? 'Coordenação / Administrador' : 'Aluno'}
-              disabled
-              aria-readonly="true"
-            />
-            {!eAdmin && emEdicao && (
-              <span className="meu-perfil__field-hint">
-                Apenas administradores podem alterar o perfil de acesso.
-              </span>
-            )}
-          </div>
+        {/* Linha 1: Nome | Email | CPF */}
+        <div className="meu-perfil__row meu-perfil__row--3">
+          <CampoForm
+            id="perfil-nome"
+            label="Nome completo"
+            name="nome"
+            value={form.nome}
+            onChange={handleChange}
+            disabled={!emEdicao}
+            placeholder="Nome completo"
+            autoComplete="name"
+            error={erros.nome}
+          />
+          <CampoForm
+            id="perfil-email"
+            label="E-mail"
+            name="email"
+            type="email"
+            value={form.email}
+            onChange={handleChange}
+            disabled={!emEdicao}
+            placeholder="email@instituicao.edu.br"
+            autoComplete="email"
+            error={erros.email}
+          />
+          <CampoForm
+            id="perfil-cpf"
+            label="CPF"
+            name="cpf"
+            value={form.cpf}
+            onChange={handleChange}
+            disabled={!emEdicao}
+            placeholder="000.000.000-00"
+            autoComplete="off"
+            inputMode="numeric"
+            error={erros.cpf}
+          />
         </div>
 
-        {/* ─── Seção de senha (só em modo edição) ─── */}
-        {emEdicao && (
-          <div className="meu-perfil__section">
-            <div className="meu-perfil__section-header">
-              <div className="meu-perfil__form-icon-tile" aria-hidden="true">
-                <LockIcon size={18} />
-              </div>
-              <div>
-                <h3 className="meu-perfil__section-title">Alterar senha</h3>
-                <p className="meu-perfil__form-subtitle">
-                  Deixe em branco para manter a senha atual
-                </p>
-              </div>
-            </div>
+        {/* Linha 2: Telefone | Matrícula */}
+        <div className="meu-perfil__row meu-perfil__row--2-wide">
+          <CampoForm
+            id="perfil-telefone"
+            label="Telefone"
+            name="telefone"
+            type="tel"
+            value={form.telefone}
+            onChange={handleChange}
+            disabled={!emEdicao}
+            placeholder="(00) 00000-0000"
+            autoComplete="tel"
+            error={erros.telefone}
+            hint={emEdicao ? 'Formato: +55DDNNNNNNNNN' : undefined}
+          />
+          <CampoForm
+            id="perfil-matricula"
+            label="Matrícula"
+            name="matricula"
+            value={usuario?.matricula || '—'}
+            disabled
+            placeholder="—"
+            locked={!eAdmin}
+          />
+        </div>
 
-            <div className="meu-perfil__fields">
-              {/* Nova senha */}
-              <div className="meu-perfil__field">
-                <label htmlFor="perfil-senha" className="meu-perfil__label">
-                  NOVA SENHA
-                </label>
-                <div className="meu-perfil__password-wrapper">
-                  <Input
-                    id="perfil-senha"
-                    name="senha"
-                    type={verSenha ? 'text' : 'password'}
-                    value={form.senha}
-                    onChange={handleChange}
-                    placeholder="Mínimo 8 caracteres"
-                    autoComplete="new-password"
-                    error={erros.senha}
-                    aria-describedby={erros.senha ? 'perfil-senha-error' : undefined}
-                  />
-                  <button
-                    type="button"
-                    className="meu-perfil__password-toggle"
-                    onClick={() => setVerSenha((v) => !v)}
-                    aria-label={verSenha ? 'Ocultar senha' : 'Mostrar senha'}
-                  >
-                    {verSenha ? <EyeOffIcon size={18} /> : <EyeIcon size={18} />}
-                  </button>
-                </div>
-                {erros.senha && (
-                  <span id="perfil-senha-error" className="meu-perfil__field-error" role="alert">
-                    {erros.senha}
-                  </span>
-                )}
-              </div>
+        {/* Linha 3: Perfil de acesso (largura total) */}
+        <div className="meu-perfil__row meu-perfil__row--1">
+          <CampoForm
+            id="perfil-admin"
+            label="Perfil de acesso"
+            name="e_admin"
+            value={usuario?.e_admin ? 'Coordenação / Administrador' : 'Aluno'}
+            disabled
+            locked={!eAdmin}
+          />
+        </div>
 
-              {/* Confirmar senha */}
-              <div className="meu-perfil__field">
-                <label htmlFor="perfil-confirmar" className="meu-perfil__label">
-                  CONFIRMAR NOVA SENHA
-                </label>
-                <div className="meu-perfil__password-wrapper">
-                  <Input
-                    id="perfil-confirmar"
-                    name="confirmarSenha"
-                    type={verConfirmar ? 'text' : 'password'}
-                    value={form.confirmarSenha}
-                    onChange={handleChange}
-                    placeholder="Repita a nova senha"
-                    autoComplete="new-password"
-                    error={erros.confirmarSenha}
-                    aria-describedby={
-                      erros.confirmarSenha ? 'perfil-confirmar-error' : undefined
-                    }
-                  />
-                  <button
-                    type="button"
-                    className="meu-perfil__password-toggle"
-                    onClick={() => setVerConfirmar((v) => !v)}
-                    aria-label={verConfirmar ? 'Ocultar senha' : 'Mostrar senha'}
-                  >
-                    {verConfirmar ? <EyeOffIcon size={18} /> : <EyeIcon size={18} />}
-                  </button>
-                </div>
-                {erros.confirmarSenha && (
-                  <span
-                    id="perfil-confirmar-error"
-                    className="meu-perfil__field-error"
-                    role="alert"
-                  >
-                    {erros.confirmarSenha}
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ─── Ações ─── */}
+        {/* Ações (modo edição — dados cadastrais) */}
         {emEdicao && (
           <div className="meu-perfil__actions">
             <Button
@@ -612,7 +524,109 @@ function MeuPerfil() {
             >
               Cancelar
             </Button>
+          </div>
+        )}
+      </form>
 
+      {/* ─── Card 4: Senha ─── */}
+      {emEdicao && (
+        <form
+          className="meu-perfil__form-card"
+          onSubmit={handleSalvar}
+          noValidate
+          aria-label="Alterar senha"
+        >
+          {/* Cabeçalho da seção */}
+          <div className="meu-perfil__section-header">
+            <div className="meu-perfil__section-icon" aria-hidden="true">
+              <LockIcon size={18} />
+            </div>
+            <div>
+              <h2 className="meu-perfil__section-title">Alterar senha</h2>
+              <p className="meu-perfil__section-subtitle">
+                Deixe em branco para manter a senha atual
+              </p>
+            </div>
+          </div>
+
+          {/* Linha 1: Nova senha | Confirmar senha | (vazio) */}
+          <div className="meu-perfil__row meu-perfil__row--3">
+            {/* Nova senha */}
+            <div className={`perfil-campo${erros.senha ? ' perfil-campo--erro' : ''}`}>
+              <label htmlFor="perfil-senha" className="perfil-campo__label">
+                Nova senha
+              </label>
+              <div className="perfil-campo__input-wrap perfil-campo__input-wrap--password">
+                <input
+                  id="perfil-senha"
+                  name="senha"
+                  type={verSenha ? 'text' : 'password'}
+                  value={form.senha}
+                  onChange={handleChange}
+                  placeholder="Mínimo 8 caracteres"
+                  autoComplete="new-password"
+                  aria-describedby={erros.senha ? 'perfil-senha-error' : undefined}
+                  aria-invalid={erros.senha ? 'true' : undefined}
+                  className="perfil-campo__input"
+                />
+                <button
+                  type="button"
+                  className="perfil-campo__eye-btn"
+                  onClick={() => setVerSenha((v) => !v)}
+                  aria-label={verSenha ? 'Ocultar senha' : 'Mostrar senha'}
+                  tabIndex={0}
+                >
+                  {verSenha ? <EyeOffIcon size={16} /> : <EyeIcon size={16} />}
+                </button>
+              </div>
+              {erros.senha && (
+                <span id="perfil-senha-error" className="perfil-campo__error" role="alert">
+                  {erros.senha}
+                </span>
+              )}
+            </div>
+
+            {/* Confirmar senha */}
+            <div className={`perfil-campo${erros.confirmarSenha ? ' perfil-campo--erro' : ''}`}>
+              <label htmlFor="perfil-confirmar" className="perfil-campo__label">
+                Confirmar nova senha
+              </label>
+              <div className="perfil-campo__input-wrap perfil-campo__input-wrap--password">
+                <input
+                  id="perfil-confirmar"
+                  name="confirmarSenha"
+                  type={verConfirmar ? 'text' : 'password'}
+                  value={form.confirmarSenha}
+                  onChange={handleChange}
+                  placeholder="Repita a nova senha"
+                  autoComplete="new-password"
+                  aria-describedby={erros.confirmarSenha ? 'perfil-confirmar-error' : undefined}
+                  aria-invalid={erros.confirmarSenha ? 'true' : undefined}
+                  className="perfil-campo__input"
+                />
+                <button
+                  type="button"
+                  className="perfil-campo__eye-btn"
+                  onClick={() => setVerConfirmar((v) => !v)}
+                  aria-label={verConfirmar ? 'Ocultar senha' : 'Mostrar senha'}
+                  tabIndex={0}
+                >
+                  {verConfirmar ? <EyeOffIcon size={16} /> : <EyeIcon size={16} />}
+                </button>
+              </div>
+              {erros.confirmarSenha && (
+                <span id="perfil-confirmar-error" className="perfil-campo__error" role="alert">
+                  {erros.confirmarSenha}
+                </span>
+              )}
+            </div>
+
+            {/* Terceiro campo: vazio (ocupa espaço no grid 3 colunas) */}
+            <div className="perfil-campo" aria-hidden="true" />
+          </div>
+
+          {/* Ações finais */}
+          <div className="meu-perfil__actions meu-perfil__actions--save">
             <Button
               variant="primary"
               size="md"
@@ -622,8 +636,8 @@ function MeuPerfil() {
               {salvando ? 'Salvando...' : 'Salvar alterações'}
             </Button>
           </div>
-        )}
-      </form>
+        </form>
+      )}
 
       {/* Toast de confirmação */}
       {toast && (
