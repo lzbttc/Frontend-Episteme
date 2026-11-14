@@ -1,0 +1,127 @@
+.matricula-page {
+  max-width: 1032px;
+  margin: 0 auto;
+  padding: 1rem 0 3rem 0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: #0f172a;
+}
+
+/* 1. Header Card & Breadcrumb */
+.matricula-page__header-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1.5rem 1.75rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.matricula-page__breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: #64748b;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.matricula-page__breadcrumb-link {
+  color: #64748b;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.matricula-page__breadcrumb-link:hover {
+  color: var(--color-primary, #1d4ed8);
+  text-decoration: underline;
+}
+
+.matricula-page__breadcrumb-sep {
+  color: #cbd5e1;
+  display: inline-flex;
+  align-items: center;
+}
+
+.matricula-page__breadcrumb-current {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.matricula-page__title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 0.35rem 0;
+  letter-spacing: -0.02em;
+}
+
+.matricula-page__subtitle {
+  font-size: 0.95rem;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* 2. Grid Principal: Revisão */
+.matricula-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 2rem;
+  align-items: start;
+}
+
+.matricula-turmas-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.matricula-turmas-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.matricula-revisao-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.matricula-revisao-periodo-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: #eff6ff;
+  color: #1d4ed8;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+}
+
+.matricula-revisao-turmas-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.matricula-erro-box {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .matricula-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -4,12 +4,14 @@ export const ACESSO_RAPIDO_INICIO = [
     title: 'Solicitar matrícula',
     description: 'Ajuste e trancamento',
     icon: 'academic',
+    href: '/matricula',
   },
   {
     id: 'qa3',
     title: 'Coordenação',
     description: 'Canal direto e dúvidas',
     icon: 'message',
+    href: '#qa3',
   },
 ]
 

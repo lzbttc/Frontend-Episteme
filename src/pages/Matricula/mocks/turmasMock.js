@@ -1,0 +1,118 @@
+export const TURMAS_DEMONSTRACAO = [
+  {
+    id: 'e5a1b2c3-4d5e-6f7a-8b9c-0d1e2f3a4b5c',
+    codigo: 'ES014',
+    nome: 'Turma ES014-T01',
+    disciplina: 'Engenharia de Software',
+    carga_horaria: 60,
+    periodo_letivo: '2026.2',
+    capacidade: 40,
+    vagas_disponiveis: 18,
+    professor: {
+      id: 'p1',
+      matricula_id: 'DOC001',
+      nome: 'Profa. Dra. Mariana Silva',
+    },
+    horarios: [
+      {
+        dia_semana: 'Terça',
+        horario_inicio: '08:00:00',
+        horario_fim: '10:00:00',
+        local: 'Lab. 04, Bloco C',
+      },
+      {
+        dia_semana: 'Quinta',
+        horario_inicio: '08:00:00',
+        horario_fim: '10:00:00',
+        local: 'Lab. 04, Bloco C',
+      },
+    ],
+  },
+  {
+    id: 'f6b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d',
+    codigo: 'CC022',
+    nome: 'Turma CC022-T01',
+    disciplina: 'Estruturas de Dados',
+    carga_horaria: 60,
+    periodo_letivo: '2026.2',
+    capacidade: 40,
+    vagas_disponiveis: 12,
+    professor: {
+      id: 'p2',
+      matricula_id: 'DOC002',
+      nome: 'Profa. Me. Juliana Alves',
+    },
+    horarios: [
+      {
+        dia_semana: 'Segunda',
+        horario_inicio: '10:00:00',
+        horario_fim: '12:00:00',
+        local: 'Sala 105, Bloco A',
+      },
+      {
+        dia_semana: 'Sexta',
+        horario_inicio: '10:00:00',
+        horario_fim: '12:00:00',
+        local: 'Sala 105, Bloco A',
+      },
+    ],
+  },
+  {
+    id: 'a7c3d4e5-6f7a-8b9c-0d1e-2f3a4b5c6d7e',
+    codigo: 'BD002',
+    nome: 'Turma BD002-T01',
+    disciplina: 'Banco de Dados II',
+    carga_horaria: 60,
+    periodo_letivo: '2026.2',
+    capacidade: 40,
+    vagas_disponiveis: 8,
+    professor: {
+      id: 'p3',
+      matricula_id: 'DOC003',
+      nome: 'Prof. Dr. Rafael Oliveira',
+    },
+    horarios: [
+      {
+        dia_semana: 'Segunda',
+        horario_inicio: '14:00:00',
+        horario_fim: '16:00:00',
+        local: 'Sala 204, Bloco B',
+      },
+      {
+        dia_semana: 'Quarta',
+        horario_inicio: '14:00:00',
+        horario_fim: '16:00:00',
+        local: 'Sala 204, Bloco B',
+      },
+    ],
+  },
+  {
+    id: 'b8d4e5f6-7a8b-9c0d-1e2f-3a4b5c6d7e8f',
+    codigo: 'AS034',
+    nome: 'Turma AS034-T01',
+    disciplina: 'Arquitetura de Software',
+    carga_horaria: 60,
+    periodo_letivo: '2026.2',
+    capacidade: 40,
+    vagas_disponiveis: 15,
+    professor: {
+      id: 'p1',
+      matricula_id: 'DOC001',
+      nome: 'Profa. Dra. Mariana Silva',
+    },
+    horarios: [
+      {
+        dia_semana: 'Terça',
+        horario_inicio: '14:00:00',
+        horario_fim: '16:00:00',
+        local: 'Sala 104, Bloco B',
+      },
+      {
+        dia_semana: 'Quinta',
+        horario_inicio: '14:00:00',
+        horario_fim: '16:00:00',
+        local: 'Sala 104, Bloco B',
+      },
+    ],
+  },
+]

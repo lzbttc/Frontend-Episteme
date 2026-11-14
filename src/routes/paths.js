@@ -12,6 +12,20 @@ export const PATHS = {
   gerenciamentoNoticias: '/gerenciamento-noticias',
   notificacoes: '/notificacoes',
   meuPerfil: '/meu-perfil',
+  matricula: '/matricula',
+  matriculaRevisao: '/matricula/revisao',
+  matriculaComprovante: '/matricula/comprovante/:protocolo',
+  matriculaSolicitacoes: '/matricula/solicitacoes',
+}
+
+/**
+ * Retorna o caminho para o comprovante de uma solicitação específica.
+ *
+ * @param {string} protocolo - UUID do protocolo
+ * @returns {string}
+ */
+export function matriculaComprovantePath(protocolo) {
+  return `/matricula/comprovante/${protocolo}`
 }
 
 /**

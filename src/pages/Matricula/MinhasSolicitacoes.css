@@ -1,0 +1,175 @@
+/* MinhasSolicitacoes.css */
+
+.matricula-page {
+  max-width: 1032px;
+  margin: 0 auto;
+  padding: 1rem 0 3rem 0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: #0f172a;
+}
+
+/* 1. Header Card & Breadcrumb */
+.matricula-page__header-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1.5rem 1.75rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.matricula-page__breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: #64748b;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.matricula-page__breadcrumb-link {
+  color: #64748b;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.matricula-page__breadcrumb-link:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+.matricula-page__breadcrumb-sep {
+  color: #cbd5e1;
+  display: inline-flex;
+  align-items: center;
+}
+
+.matricula-page__breadcrumb-current {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.matricula-page__title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 0.35rem 0;
+  letter-spacing: -0.02em;
+}
+
+.matricula-page__subtitle {
+  font-size: 0.95rem;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* 2. Card da Tabela de Solicitações */
+.minhas-solicitacoes-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.minhas-solicitacoes-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.minhas-solicitacoes-title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.minhas-solicitacoes-btn-nova {
+  white-space: nowrap;
+}
+
+.minhas-solicitacoes-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 10px;
+}
+
+.minhas-solicitacoes-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  text-align: left;
+  font-size: 0.875rem;
+}
+
+.minhas-solicitacoes-table thead th {
+  background: #fafbfc;
+  color: #64748b;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 12px 16px;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.minhas-solicitacoes-table thead th:first-child {
+  border-left: 1px solid #e2e8f0;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.minhas-solicitacoes-table thead th:last-child {
+  border-right: 1px solid #e2e8f0;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.minhas-solicitacoes-table tbody td {
+  padding: 16px;
+  color: #0f172a;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
+.minhas-solicitacoes-td--protocolo strong {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.minhas-solicitacoes-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  background-color: #fef3c7;
+  color: #92400e;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.minhas-solicitacoes-loading,
+.minhas-solicitacoes-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 48px 16px;
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.minhas-solicitacoes-empty-text {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: #64748b;
+}
