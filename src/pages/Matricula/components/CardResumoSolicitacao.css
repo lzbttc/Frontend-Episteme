@@ -1,0 +1,241 @@
+.resumo-solicitacao {
+  position: sticky;
+  top: 96px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.resumo-solicitacao__card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.resumo-solicitacao__title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 1.25rem 0;
+  letter-spacing: -0.01em;
+}
+
+.resumo-solicitacao__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+  margin-bottom: 0.75rem;
+}
+
+.resumo-solicitacao__label {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.resumo-solicitacao__value {
+  color: #0f172a;
+  font-weight: 700;
+  font-size: 0.9375rem;
+}
+
+.resumo-solicitacao__status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.resumo-solicitacao__status-badge--open {
+  background-color: #f0fdf4;
+  color: #166534;
+}
+
+.resumo-solicitacao__status-badge--closed {
+  background-color: #fef2f2;
+  color: #991b1b;
+}
+
+.resumo-solicitacao__status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: currentColor;
+}
+
+.resumo-solicitacao__divider {
+  border: none;
+  border-top: 1px solid #f1f5f9;
+  margin: 1rem 0;
+}
+
+.resumo-solicitacao__items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.resumo-solicitacao__empty {
+  font-size: 0.875rem;
+  color: #94a3b8;
+  font-style: italic;
+  margin: 0.5rem 0;
+}
+
+.resumo-solicitacao__item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.resumo-solicitacao__item-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.resumo-solicitacao__item-code {
+  font-size: 0.78rem;
+  color: #64748b;
+}
+
+.resumo-solicitacao__total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.resumo-solicitacao__total-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.resumo-solicitacao__total-hours {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.resumo-solicitacao__btn {
+  width: 100%;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.resumo-solicitacao__help-text {
+  font-size: 0.75rem;
+  color: #64748b;
+  text-align: center;
+  line-height: 1.4;
+  margin: 0.75rem 0 0 0;
+}
+
+/* Card Informativo Inferior */
+.resumo-solicitacao__info-card {
+  background-color: rgba(59, 130, 246, 0.08);
+  border: none;
+  border-radius: 12px;
+  padding: 1rem 1.15rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.resumo-solicitacao__info-icon {
+  color: #3b82f6;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.resumo-solicitacao__info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.resumo-solicitacao__info-title {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.resumo-solicitacao__info-desc {
+  font-size: 0.75rem;
+  color: #64748b;
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* Revisão - Seção Antes de enviar */
+.resumo-solicitacao__review-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.resumo-solicitacao__review-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 0.5rem 0;
+}
+
+.resumo-solicitacao__review-desc {
+  font-size: 0.84rem;
+  color: #64748b;
+  line-height: 1.45;
+  margin: 0 0 1rem 0;
+}
+
+.resumo-solicitacao__alert-box {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.resumo-solicitacao__alert-icon {
+  color: #3b82f6;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.resumo-solicitacao__alert-content strong {
+  display: block;
+  font-size: 0.8125rem;
+  color: #0f172a;
+  margin-bottom: 0.2rem;
+}
+
+.resumo-solicitacao__alert-content p {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.resumo-solicitacao__review-sub {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin: 0 0 1.25rem 0;
+  line-height: 1.4;
+}

@@ -1,0 +1,72 @@
+.matricula-stepper {
+  margin-bottom: 2rem;
+}
+
+.matricula-stepper__pills {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background-color: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: 9999px;
+  padding: 4px;
+  box-shadow: var(--shadow-sm);
+}
+
+.matricula-stepper__pill-btn {
+  appearance: none;
+  border: none;
+  background: transparent;
+  padding: 8px 18px;
+  min-height: 38px;
+  border-radius: 9999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text-secondary, #71717a);
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  user-select: none;
+  transition:
+    background-color var(--duration-base, 200ms) var(--ease-standard, ease),
+    color var(--duration-base, 200ms) var(--ease-standard, ease),
+    box-shadow var(--duration-base, 200ms) var(--ease-standard, ease);
+}
+
+.matricula-stepper__pill-btn--completed {
+  cursor: pointer;
+  color: var(--color-text, #090d16);
+}
+
+.matricula-stepper__pill-btn--completed:hover {
+  background-color: var(--color-surface-soft, #f5f2ea);
+  color: var(--color-text, #090d16);
+}
+
+.matricula-stepper__pill-icon {
+  color: var(--color-primary, #3b82f6);
+  flex-shrink: 0;
+}
+
+.matricula-stepper__pill-num {
+  font-weight: 700;
+}
+
+.matricula-stepper__pill-btn--active {
+  background-color: var(--color-primary, #3b82f6);
+  color: var(--color-surface, #ffffff);
+  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.35);
+  cursor: default;
+}
+
+.matricula-stepper__pill-btn--active .matricula-stepper__pill-num {
+  color: var(--color-surface, #ffffff);
+}
+
+.matricula-stepper__pill-btn--pending {
+  cursor: default;
+  color: var(--color-text-secondary, #71717a);
+}

@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Navigate, Outlet, Route, Routes } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout/MainLayout'
 import ProtectedRoute from './ProtectedRoute'
 import AdminRoute from './AdminRoute'
@@ -15,8 +15,21 @@ import CentralAjuda from '../pages/CentralAjuda/CentralAjuda'
 import EmBreve from '../pages/EmBreve/EmBreve'
 import NotFound from '../pages/NotFound/NotFound'
 import MeuPerfil from '../pages/MeuPerfil/MeuPerfil'
+import { MatriculaProvider } from '../pages/Matricula/context/MatriculaContext'
+import SelecaoTurmas from '../pages/Matricula/SelecaoTurmas'
+import RevisaoSolicitacao from '../pages/Matricula/RevisaoSolicitacao'
+import ComprovanteSolicitacao from '../pages/Matricula/ComprovanteSolicitacao'
+import MinhasSolicitacoes from '../pages/Matricula/MinhasSolicitacoes'
 
 import { PATHS } from './paths'
+
+function MatriculaLayout() {
+  return (
+    <MatriculaProvider>
+      <Outlet />
+    </MatriculaProvider>
+  )
+}
 
 function AppRoutes() {
   return (
@@ -85,6 +98,15 @@ function AppRoutes() {
             path={PATHS.meuPerfil}
             element={<MeuPerfil />}
           />
+
+          {/* Módulo de Solicitação de Matrícula */}
+          <Route element={<MatriculaLayout />}>
+            <Route path={PATHS.matricula} element={<SelecaoTurmas />} />
+            <Route path={PATHS.matriculaRevisao} element={<RevisaoSolicitacao />} />
+            <Route path="/matricula/comprovante" element={<ComprovanteSolicitacao />} />
+            <Route path={PATHS.matriculaComprovante} element={<ComprovanteSolicitacao />} />
+            <Route path={PATHS.matriculaSolicitacoes} element={<MinhasSolicitacoes />} />
+          </Route>
 
           {/* Redirecionamento da rota alternativa */}
           <Route

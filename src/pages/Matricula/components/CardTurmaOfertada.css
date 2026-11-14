@@ -1,0 +1,145 @@
+.turma-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+
+.turma-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.06);
+}
+
+.turma-card--selected {
+  border-color: #93c5fd;
+  background-color: #ffffff;
+}
+
+.turma-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.625rem;
+}
+
+.turma-card__meta {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+  letter-spacing: 0.02em;
+}
+
+.turma-card__select-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 0.35rem 0.75rem;
+  cursor: pointer;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+  transition: all 0.15s ease;
+}
+
+.turma-card__select-btn:hover {
+  background-color: #f8fafc;
+  border-color: #94a3b8;
+}
+
+.turma-card__select-btn--active {
+  background-color: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+}
+
+.turma-card__select-btn--active:hover {
+  background-color: #1d4ed8;
+  border-color: #1d4ed8;
+}
+
+.turma-card__checkbox-empty {
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  border: 1.5px solid #94a3b8;
+  border-radius: 3px;
+}
+
+.turma-card__badge-periodo {
+  font-size: 0.75rem;
+  font-weight: 700;
+  background-color: #eff6ff;
+  color: #1d4ed8;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+}
+
+.turma-card__title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 0.4rem 0;
+  letter-spacing: -0.01em;
+}
+
+.turma-card__teacher {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.875rem;
+  color: #64748b;
+  margin-bottom: 0.875rem;
+}
+
+.turma-card__teacher-icon {
+  color: #94a3b8;
+}
+
+.turma-card__schedule-pill {
+  background-color: #f8fafc;
+  border: 1px solid #f1f5f9;
+  border-radius: 8px;
+  padding: 0.55rem 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.84rem;
+  color: #334155;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.turma-card__schedule-icon {
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+.turma-card__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8125rem;
+  color: #64748b;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.turma-card__modality {
+  color: #64748b;
+}
+
+.turma-card__vacancies {
+  color: #2563eb;
+}
+
+.turma-card__vacancies strong {
+  font-weight: 600;
+}

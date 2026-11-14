@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import Badge from '../Badge/Badge'
 import {
   AcademicCapIcon,
@@ -48,6 +49,7 @@ function QuickActionCard({
   ...rest
 }) {
   const { title, description, subtitle, icon, badge, id } = action
+  const targetHref = href || action.href
 
   const textDescription = description || subtitle
 
@@ -57,10 +59,13 @@ function QuickActionCard({
   }
 
   const isButton = typeof onClick === 'function'
-  const Component = isButton ? 'button' : 'a'
+  const isRouterLink = !isButton && targetHref && targetHref.startsWith('/')
+  const Component = isButton ? 'button' : isRouterLink ? Link : 'a'
   const componentProps = isButton
     ? { type: 'button', onClick, ...rest }
-    : { href: href || `#${id}`, ...rest }
+    : isRouterLink
+    ? { to: targetHref, ...rest }
+    : { href: targetHref || `#${id}`, ...rest }
 
   return (
     <Component
